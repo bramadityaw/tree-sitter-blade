@@ -11,6 +11,14 @@ const nodes = new NodeMap();
 
 /// <reference types="tree-sitter-cli/dsl" />
 
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(",", rule)));
+}
+
+function commaSep(rule) {
+  return optional(commaSep1(rule));
+}
+
 export default grammar(html, {
   name: "blade",
 
@@ -914,7 +922,7 @@ export default grammar(html, {
       ),
 
     // !parenthesis balancing - for functions/casts
-    parameter: ($) => choice(/[^()]+/, $._nested_parenthases),
+    parameter: ($) => choice($.expression, $._nested_parenthases),
     _nested_parenthases: ($) => seq("(", repeat($.parameter), ")"),
 
     text: ($) => prec.right(repeat1($._text)),
@@ -954,5 +962,172 @@ export default grammar(html, {
           ),
         ),
       ),
+
+    // ! PHP Expression Grammar (from tree-sitter-php)
+    expression: ($) =>
+      choice(
+        $.conditional_expression,
+        $.assignment_expression,
+        $.binary_expression,
+        $.unary_op_expression,
+        $.cast_expression,
+        $.primary_expression,
+      ),
+
+    conditional_expression: ($) =>
+      seq(
+        field("condition", $.expression),
+        "?",
+        field("body", optional($.expression)),
+        ":",
+        field("alternative", $.expression),
+      ),
+
+    assignment_expression: ($) =>
+      seq(
+        field("left", $._variable),
+        "=",
+        field("right", $.expression),
+      ),
+
+    binary_expression: ($) =>
+      choice(
+        seq(field("left", $.expression), field("operator", "||"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "&&"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "=="), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "!="), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "<"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", ">"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "<="), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", ">="), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "+"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "-"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "*"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "/"), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "."), field("right", $.expression)),
+        seq(field("left", $.expression), field("operator", "??"), field("right", $.expression)),
+      ),
+
+    unary_op_expression: ($) =>
+      seq(field("operator", choice("!", "-", "+", "~")), field("argument", $.expression)),
+
+    cast_expression: ($) =>
+      seq("(", field("type", $.cast_type), ")", field("value", $._unary_expression)),
+
+    cast_type: (_) => choice("array", "int", "string", "float", "bool", "object"),
+
+    _unary_expression: ($) => choice($.primary_expression, $.unary_op_expression, $.cast_expression),
+
+    primary_expression: ($) =>
+      choice(
+        $._variable,
+        $.literal,
+        $.array_creation_expression,
+        $.parenthesized_expression,
+        $.function_call_expression,
+        $.class_constant_access_expression,
+        $.qualified_name,
+        $.name,
+      ),
+
+    _variable: ($) => choice($.variable_name, $.member_access_expression, $.subscript_expression),
+
+    variable_name: ($) => seq("$", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)),
+
+    member_access_expression: ($) =>
+      seq(field("object", $._dereferencable_expression), "->", field("name", $.name)),
+
+    subscript_expression: ($) =>
+      seq(field("object", $._dereferencable_expression), "[", optional($.expression), "]"),
+
+    _dereferencable_expression: ($) =>
+      choice($._variable, $.parenthesized_expression, $.array_creation_expression),
+
+    parenthesized_expression: ($) => seq("(", $.expression, ")"),
+
+    function_call_expression: ($) =>
+      seq(field("function", $.name), field("arguments", $.arguments)),
+
+    arguments: ($) => seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
+
+    argument: ($) =>
+      seq(optional($._argument_name), choice($.expression, $.variadic_unpacking)),
+
+    _argument_name: ($) => seq(field("name", alias($.name, $.name)), ":"),
+
+    variadic_unpacking: ($) => seq("...", $.expression),
+
+    class_constant_access_expression: ($) =>
+      seq(field("scope", $._scope_resolution_qualifier), "::", field("name", alias($.name, $.name))),
+
+    _scope_resolution_qualifier: ($) =>
+      choice($.qualified_name, $.relative_scope, $.name),
+
+    relative_scope: (_) => choice("self", "parent", "static"),
+
+    qualified_name: ($) =>
+      seq(
+        field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
+        alias($.name, $.name),
+      ),
+
+    namespace_name: ($) =>
+      seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
+
+    array_creation_expression: ($) =>
+      choice(
+        seq("[", commaSep($.array_element_initializer), optional(","), "]"),
+        seq("array", "(", commaSep($.array_element_initializer), optional(","), ")"),
+      ),
+
+    array_element_initializer: ($) =>
+      choice(
+        $.expression,
+        seq($.expression, "=>", $.expression),
+        seq("...", $.expression),
+      ),
+
+    literal: ($) =>
+      choice($.integer, $.float, $._string, $.boolean, $.null),
+
+    integer: (_) => token(choice(/[1-9]\d*/, /0[xX][0-9a-fA-F]+/, /0[0-7]+/, /0[bB][01]+/)),
+
+    float: (_) => token(/\d*(\.\d*)?([eE][+-]?\d+)?/),
+
+    _string: ($) => choice($.string, $.encapsed_string),
+
+    string: ($) =>
+      seq(
+        "'",
+        repeat(choice(token(prec(1, /[^'\\]+/)), token.immediate("\\'"))),
+        "'",
+      ),
+
+    encapsed_string: ($) =>
+      seq(
+        '"',
+        repeat(
+          choice(
+            token(prec(1, /[^"\\{]+/)),
+            $.escape_sequence,
+            seq($.variable_name, token(prec(1, /[^"\\]*/))),
+          ),
+        ),
+        '"',
+      ),
+
+    escape_sequence: (_) =>
+      token.immediate(
+        seq(
+          "\\",
+          choice("n", "r", "t", "\\", "$", '"', "'", /[0-7]{1,3}/, /x[0-9A-Fa-f]{1,2}/),
+        ),
+      ),
+
+    boolean: (_) => token(choice("true", "false")),
+
+    null: (_) => "null",
+
+    name: (_) => /[a-zA-Z_][a-zA-Z0-9_]*/,
   },
 });
