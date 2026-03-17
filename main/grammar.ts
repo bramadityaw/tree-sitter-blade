@@ -11,6 +11,75 @@ const nodes = new NodeMap();
 
 /// <reference types="tree-sitter-cli/dsl" />
 
+/**
+ * Creates a rule to match one or more of the rules separated by a pipe
+ *
+ * @param {Rule} rule
+ *
+ * @returns {SeqRule}
+ */
+function pipeSep1(rule) {
+  return seq(rule, repeat(seq('|', rule)));
+}
+
+/**
+ * Creates a rule to  match one or more of the rules separated by an ampersand
+ *
+ * @param {Rule} rule
+ * @returns {SeqRule}
+ */
+function ampSep1(rule) {
+  return seq(rule, repeat(seq(token('&'), rule)));
+}
+
+/**
+ * Creates a regex that matches the given word case-insensitively,
+ * and will alias the regex to the word if aliasAsWord is true
+ *
+ * @param {string} word
+ * @param {boolean} aliasAsWord
+ *
+ * @returns {RegExp|AliasRule}
+ */
+function keyword(word, aliasAsWord = true) {
+  /** @type {RegExp|AliasRule} */
+  let result = new RegExp(word, 'i');
+  if (aliasAsWord) result = alias(result, word);
+  return result;
+}
+
+const PREC = {
+  COMMA: -1,
+  CAST: -1,
+  LOGICAL_OR_2: 1,
+  LOGICAL_XOR: 2,
+  LOGICAL_AND_2: 3,
+  ASSIGNMENT: 4,
+  TERNARY: 5,
+  NULL_COALESCE: 6,
+  LOGICAL_OR_1: 7,
+  LOGICAL_AND_1: 8,
+  BITWISE_OR: 9,
+  BITWISE_XOR: 10,
+  BITWISE_AND: 11,
+  EQUALITY: 12,
+  INEQUALITY: 13,
+  PIPE: 14,
+  CONCAT: 15,
+  SHIFT: 16,
+  PLUS: 17,
+  TIMES: 18,
+  EXPONENTIAL: 19,
+  NEG: 20,
+  INSTANCEOF: 21,
+  INC: 22,
+  SCOPE: 23,
+  NEW: 24,
+  CALL: 25,
+  MEMBER: 26,
+  DEREF: 27,
+};
+
 function commaSep1(rule) {
   return seq(rule, repeat(seq(",", rule)));
 }
@@ -21,6 +90,13 @@ function commaSep(rule) {
 
 export default grammar(html, {
   name: "blade",
+  conflicts: $ => [
+    [$.type, $.union_type, $.intersection_type, $.disjunctive_normal_form_type],
+    [$.union_type, $.disjunctive_normal_form_type],
+    [$.intersection_type],
+
+    [$.namespace_name],
+  ],
 
   rules: {
     // The entire grammar
@@ -199,6 +275,8 @@ export default grammar(html, {
 
     // !inline directives
     _inline_directive: ($) =>
+    choice(
+      $.props,
       seq(
         alias(
           choice(
@@ -219,7 +297,6 @@ export default grammar(html, {
             "@import",
             "@js",
             "@svg",
-            "@props",
             "@use",
             "@stack",
             // log1x/sage-directives #77
@@ -238,7 +315,15 @@ export default grammar(html, {
           $.directive,
         ),
         $._directive_parameter,
-      ),
+      )
+    ),
+
+    props: ($) => seq(
+        "@props",
+        '(',
+        $.array_creation_expression,
+        ')',
+    ),
 
     // !nested directives
 
@@ -917,13 +1002,10 @@ export default grammar(html, {
     _directive_parameter: ($) =>
       seq(
         "(",
-        optional(repeat($.parameter)),
+        optional($.expression),
         ")",
       ),
 
-    // !parenthesis balancing - for functions/casts
-    parameter: ($) => choice($.expression, $._nested_parenthases),
-    _nested_parenthases: ($) => seq("(", repeat($.parameter), ")"),
 
     text: ($) => prec.right(repeat1($._text)),
     // hidden to reduce AST noise in php_only #39
@@ -963,25 +1045,59 @@ export default grammar(html, {
         ),
       ),
 
+    match_expression: $ => seq(
+      keyword('match'),
+      field('condition', $.parenthesized_expression),
+      field('body', $.match_block),
+    ),
+
+    match_block: $ => prec.left(
+      seq(
+        '{',
+        commaSep(
+          choice(
+            $.match_conditional_expression,
+            $.match_default_expression,
+          ),
+        ),
+        optional(','),
+        '}',
+      ),
+    ),
+
+    match_condition_list: $ => seq(commaSep1($.expression), optional(',')),
+
+    match_conditional_expression: $ => seq(
+      field('conditional_expressions', $.match_condition_list),
+      '=>',
+      field('return_expression', $.expression),
+    ),
+
+    match_default_expression: $ => seq(
+      keyword('default'),
+      '=>',
+      field('return_expression', $.expression),
+    ),
+
     // ! PHP Expression Grammar (from tree-sitter-php)
     expression: ($) =>
       choice(
         $.conditional_expression,
         $.assignment_expression,
         $.binary_expression,
-        $.unary_op_expression,
-        $.cast_expression,
-        $.primary_expression,
+        $._unary_expression,
       ),
 
-    conditional_expression: ($) =>
+    conditional_expression: ($) => prec.left(
+      PREC.TERNARY,
       seq(
         field("condition", $.expression),
         "?",
         field("body", optional($.expression)),
         ":",
         field("alternative", $.expression),
-      ),
+      )
+    ),
 
     assignment_expression: ($) =>
       seq(
@@ -990,31 +1106,147 @@ export default grammar(html, {
         field("right", $.expression),
       ),
 
-    binary_expression: ($) =>
+    binary_expression: $ => choice(
+      prec(PREC.INSTANCEOF, seq(
+        field('left', $._unary_expression),
+        field('operator', keyword('instanceof')),
+        field('right', $._class_name_reference),
+      )),
+      prec.right(PREC.NULL_COALESCE, seq(
+        field('left', $.expression),
+        field('operator', '??'),
+        field('right', $.expression),
+      )),
+      prec.right(PREC.EXPONENTIAL, seq(
+        field('left', $.expression),
+        field('operator', '**'),
+        field('right', $.expression),
+      )),
+      ...[
+        [keyword('and'), PREC.LOGICAL_AND_2],
+        [keyword('or'), PREC.LOGICAL_OR_2],
+        [keyword('xor'), PREC.LOGICAL_XOR],
+        ['||', PREC.LOGICAL_OR_1],
+        ['&&', PREC.LOGICAL_AND_1],
+        ['|', PREC.BITWISE_OR],
+        ['^', PREC.BITWISE_XOR],
+        ['&', PREC.BITWISE_AND],
+        ['==', PREC.EQUALITY],
+        ['!=', PREC.EQUALITY],
+        ['<>', PREC.EQUALITY],
+        ['===', PREC.EQUALITY],
+        ['!==', PREC.EQUALITY],
+        ['<', PREC.INEQUALITY],
+        ['>', PREC.INEQUALITY],
+        ['<=', PREC.INEQUALITY],
+        ['>=', PREC.INEQUALITY],
+        ['<=>', PREC.EQUALITY],
+        ['|>', PREC.PIPE],
+        ['.', PREC.CONCAT],
+        ['<<', PREC.SHIFT],
+        ['>>', PREC.SHIFT],
+        ['+', PREC.PLUS],
+        ['-', PREC.PLUS],
+        ['*', PREC.TIMES],
+        ['/', PREC.TIMES],
+        ['%', PREC.TIMES],
+        // @ts-ignore
+      ].map(([op, p]) => prec.left(p, seq(
+        field('left', $.expression),
+        // @ts-ignore
+        field('operator', op),
+        field('right', $.expression),
+      ))),
+    ),
+
+    unary_op_expression: $ => prec.left(PREC.NEG, seq(
+      field('operator', choice('+', '-', '~', '!')),
+      field('argument', $.expression),
+    )),
+
+    update_expression: $ => {
+      const argument = field('argument', $._variable);
+      const operator = field('operator', choice('--', '++'));
+      return prec.left(PREC.INC, choice(
+        seq(operator, argument),
+        seq(argument, operator),
+      ));
+    },
+
+    cast_expression: ($) => prec(PREC.CAST,
+      seq("(", field("type", $.cast_type), ")", field("value", $._unary_expression))
+    ),
+
+    type: $ => choice(
+      $._types,
+      $.union_type,
+      $.intersection_type,
+      $.disjunctive_normal_form_type,
+    ),
+
+    _types: $ => choice(
+      $.optional_type,
+      $.named_type,
+      $.primitive_type,
+    ),
+
+    named_type: $ => choice(
+      $.name,
+      $.qualified_name,
+      $.relative_name,
+    ),
+
+    optional_type: $ => seq(
+      '?',
       choice(
-        seq(field("left", $.expression), field("operator", "||"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "&&"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "=="), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "!="), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "<"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", ">"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "<="), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", ">="), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "+"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "-"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "*"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "/"), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "."), field("right", $.expression)),
-        seq(field("left", $.expression), field("operator", "??"), field("right", $.expression)),
+        $.named_type,
+        $.primitive_type,
       ),
+    ),
 
-    unary_op_expression: ($) =>
-      seq(field("operator", choice("!", "-", "+", "~")), field("argument", $.expression)),
+    bottom_type: _ => keyword('never', false),
 
-    cast_expression: ($) =>
-      seq("(", field("type", $.cast_type), ")", field("value", $._unary_expression)),
+    union_type: $ => pipeSep1($._types),
 
-    cast_type: (_) => choice("array", "int", "string", "float", "bool", "object"),
+    intersection_type: $ => ampSep1($._types),
+
+    disjunctive_normal_form_type: $ => prec.dynamic(-1, pipeSep1(choice(
+      seq('(', $.intersection_type, ')'),
+      $._types,
+    ))),
+
+    primitive_type: _ => choice(
+      'array',
+      'bool',
+      keyword('callable', false), // not legal in property types
+      keyword('false', false),
+      'float',
+      'int',
+      keyword('iterable', false),
+      keyword('mixed', false),
+      'null',
+      'object',
+      'string',
+      keyword('true', false),
+      keyword('void', false),
+    ),
+
+    cast_type: _ => choice(
+      keyword('array', false),
+      keyword('binary', false),
+      keyword('bool', false),
+      keyword('boolean', false),
+      keyword('double', false),
+      keyword('float', false),
+      keyword('int', false),
+      keyword('integer', false),
+      keyword('object', false),
+      keyword('real', false),
+      keyword('string', false),
+      keyword('unset', false),
+    ),
+
+    _return_type: $ => seq(':', field('return_type', choice($.type, $.bottom_type))),
 
     _unary_expression: ($) => choice($.primary_expression, $.unary_op_expression, $.cast_expression),
 
@@ -1027,21 +1259,179 @@ export default grammar(html, {
         $.function_call_expression,
         $.class_constant_access_expression,
         $.qualified_name,
+        $.relative_name,
         $.name,
+        $.update_expression,
+        $.anonymous_function,
+        $.arrow_function,
       ),
+
+    anonymous_function: $ => seq(
+      $._anonymous_function_header,
+      field(
+        'body',
+         seq(
+           '{',
+           alias($.text, $.php_only),
+           '}'
+         )
+      ),
+    ),
+
+    anonymous_function_use_clause: $ => seq(
+      keyword('use'),
+      '(',
+      commaSep1(choice($.by_ref, $.variable_name)),
+      optional(','),
+      ')',
+    ),
+
+    _anonymous_function_header: $ => seq(
+      optional(field('attributes', $.attribute_list)),
+      optional(field('static_modifier', $.static_modifier)),
+      keyword('function'),
+      optional(field('reference_modifier', $.reference_modifier)),
+      field('parameters', $.formal_parameters),
+      optional($.anonymous_function_use_clause),
+      optional($._return_type),
+    ),
+
+    _arrow_function_header: $ => seq(
+      optional(field('attributes', $.attribute_list)),
+      optional(field('static_modifier', $.static_modifier)),
+      keyword('fn'),
+      optional(field('reference_modifier', $.reference_modifier)),
+      field('parameters', $.formal_parameters),
+      optional($._return_type),
+    ),
+
+      formal_parameters: $ => seq(
+        '(',
+        commaSep(choice(
+          $.simple_parameter,
+          $.variadic_parameter,
+          $.property_promotion_parameter,
+        )),
+        optional(','),
+        ')',
+      ),
+
+    reference_modifier: _ => '&',
+    static_modifier: _ => keyword('static'),
+
+    arrow_function: $ => seq(
+      $._arrow_function_header,
+      '=>',
+      field('body', $.expression),
+    ),
+
+    property_promotion_parameter: $ => seq(
+      optional(field('attributes', $.attribute_list)),
+      field('visibility', $.visibility_modifier),
+      field('readonly', optional($.readonly_modifier)),
+      field('type', optional($.type)), // Note: callable is not a valid type here, but instead of complicating the parser, we defer this checking to any intelligence using the parser
+      field('name', choice($.by_ref, $.variable_name)),
+      optional(seq('=', field('default_value', $.expression))),
+      optional(alias($.text, $.property_hook_list)),
+    ),
+
+    simple_parameter: $ => seq(
+      optional(field('attributes', $.attribute_list)),
+      field('type', optional($.type)),
+      optional(field('reference_modifier', $.reference_modifier)),
+      field('name', $.variable_name),
+      optional(seq('=', field('default_value', $.expression))),
+    ),
+
+    variadic_parameter: $ => seq(
+      optional(field('attributes', $.attribute_list)),
+      field('type', optional($.type)),
+      optional(field('reference_modifier', $.reference_modifier)),
+      '...',
+      field('name', $.variable_name),
+    ),
 
     _variable: ($) => choice($.variable_name, $.member_access_expression, $.subscript_expression),
 
     variable_name: ($) => seq("$", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)),
 
-    member_access_expression: ($) =>
-      seq(field("object", $._dereferencable_expression), "->", field("name", $.name)),
+    by_ref: $ => seq('&', $._variable),
+
+    _variable_member_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('object', $._new_variable),
+      '->',
+      $._member_name,
+    )),
+
+    member_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('object', $._dereferencable_expression),
+      '->',
+      $._member_name,
+    )),
+
+    _variable_nullsafe_member_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('object', $._new_variable),
+      '?->',
+      $._member_name,
+    )),
+
+    nullsafe_member_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('object', $._dereferencable_expression),
+      '?->',
+      $._member_name,
+    )),
+
+    final_modifier: _ => keyword('final'),
+    abstract_modifier: _ => keyword('abstract'),
+    readonly_modifier: _ => keyword('readonly'),
+
+    visibility_modifier: $ => seq(
+      choice(
+        keyword('public'),
+        keyword('protected'),
+        keyword('private'),
+      ),
+      optional(seq(
+        token.immediate('('),
+        alias($.name, $.operation),
+        token.immediate(')'),
+      )),
+    ),
 
     subscript_expression: ($) =>
       seq(field("object", $._dereferencable_expression), "[", optional($.expression), "]"),
 
-    _dereferencable_expression: ($) =>
-      choice($._variable, $.parenthesized_expression, $.array_creation_expression),
+    _variable_subscript_expression: $ => seq(
+      $._new_variable,
+      seq('[', optional($.expression), ']'),
+    ),
+
+    _dereferencable_subscript_expression: $ => seq(
+      $._dereferencable_expression,
+      seq('[', optional($.expression), ']'),
+    ),
+
+    _variable_scoped_property_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('scope', choice($._name, $._new_variable)),
+      '::',
+      field('name', $._simple_variable),
+    )),
+
+    scoped_property_access_expression: $ => prec(PREC.MEMBER, seq(
+      field('scope', $._scope_resolution_qualifier),
+      '::',
+      field('name', $._simple_variable),
+    )),
+
+    _member_name: $ => choice(
+      field('name', choice($.name, $._simple_variable)),
+      seq('{', field('name', $.expression), '}'),
+    ),
+
+    _dereferencable_expression: ($) => prec(
+      PREC.DEREF,
+      choice($._variable, $.parenthesized_expression, $.array_creation_expression)
+    ),
 
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
 
@@ -1071,6 +1461,42 @@ export default grammar(html, {
         alias($.name, $.name),
       ),
 
+    relative_name: $ => seq(
+      field('prefix', seq(
+        keyword('namespace'),
+        optional(seq('\\', $.namespace_name)),
+        '\\',
+      )),
+      $.name,
+    ),
+
+    _name: $ => choice(
+      alias(keyword('static', false), $.name),
+      $.name,
+      $.qualified_name,
+    ),
+
+    _class_name_reference: $ => choice(
+      $._name,
+      $._new_variable,
+      $.parenthesized_expression,
+    ),
+
+    dynamic_variable_name: $ => choice(
+      seq('$', $._simple_variable),
+      seq('$', '{', $.expression, '}'),
+    ),
+
+    _simple_variable: $ => choice($.variable_name, $.dynamic_variable_name),
+
+    _new_variable: $ => prec(1, choice(
+      $._simple_variable,
+      alias($._variable_subscript_expression, $.subscript_expression),
+      alias($._variable_member_access_expression, $.member_access_expression),
+      alias($._variable_nullsafe_member_access_expression, $.nullsafe_member_access_expression),
+      alias($._variable_scoped_property_access_expression, $.scoped_property_access_expression),
+    )),
+
     namespace_name: ($) =>
       seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
 
@@ -1079,6 +1505,15 @@ export default grammar(html, {
         seq("[", commaSep($.array_element_initializer), optional(","), "]"),
         seq("array", "(", commaSep($.array_element_initializer), optional(","), ")"),
       ),
+
+      attribute_group: $ => seq(
+        '#[',
+        commaSep1($.attribute),
+        optional(','),
+        ']',
+      ),
+
+      attribute_list: $ => repeat1($.attribute_group),
 
     array_element_initializer: ($) =>
       choice(
