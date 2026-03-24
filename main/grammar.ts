@@ -1500,34 +1500,42 @@ export default grammar(html, {
     namespace_name: ($) =>
       seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
 
-    array_creation_expression: ($) =>
-      choice(
-        seq("[", commaSep($.array_element_initializer), optional(","), "]"),
-        seq("array", "(", commaSep($.array_element_initializer), optional(","), ")"),
+    array_creation_expression: ($) => choice(
+      seq("[", commaSep($.array_element_initializer), optional(","), "]"),
+      seq("array", "(", commaSep($.array_element_initializer), optional(","), ")"),
+    ),
+
+    attribute_group: $ => seq(
+      '#[',
+      commaSep1($.attribute),
+      optional(','),
+      ']',
+    ),
+
+    attribute_list: $ => repeat1($.attribute_group),
+
+    array_element_initializer: $ => prec.right(choice(
+      $.array_element_value_initializer,
+      $.array_element_key_value_initializer,
+      $.array_element_spreading_initializer,
+    )),
+
+    array_element_value_initializer: $ => $.expression,
+    array_element_key_value_initializer: $ =>
+      seq(
+        field("key", $.expression),
+        "=>",
+        field("value", $.expression)
       ),
-
-      attribute_group: $ => seq(
-        '#[',
-        commaSep1($.attribute),
-        optional(','),
-        ']',
-      ),
-
-      attribute_list: $ => repeat1($.attribute_group),
-
-    array_element_initializer: ($) =>
-      choice(
-        $.expression,
-        seq($.expression, "=>", $.expression),
+    array_element_spreading_initializer: $ =>
         seq("...", $.expression),
-      ),
 
     literal: ($) =>
       choice($.integer, $.float, $._string, $.boolean, $.null),
 
     integer: (_) => token(choice(/[1-9]\d*/, /0[xX][0-9a-fA-F]+/, /0[0-7]+/, /0[bB][01]+/)),
 
-    float: (_) => token(/\d*(\.\d*)?([eE][+-]?\d+)?/),
+    float: _ => /\d*(_\d+)*((\.\d*(_\d+)*)?([eE][\+-]?\d+(_\d+)*)|(\.\d*(_\d+)*)([eE][\+-]?\d+(_\d+)*)?)/,
 
     _string: ($) => choice($.string, $.encapsed_string),
 

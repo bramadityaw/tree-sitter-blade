@@ -83,25 +83,25 @@ var require_grammar = __commonJS({
         start_tag: ($) => seq(
           "<",
           alias($._start_tag_name, $.tag_name),
-          repeat($.attribute),
+          field("attribute", repeat($.attribute)),
           ">"
         ),
         script_start_tag: ($) => seq(
           "<",
           alias($._script_start_tag_name, $.tag_name),
-          repeat($.attribute),
+          field("attribute", repeat($.attribute)),
           ">"
         ),
         style_start_tag: ($) => seq(
           "<",
           alias($._style_start_tag_name, $.tag_name),
-          repeat($.attribute),
+          field("attribute", repeat($.attribute)),
           ">"
         ),
         self_closing_tag: ($) => seq(
           "<",
           alias($._start_tag_name, $.tag_name),
-          repeat($.attribute),
+          field("attribute", repeat($.attribute)),
           "/>"
         ),
         end_tag: ($) => seq(
@@ -1469,14 +1469,21 @@ var grammar_default = grammar(import_grammar.default, {
       "]"
     ),
     attribute_list: ($) => repeat1($.attribute_group),
-    array_element_initializer: ($) => choice(
-      $.expression,
-      seq($.expression, "=>", $.expression),
-      seq("...", $.expression)
+    array_element_initializer: ($) => prec.right(choice(
+      $.array_element_value_initializer,
+      $.array_element_key_value_initializer,
+      $.array_element_spreading_initializer
+    )),
+    array_element_value_initializer: ($) => $.expression,
+    array_element_key_value_initializer: ($) => seq(
+      field("key", $.expression),
+      "=>",
+      field("value", $.expression)
     ),
+    array_element_spreading_initializer: ($) => seq("...", $.expression),
     literal: ($) => choice($.integer, $.float, $._string, $.boolean, $.null),
     integer: (_) => token(choice(/[1-9]\d*/, /0[xX][0-9a-fA-F]+/, /0[0-7]+/, /0[bB][01]+/)),
-    float: (_) => token(/\d*(\.\d*)?([eE][+-]?\d+)?/),
+    float: (_) => /\d*(_\d+)*((\.\d*(_\d+)*)?([eE][\+-]?\d+(_\d+)*)|(\.\d*(_\d+)*)([eE][\+-]?\d+(_\d+)*)?)/,
     _string: ($) => choice($.string, $.encapsed_string),
     string: ($) => seq(
       "'",
