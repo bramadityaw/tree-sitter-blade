@@ -380,6 +380,10 @@
         {
           "type": "quoted_attribute_value",
           "named": true
+        },
+        {
+          "type": "variable_name",
+          "named": true
         }
       ]
     }
@@ -777,6 +781,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "fragment",
           "named": true
         },
@@ -786,10 +802,6 @@
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -830,6 +842,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -968,6 +984,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "fragment",
           "named": true
         },
@@ -977,10 +1005,6 @@
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -1021,6 +1045,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -1098,6 +1126,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "fragment",
           "named": true
         },
@@ -1107,10 +1147,6 @@
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -1159,6 +1195,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -1288,6 +1328,428 @@
     }
   },
   {
+    "type": "for_directive",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "comment",
+            "named": true
+          },
+          {
+            "type": "conditional",
+            "named": true
+          },
+          {
+            "type": "directive",
+            "named": true
+          },
+          {
+            "type": "element",
+            "named": true
+          },
+          {
+            "type": "entity",
+            "named": true
+          },
+          {
+            "type": "erroneous_end_tag",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "for_directive",
+            "named": true
+          },
+          {
+            "type": "foreach_directive",
+            "named": true
+          },
+          {
+            "type": "forelse_directive",
+            "named": true
+          },
+          {
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "php_statement",
+            "named": true
+          },
+          {
+            "type": "props",
+            "named": true
+          },
+          {
+            "type": "script_element",
+            "named": true
+          },
+          {
+            "type": "style_element",
+            "named": true
+          },
+          {
+            "type": "switch",
+            "named": true
+          },
+          {
+            "type": "text",
+            "named": true
+          },
+          {
+            "type": "while_directive",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "sequence_expression",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endfor",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@for",
+            "named": false
+          }
+        ]
+      },
+      "initialize": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "sequence_expression",
+            "named": true
+          }
+        ]
+      },
+      "update": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "sequence_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "foreach_directive",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "comment",
+            "named": true
+          },
+          {
+            "type": "conditional",
+            "named": true
+          },
+          {
+            "type": "directive",
+            "named": true
+          },
+          {
+            "type": "element",
+            "named": true
+          },
+          {
+            "type": "entity",
+            "named": true
+          },
+          {
+            "type": "erroneous_end_tag",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "for_directive",
+            "named": true
+          },
+          {
+            "type": "foreach_directive",
+            "named": true
+          },
+          {
+            "type": "forelse_directive",
+            "named": true
+          },
+          {
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "php_statement",
+            "named": true
+          },
+          {
+            "type": "props",
+            "named": true
+          },
+          {
+            "type": "script_element",
+            "named": true
+          },
+          {
+            "type": "style_element",
+            "named": true
+          },
+          {
+            "type": "switch",
+            "named": true
+          },
+          {
+            "type": "text",
+            "named": true
+          },
+          {
+            "type": "while_directive",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endforeach",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@foreach",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "by_ref",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "list_literal",
+          "named": true
+        },
+        {
+          "type": "pair",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "forelse_directive",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "comment",
+            "named": true
+          },
+          {
+            "type": "conditional",
+            "named": true
+          },
+          {
+            "type": "directive",
+            "named": true
+          },
+          {
+            "type": "element",
+            "named": true
+          },
+          {
+            "type": "entity",
+            "named": true
+          },
+          {
+            "type": "erroneous_end_tag",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "for_directive",
+            "named": true
+          },
+          {
+            "type": "foreach_directive",
+            "named": true
+          },
+          {
+            "type": "forelse_directive",
+            "named": true
+          },
+          {
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "php_statement",
+            "named": true
+          },
+          {
+            "type": "props",
+            "named": true
+          },
+          {
+            "type": "script_element",
+            "named": true
+          },
+          {
+            "type": "style_element",
+            "named": true
+          },
+          {
+            "type": "switch",
+            "named": true
+          },
+          {
+            "type": "text",
+            "named": true
+          },
+          {
+            "type": "while_directive",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endforelse",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@forelse",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "by_ref",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "list_literal",
+          "named": true
+        },
+        {
+          "type": "pair",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "formal_parameters",
     "named": true,
     "fields": {},
@@ -1355,11 +1817,19 @@
           "named": true
         },
         {
-          "type": "keyword",
+          "type": "for_directive",
           "named": true
         },
         {
-          "type": "loop",
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
+          "type": "keyword",
           "named": true
         },
         {
@@ -1388,6 +1858,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -1452,6 +1926,41 @@
       "types": [
         {
           "type": "directive",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "list_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "by_ref",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "list_literal",
+          "named": true
+        },
+        {
+          "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "subscript_expression",
+          "named": true
+        },
+        {
+          "type": "variable_name",
           "named": true
         }
       ]
@@ -1537,6 +2046,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "keyword",
           "named": true
         },
@@ -1545,10 +2066,6 @@
           "named": true
         },
         {
-          "type": "loop",
-          "named": true
-        },
-        {
           "type": "php_statement",
           "named": true
         },
@@ -1571,84 +2088,9 @@
         {
           "type": "text",
           "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "loop",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
         },
         {
-          "type": "conditional",
-          "named": true
-        },
-        {
-          "type": "directive",
-          "named": true
-        },
-        {
-          "type": "directive_end",
-          "named": true
-        },
-        {
-          "type": "directive_start",
-          "named": true
-        },
-        {
-          "type": "element",
-          "named": true
-        },
-        {
-          "type": "entity",
-          "named": true
-        },
-        {
-          "type": "erroneous_end_tag",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "keyword",
-          "named": true
-        },
-        {
-          "type": "loop",
-          "named": true
-        },
-        {
-          "type": "php_statement",
-          "named": true
-        },
-        {
-          "type": "props",
-          "named": true
-        },
-        {
-          "type": "script_element",
-          "named": true
-        },
-        {
-          "type": "style_element",
-          "named": true
-        },
-        {
-          "type": "switch",
-          "named": true
-        },
-        {
-          "type": "text",
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -1871,6 +2313,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "fragment",
           "named": true
         },
@@ -1880,10 +2334,6 @@
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -1921,6 +2371,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "while_directive",
+          "named": true
         }
       ]
     }
@@ -1944,6 +2398,29 @@
         },
         {
           "type": "primitive_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pair",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "by_ref",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "list_literal",
           "named": true
         }
       ]
@@ -2424,15 +2901,23 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "keyword",
           "named": true
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -2470,6 +2955,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "while_directive",
+          "named": true
         }
       ]
     }
@@ -2495,6 +2984,25 @@
       "types": [
         {
           "type": "tag_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sequence_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "sequence_expression",
           "named": true
         }
       ]
@@ -2597,6 +3105,18 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "keyword",
           "named": true
         },
@@ -2622,6 +3142,10 @@
         },
         {
           "type": "text",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -2797,15 +3321,23 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "keyword",
           "named": true
         },
         {
           "type": "livewire",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -2826,6 +3358,10 @@
         },
         {
           "type": "text",
+          "named": true
+        },
+        {
+          "type": "while_directive",
           "named": true
         }
       ]
@@ -3091,15 +3627,23 @@
           "named": true
         },
         {
+          "type": "for_directive",
+          "named": true
+        },
+        {
+          "type": "foreach_directive",
+          "named": true
+        },
+        {
+          "type": "forelse_directive",
+          "named": true
+        },
+        {
           "type": "fragment",
           "named": true
         },
         {
           "type": "keyword",
-          "named": true
-        },
-        {
-          "type": "loop",
           "named": true
         },
         {
@@ -3141,6 +3685,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "while_directive",
+          "named": true
         }
       ]
     }
@@ -3158,6 +3706,128 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "while_directive",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "comment",
+            "named": true
+          },
+          {
+            "type": "conditional",
+            "named": true
+          },
+          {
+            "type": "directive",
+            "named": true
+          },
+          {
+            "type": "element",
+            "named": true
+          },
+          {
+            "type": "entity",
+            "named": true
+          },
+          {
+            "type": "erroneous_end_tag",
+            "named": true
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "for_directive",
+            "named": true
+          },
+          {
+            "type": "foreach_directive",
+            "named": true
+          },
+          {
+            "type": "forelse_directive",
+            "named": true
+          },
+          {
+            "type": "keyword",
+            "named": true
+          },
+          {
+            "type": "php_statement",
+            "named": true
+          },
+          {
+            "type": "props",
+            "named": true
+          },
+          {
+            "type": "script_element",
+            "named": true
+          },
+          {
+            "type": "style_element",
+            "named": true
+          },
+          {
+            "type": "switch",
+            "named": true
+          },
+          {
+            "type": "text",
+            "named": true
+          },
+          {
+            "type": "while_directive",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endwhile",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@while",
+            "named": false
+          }
+        ]
+      }
     }
   },
   {
@@ -3269,6 +3939,10 @@
     "named": false
   },
   {
+    "type": ";",
+    "named": false
+  },
+  {
     "type": "<",
     "named": false
   },
@@ -3337,7 +4011,39 @@
     "named": false
   },
   {
+    "type": "@endfor",
+    "named": false
+  },
+  {
+    "type": "@endforeach",
+    "named": false
+  },
+  {
+    "type": "@endforelse",
+    "named": false
+  },
+  {
+    "type": "@endwhile",
+    "named": false
+  },
+  {
+    "type": "@for",
+    "named": false
+  },
+  {
+    "type": "@foreach",
+    "named": false
+  },
+  {
+    "type": "@forelse",
+    "named": false
+  },
+  {
     "type": "@props",
+    "named": false
+  },
+  {
+    "type": "@while",
     "named": false
   },
   {
@@ -3366,6 +4072,10 @@
   },
   {
     "type": "array",
+    "named": false
+  },
+  {
+    "type": "as",
     "named": false
   },
   {
@@ -3440,6 +4150,10 @@
   {
     "type": "integer",
     "named": true
+  },
+  {
+    "type": "list",
+    "named": false
   },
   {
     "type": "namespace",

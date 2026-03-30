@@ -91,6 +91,9 @@ function commaSep(rule) {
 export default grammar(html, {
   name: "blade",
   conflicts: $ => [
+    [$._array_destructing, $.array_creation_expression],
+    [$.primary_expression, $._array_destructing_element],
+
     [$.type, $.union_type, $.intersection_type, $.disjunctive_normal_form_type],
     [$.union_type, $.disjunctive_normal_form_type],
     [$.intersection_type],
@@ -117,7 +120,10 @@ export default grammar(html, {
           $._inline_directive,
           $.comment,
           $.switch,
-          $.loop,
+          $.for_directive,
+          $.foreach_directive,
+          $.forelse_directive,
+          $.while_directive,
           $.envoy,
           $.livewire,
           // nested
@@ -177,13 +183,24 @@ export default grammar(html, {
     _escaped: ($) =>
       seq(
         "{{",
-        optional(alias($.text, $.php_only)),
+        optional(
+            choice(
+                $.expression,
+                alias($.text, $.php_only),
+            )
+        ),
         "}}",
       ),
+
     _unescaped: ($) =>
       seq(
         "{!!",
-        optional(alias($.text, $.php_only)),
+        optional(
+            choice(
+                $.expression,
+                alias($.text, $.php_only),
+            )
+        ),
         "!!}",
       ),
 
@@ -204,6 +221,8 @@ export default grammar(html, {
       choice(
         $._blade_attribute,
         $._html_attribute,
+        $._expression_attribute,
+        $._short_attribute,
         $.php_statement,
       ),
     attribute_name: (_) => token(prec(-1, /[^<>"'/=\s]+/)),
@@ -243,6 +262,24 @@ export default grammar(html, {
         ),
       ),
 
+    _quoted_expression: ($) =>
+      choice(
+        seq(
+          "'",
+          optional(
+              $.expression,
+          ),
+          "'",
+        ),
+        seq(
+          '"',
+          optional(
+              $.expression,
+          ),
+          '"',
+        ),
+      ),
+
     // utilised from tree-sitter-html
     _html_attribute: ($) =>
       seq(
@@ -254,6 +291,18 @@ export default grammar(html, {
           ),
         ),
       ),
+
+    _expression_attribute: ($) => 
+      seq(
+        ':',
+        $.attribute_name,
+        seq(
+          "=",
+          alias($._quoted_expression, $.quoted_attribute_value),
+        ),
+      ),
+
+    _short_attribute: ($) => seq(':', $.variable_name),
 
     // ! Conditional Blade Attribute Directives
     _blade_attribute: ($) =>
@@ -717,6 +766,7 @@ export default grammar(html, {
         ),
         alias("@endswitch", $.directive_end),
       ),
+
     _case: ($) =>
       seq(
         alias("@case", $.directive),
@@ -741,43 +791,78 @@ export default grammar(html, {
       ),
 
     // !Loops
-    loop: ($) => choice($._for, $._foreach, $._forelse, $._while),
-
-    _loop_operator: ($) =>
+    _forelse_loop_operator: $ =>
       choice(
-        seq(
-          alias(/@(continue|break)/, $.directive),
-          optional($._directive_parameter),
-        ),
+        $._loop_operator,
         alias("@empty", $.directive),
       ),
 
-    _for: ($) =>
+    _loop_operator: ($) =>
       seq(
-        alias("@for", $.directive_start),
-        $._loop_directive_body,
-        alias("@endfor", $.directive_end),
+        alias(/@(continue|break)/, $.directive),
+        optional($._directive_parameter),
       ),
 
-    _foreach: ($) =>
+    for_directive: ($) =>
       seq(
-        alias("@foreach", $.directive_start),
-        $._loop_directive_body,
-        alias("@endforeach", $.directive_end),
+        field("directive_start", "@for"),
+        '(',
+        field('initialize', optional($._expressions)),
+        ';',
+        field('condition', optional($._expressions)),
+        ';',
+        field('update', optional($._expressions)),
+        ')',
+        field("body", optional($._loop_body)),
+        field("directive_end", "@endfor"),
       ),
 
-    _forelse: ($) =>
+    foreach_directive: ($) =>
       seq(
-        alias("@forelse", $.directive_start),
-        $._loop_directive_body,
-        alias("@endforelse", $.directive_end),
+        field("directive_start", "@foreach"),
+        '(',
+        $.expression,
+        keyword('as'),
+        choice(
+          alias($.foreach_pair, $.pair),
+          $._foreach_value,
+        ),
+        ')',
+        field("body", optional($._loop_body)),
+        field("directive_end", "@endforeach"),
       ),
 
-    _while: ($) =>
+    foreach_pair: $ => seq($.expression, '=>', $._foreach_value),
+
+    _foreach_value: $ => choice(
+      $.by_ref,
+      $.expression,
+      $.list_literal,
+    ),
+
+    forelse_directive: ($) =>
       seq(
-        alias("@while", $.directive_start),
-        $._loop_directive_body,
-        alias("@endwhile", $.directive_end),
+        field("directive_start", "@forelse"),
+        '(',
+        $.expression,
+        keyword('as'),
+        choice(
+          alias($.foreach_pair, $.pair),
+          $._foreach_value,
+        ),
+        ')',
+        field("body", optional($._forelse_loop_body)),
+        field("directive_end", "@endforelse"),
+      ),
+
+    while_directive: ($) =>
+      seq(
+        field("directive_start", "@while"),
+        '(',
+        field("condition", $.expression),
+        ')',
+        field("body", optional($._loop_body)),
+        field("directive_end", "@endwhile"),
       ),
 
     // !envoy
@@ -995,6 +1080,24 @@ export default grammar(html, {
         ),
       ),
 
+    _forelse_loop_body: ($) =>
+      repeat1(
+        choice(
+          ...nodes
+            .with($._forelse_loop_operator)
+            .without(
+              $.doctype,
+              $.envoy,
+              $.livewire,
+              $.section,
+              $.fragment,
+              $.once,
+              $.verbatim,
+              $.stack,
+            ),
+        ),
+      ),
+
     _loop_directive_body: ($) =>
       seq($._directive_parameter, optional($._loop_body)),
 
@@ -1045,6 +1148,15 @@ export default grammar(html, {
         ),
       ),
 
+    // ! PHP Expression Grammar (from tree-sitter-php)
+    expression: ($) =>
+      choice(
+        $.conditional_expression,
+        $.assignment_expression,
+        $.binary_expression,
+        $._unary_expression,
+      ),
+
     match_expression: $ => seq(
       keyword('match'),
       field('condition', $.parenthesized_expression),
@@ -1079,14 +1191,14 @@ export default grammar(html, {
       field('return_expression', $.expression),
     ),
 
-    // ! PHP Expression Grammar (from tree-sitter-php)
-    expression: ($) =>
-      choice(
-        $.conditional_expression,
-        $.assignment_expression,
-        $.binary_expression,
-        $._unary_expression,
-      ),
+    _expressions: $ => choice(
+      $.expression,
+      $.sequence_expression,
+    ),
+
+    sequence_expression: $ => prec(PREC.COMMA, seq(
+      $.expression, ',', choice($.sequence_expression, $.expression)),
+    ),
 
     conditional_expression: ($) => prec.left(
       PREC.TERNARY,
@@ -1433,6 +1545,53 @@ export default grammar(html, {
       choice($._variable, $.parenthesized_expression, $.array_creation_expression)
     ),
 
+    list_literal: $ => choice($._list_destructing, $._array_destructing),
+
+    _list_destructing: $ => seq(
+      keyword('list'),
+      '(',
+      commaSep1(optional(
+        choice(
+          alias($._list_destructing, $.list_literal),
+          $._variable,
+          $.by_ref,
+          seq(
+            $.expression,
+            '=>',
+            choice(
+              alias($._list_destructing, $.list_literal),
+              $._variable,
+              $.by_ref,
+            ),
+          ),
+        ),
+      )),
+      ')',
+    ),
+
+    _array_destructing: $ => seq(
+      '[',
+      commaSep1(optional($._array_destructing_element)),
+      ']',
+    ),
+
+    _array_destructing_element: $ => choice(
+      choice(
+        alias($._array_destructing, $.list_literal),
+        $._variable,
+        $.by_ref,
+      ),
+      seq(
+        $.expression,
+        '=>',
+        choice(
+          alias($._array_destructing, $.list_literal),
+          $._variable,
+          $.by_ref,
+        ),
+      ),
+    ),
+
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
 
     function_call_expression: ($) =>
@@ -1533,7 +1692,18 @@ export default grammar(html, {
     literal: ($) =>
       choice($.integer, $.float, $._string, $.boolean, $.null),
 
-    integer: (_) => token(choice(/[1-9]\d*/, /0[xX][0-9a-fA-F]+/, /0[0-7]+/, /0[bB][01]+/)),
+    integer: _ => {
+      const decimal = /[1-9]\d*(_\d+)*/;
+      const octal = /0[oO]?[0-7]*(_[0-7]+)*/;
+      const hex = /0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/;
+      const binary = /0[bB][01]+(_[01]+)*/;
+      return token(choice(
+        decimal,
+        octal,
+        hex,
+        binary,
+      ));
+    },
 
     float: _ => /\d*(_\d+)*((\.\d*(_\d+)*)?([eE][\+-]?\d+(_\d+)*)|(\.\d*(_\d+)*)([eE][\+-]?\d+(_\d+)*)?)/,
 
