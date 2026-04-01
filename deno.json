@@ -28,5 +28,6 @@
         "bundle"
       ]
     }
-  }
+  },
+  "allowScripts": ["npm:esbuild@0.20.2", "npm:tree-sitter-cli@0.25.6"]
 }
