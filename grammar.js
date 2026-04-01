@@ -1514,6 +1514,10 @@ var grammar_default = grammar(import_grammar.default, {
       PREC.DEREF,
       choice($._variable, $.parenthesized_expression, $.array_creation_expression)
     ),
+    _dereferencable_scalar: ($) => prec(PREC.DEREF, choice(
+      $.array_creation_expression,
+      $._string
+    )),
     list_literal: ($) => choice($._list_destructing, $._array_destructing),
     _list_destructing: ($) => seq(
       keyword("list"),
@@ -1558,14 +1562,64 @@ var grammar_default = grammar(import_grammar.default, {
       )
     ),
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
-    function_call_expression: ($) => seq(field("function", $.name), field("arguments", $.arguments)),
+    function_call_expression: ($) => seq(
+      field("function", choice($.name, $._callable_expression)),
+      field("arguments", $.arguments)
+    ),
+    _callable_expression: ($) => choice(
+      $._callable_variable,
+      $.parenthesized_expression,
+      $._dereferencable_scalar,
+      alias($._new_dereferencable_expression, $.object_creation_expression)
+    ),
+    scoped_call_expression: ($) => prec(PREC.CALL, seq(
+      field("scope", $._scope_resolution_qualifier),
+      "::",
+      $._member_name,
+      field("arguments", $.arguments)
+    )),
+    _scope_resolution_qualifier: ($) => choice(
+      $.relative_scope,
+      $._name,
+      $._dereferencable_expression
+    ),
+    relative_scope: (_) => prec(PREC.SCOPE, choice(
+      keyword("self"),
+      keyword("parent"),
+      keyword("static")
+    )),
     arguments: ($) => seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
     argument: ($) => seq(optional($._argument_name), choice($.expression, $.variadic_unpacking)),
     _argument_name: ($) => seq(field("name", alias($.name, $.name)), ":"),
+    member_call_expression: ($) => prec(PREC.CALL, seq(
+      field("object", $._dereferencable_expression),
+      "->",
+      $._member_name,
+      field("arguments", $.arguments)
+    )),
+    nullsafe_member_call_expression: ($) => prec(PREC.CALL, seq(
+      field("object", $._dereferencable_expression),
+      "?->",
+      $._member_name,
+      field("arguments", $.arguments)
+    )),
     variadic_unpacking: ($) => seq("...", $.expression),
     class_constant_access_expression: ($) => seq(field("scope", $._scope_resolution_qualifier), "::", field("name", alias($.name, $.name))),
-    _scope_resolution_qualifier: ($) => choice($.qualified_name, $.relative_scope, $.name),
-    relative_scope: (_) => choice("self", "parent", "static"),
+    object_creation_expression: ($) => choice(
+      $._new_dereferencable_expression,
+      $._new_non_dereferencable_expression
+    ),
+    _new_non_dereferencable_expression: ($) => prec.right(PREC.NEW, seq(
+      keyword("new"),
+      $._class_name_reference
+    )),
+    _new_dereferencable_expression: ($) => prec.right(PREC.NEW, seq(
+      keyword("new"),
+      choice(
+        seq($._class_name_reference, $.arguments),
+        alias($.text, $.php_only)
+      )
+    )),
     qualified_name: ($) => seq(
       field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
       alias($.name, $.name)
@@ -1600,6 +1654,14 @@ var grammar_default = grammar(import_grammar.default, {
       alias($._variable_nullsafe_member_access_expression, $.nullsafe_member_access_expression),
       alias($._variable_scoped_property_access_expression, $.scoped_property_access_expression)
     )),
+    _callable_variable: ($) => choice(
+      $._simple_variable,
+      alias($._dereferencable_subscript_expression, $.subscript_expression),
+      $.member_call_expression,
+      $.nullsafe_member_call_expression,
+      $.function_call_expression,
+      $.scoped_call_expression
+    ),
     namespace_name: ($) => seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
     array_creation_expression: ($) => choice(
       seq("[", commaSep($.array_element_initializer), optional(","), "]"),
