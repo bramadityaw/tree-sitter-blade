@@ -6803,6 +6803,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "scoped_call_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "class_constant_access_expression"
         },
         {
