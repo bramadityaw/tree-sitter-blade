@@ -1369,6 +1369,7 @@ export default grammar(html, {
         $.array_creation_expression,
         $.parenthesized_expression,
         $.function_call_expression,
+        $.scoped_call_expression,
         $.class_constant_access_expression,
         $.qualified_name,
         $.relative_name,
