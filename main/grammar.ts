@@ -1431,6 +1431,7 @@ export default grammar(html, {
         $.update_expression,
         $.anonymous_function,
         $.arrow_function,
+        $.object_creation_expression,
       ),
 
     anonymous_function: ($) =>
