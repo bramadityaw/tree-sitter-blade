@@ -1230,21 +1230,30 @@ var grammar_default = grammar(import_grammar.default, {
       field("right", $.expression)
     ),
     binary_expression: ($) => choice(
-      prec(PREC.INSTANCEOF, seq(
-        field("left", $._unary_expression),
-        field("operator", keyword("instanceof")),
-        field("right", $._class_name_reference)
-      )),
-      prec.right(PREC.NULL_COALESCE, seq(
-        field("left", $.expression),
-        field("operator", "??"),
-        field("right", $.expression)
-      )),
-      prec.right(PREC.EXPONENTIAL, seq(
-        field("left", $.expression),
-        field("operator", "**"),
-        field("right", $.expression)
-      )),
+      prec(
+        PREC.INSTANCEOF,
+        seq(
+          field("left", $._unary_expression),
+          field("operator", keyword("instanceof")),
+          field("right", $._class_name_reference)
+        )
+      ),
+      prec.right(
+        PREC.NULL_COALESCE,
+        seq(
+          field("left", $.expression),
+          field("operator", "??"),
+          field("right", $.expression)
+        )
+      ),
+      prec.right(
+        PREC.EXPONENTIAL,
+        seq(
+          field("left", $.expression),
+          field("operator", "**"),
+          field("right", $.expression)
+        )
+      ),
       ...[
         [keyword("and"), PREC.LOGICAL_AND_2],
         [keyword("or"), PREC.LOGICAL_OR_2],
@@ -1274,28 +1283,44 @@ var grammar_default = grammar(import_grammar.default, {
         ["/", PREC.TIMES],
         ["%", PREC.TIMES]
         // @ts-ignore
-      ].map(([op, p]) => prec.left(p, seq(
-        field("left", $.expression),
-        // @ts-ignore
-        field("operator", op),
-        field("right", $.expression)
-      )))
+      ].map(
+        ([op, p]) => prec.left(
+          p,
+          seq(
+            field("left", $.expression),
+            // @ts-ignore
+            field("operator", op),
+            field("right", $.expression)
+          )
+        )
+      )
     ),
-    unary_op_expression: ($) => prec.left(PREC.NEG, seq(
-      field("operator", choice("+", "-", "~", "!")),
-      field("argument", $.expression)
-    )),
+    unary_op_expression: ($) => prec.left(
+      PREC.NEG,
+      seq(
+        field("operator", choice("+", "-", "~", "!")),
+        field("argument", $.expression)
+      )
+    ),
     update_expression: ($) => {
       const argument = field("argument", $._variable);
       const operator = field("operator", choice("--", "++"));
-      return prec.left(PREC.INC, choice(
-        seq(operator, argument),
-        seq(argument, operator)
-      ));
+      return prec.left(
+        PREC.INC,
+        choice(
+          seq(operator, argument),
+          seq(argument, operator)
+        )
+      );
     },
     cast_expression: ($) => prec(
       PREC.CAST,
-      seq("(", field("type", $.cast_type), ")", field("value", $._unary_expression))
+      seq(
+        "(",
+        field("type", $.cast_type),
+        ")",
+        field("value", $._unary_expression)
+      )
     ),
     type: ($) => choice(
       $._types,
@@ -1323,10 +1348,13 @@ var grammar_default = grammar(import_grammar.default, {
     bottom_type: (_) => keyword("never", false),
     union_type: ($) => pipeSep1($._types),
     intersection_type: ($) => ampSep1($._types),
-    disjunctive_normal_form_type: ($) => prec.dynamic(-1, pipeSep1(choice(
-      seq("(", $.intersection_type, ")"),
-      $._types
-    ))),
+    disjunctive_normal_form_type: ($) => prec.dynamic(
+      -1,
+      pipeSep1(choice(
+        seq("(", $.intersection_type, ")"),
+        $._types
+      ))
+    ),
     primitive_type: (_) => choice(
       "array",
       "bool",
@@ -1372,7 +1400,8 @@ var grammar_default = grammar(import_grammar.default, {
       $.name,
       $.update_expression,
       $.anonymous_function,
-      $.arrow_function
+      $.arrow_function,
+      $.object_creation_expression
     ),
     anonymous_function: ($) => seq(
       $._anonymous_function_header,
@@ -1450,29 +1479,45 @@ var grammar_default = grammar(import_grammar.default, {
       "...",
       field("name", $.variable_name)
     ),
-    _variable: ($) => choice($.variable_name, $.member_access_expression, $.subscript_expression),
+    _variable: ($) => choice(
+      $.variable_name,
+      $.member_access_expression,
+      $.subscript_expression
+    ),
     variable_name: ($) => seq("$", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)),
     by_ref: ($) => seq("&", $._variable),
-    _variable_member_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("object", $._new_variable),
-      "->",
-      $._member_name
-    )),
-    member_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("object", $._dereferencable_expression),
-      "->",
-      $._member_name
-    )),
-    _variable_nullsafe_member_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("object", $._new_variable),
-      "?->",
-      $._member_name
-    )),
-    nullsafe_member_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("object", $._dereferencable_expression),
-      "?->",
-      $._member_name
-    )),
+    _variable_member_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("object", $._new_variable),
+        "->",
+        $._member_name
+      )
+    ),
+    member_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("object", $._dereferencable_expression),
+        "->",
+        $._member_name
+      )
+    ),
+    _variable_nullsafe_member_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("object", $._new_variable),
+        "?->",
+        $._member_name
+      )
+    ),
+    nullsafe_member_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("object", $._dereferencable_expression),
+        "?->",
+        $._member_name
+      )
+    ),
     final_modifier: (_) => keyword("final"),
     abstract_modifier: (_) => keyword("abstract"),
     readonly_modifier: (_) => keyword("readonly"),
@@ -1488,7 +1533,12 @@ var grammar_default = grammar(import_grammar.default, {
         token.immediate(")")
       ))
     ),
-    subscript_expression: ($) => seq(field("object", $._dereferencable_expression), "[", optional($.expression), "]"),
+    subscript_expression: ($) => seq(
+      field("object", $._dereferencable_expression),
+      "[",
+      optional($.expression),
+      "]"
+    ),
     _variable_subscript_expression: ($) => seq(
       $._new_variable,
       seq("[", optional($.expression), "]")
@@ -1497,28 +1547,41 @@ var grammar_default = grammar(import_grammar.default, {
       $._dereferencable_expression,
       seq("[", optional($.expression), "]")
     ),
-    _variable_scoped_property_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("scope", choice($._name, $._new_variable)),
-      "::",
-      field("name", $._simple_variable)
-    )),
-    scoped_property_access_expression: ($) => prec(PREC.MEMBER, seq(
-      field("scope", $._scope_resolution_qualifier),
-      "::",
-      field("name", $._simple_variable)
-    )),
+    _variable_scoped_property_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("scope", choice($._name, $._new_variable)),
+        "::",
+        field("name", $._simple_variable)
+      )
+    ),
+    scoped_property_access_expression: ($) => prec(
+      PREC.MEMBER,
+      seq(
+        field("scope", $._scope_resolution_qualifier),
+        "::",
+        field("name", $._simple_variable)
+      )
+    ),
     _member_name: ($) => choice(
       field("name", choice($.name, $._simple_variable)),
       seq("{", field("name", $.expression), "}")
     ),
     _dereferencable_expression: ($) => prec(
       PREC.DEREF,
-      choice($._variable, $.parenthesized_expression, $.array_creation_expression)
+      choice(
+        $._variable,
+        $.parenthesized_expression,
+        $.array_creation_expression
+      )
     ),
-    _dereferencable_scalar: ($) => prec(PREC.DEREF, choice(
-      $.array_creation_expression,
-      $._string
-    )),
+    _dereferencable_scalar: ($) => prec(
+      PREC.DEREF,
+      choice(
+        $.array_creation_expression,
+        $._string
+      )
+    ),
     list_literal: ($) => choice($._list_destructing, $._array_destructing),
     _list_destructing: ($) => seq(
       keyword("list"),
@@ -1573,64 +1636,92 @@ var grammar_default = grammar(import_grammar.default, {
       $._dereferencable_scalar,
       alias($._new_dereferencable_expression, $.object_creation_expression)
     ),
-    scoped_call_expression: ($) => prec(PREC.CALL, seq(
-      field("scope", $._scope_resolution_qualifier),
-      "::",
-      $._member_name,
-      field("arguments", $.arguments)
-    )),
+    scoped_call_expression: ($) => prec(
+      PREC.CALL,
+      seq(
+        field("scope", $._scope_resolution_qualifier),
+        "::",
+        $._member_name,
+        field("arguments", $.arguments)
+      )
+    ),
     _scope_resolution_qualifier: ($) => choice(
       $.relative_scope,
       $._name,
       $._dereferencable_expression
     ),
-    relative_scope: (_) => prec(PREC.SCOPE, choice(
-      keyword("self"),
-      keyword("parent"),
-      keyword("static")
-    )),
+    relative_scope: (_) => prec(
+      PREC.SCOPE,
+      choice(
+        keyword("self"),
+        keyword("parent"),
+        keyword("static")
+      )
+    ),
     arguments: ($) => seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
-    argument: ($) => seq(optional($._argument_name), choice($.expression, $.variadic_unpacking)),
+    argument: ($) => seq(
+      optional($._argument_name),
+      choice($.expression, $.variadic_unpacking)
+    ),
     _argument_name: ($) => seq(field("name", alias($.name, $.name)), ":"),
-    member_call_expression: ($) => prec(PREC.CALL, seq(
-      field("object", $._dereferencable_expression),
-      "->",
-      $._member_name,
-      field("arguments", $.arguments)
-    )),
-    nullsafe_member_call_expression: ($) => prec(PREC.CALL, seq(
-      field("object", $._dereferencable_expression),
-      "?->",
-      $._member_name,
-      field("arguments", $.arguments)
-    )),
+    member_call_expression: ($) => prec(
+      PREC.CALL,
+      seq(
+        field("object", $._dereferencable_expression),
+        "->",
+        $._member_name,
+        field("arguments", $.arguments)
+      )
+    ),
+    nullsafe_member_call_expression: ($) => prec(
+      PREC.CALL,
+      seq(
+        field("object", $._dereferencable_expression),
+        "?->",
+        $._member_name,
+        field("arguments", $.arguments)
+      )
+    ),
     variadic_unpacking: ($) => seq("...", $.expression),
-    class_constant_access_expression: ($) => seq(field("scope", $._scope_resolution_qualifier), "::", field("name", alias($.name, $.name))),
+    class_constant_access_expression: ($) => seq(
+      field("scope", $._scope_resolution_qualifier),
+      "::",
+      field("name", alias($.name, $.name))
+    ),
     object_creation_expression: ($) => choice(
       $._new_dereferencable_expression,
       $._new_non_dereferencable_expression
     ),
-    _new_non_dereferencable_expression: ($) => prec.right(PREC.NEW, seq(
-      keyword("new"),
-      $._class_name_reference
-    )),
-    _new_dereferencable_expression: ($) => prec.right(PREC.NEW, seq(
-      keyword("new"),
-      choice(
-        seq($._class_name_reference, $.arguments),
-        alias($.text, $.php_only)
+    _new_non_dereferencable_expression: ($) => prec.right(
+      PREC.NEW,
+      seq(
+        keyword("new"),
+        $._class_name_reference
       )
-    )),
+    ),
+    _new_dereferencable_expression: ($) => prec.right(
+      PREC.NEW,
+      seq(
+        keyword("new"),
+        choice(
+          seq($._class_name_reference, $.arguments),
+          alias($.text, $.php_only)
+        )
+      )
+    ),
     qualified_name: ($) => seq(
       field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
       alias($.name, $.name)
     ),
     relative_name: ($) => seq(
-      field("prefix", seq(
-        keyword("namespace"),
-        optional(seq("\\", $.namespace_name)),
-        "\\"
-      )),
+      field(
+        "prefix",
+        seq(
+          keyword("namespace"),
+          optional(seq("\\", $.namespace_name)),
+          "\\"
+        )
+      ),
       $.name
     ),
     _name: ($) => choice(
@@ -1648,13 +1739,25 @@ var grammar_default = grammar(import_grammar.default, {
       seq("$", "{", $.expression, "}")
     ),
     _simple_variable: ($) => choice($.variable_name, $.dynamic_variable_name),
-    _new_variable: ($) => prec(1, choice(
-      $._simple_variable,
-      alias($._variable_subscript_expression, $.subscript_expression),
-      alias($._variable_member_access_expression, $.member_access_expression),
-      alias($._variable_nullsafe_member_access_expression, $.nullsafe_member_access_expression),
-      alias($._variable_scoped_property_access_expression, $.scoped_property_access_expression)
-    )),
+    _new_variable: ($) => prec(
+      1,
+      choice(
+        $._simple_variable,
+        alias($._variable_subscript_expression, $.subscript_expression),
+        alias(
+          $._variable_member_access_expression,
+          $.member_access_expression
+        ),
+        alias(
+          $._variable_nullsafe_member_access_expression,
+          $.nullsafe_member_access_expression
+        ),
+        alias(
+          $._variable_scoped_property_access_expression,
+          $.scoped_property_access_expression
+        )
+      )
+    ),
     _callable_variable: ($) => choice(
       $._simple_variable,
       alias($._dereferencable_subscript_expression, $.subscript_expression),
@@ -1663,10 +1766,19 @@ var grammar_default = grammar(import_grammar.default, {
       $.function_call_expression,
       $.scoped_call_expression
     ),
-    namespace_name: ($) => seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
+    namespace_name: ($) => seq(
+      alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name),
+      repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))
+    ),
     array_creation_expression: ($) => choice(
       seq("[", commaSep($.array_element_initializer), optional(","), "]"),
-      seq("array", "(", commaSep($.array_element_initializer), optional(","), ")")
+      seq(
+        "array",
+        "(",
+        commaSep($.array_element_initializer),
+        optional(","),
+        ")"
+      )
     ),
     attribute_group: ($) => seq(
       "#[",
@@ -1721,7 +1833,17 @@ var grammar_default = grammar(import_grammar.default, {
     escape_sequence: (_) => token.immediate(
       seq(
         "\\",
-        choice("n", "r", "t", "\\", "$", '"', "'", /[0-7]{1,3}/, /x[0-9A-Fa-f]{1,2}/)
+        choice(
+          "n",
+          "r",
+          "t",
+          "\\",
+          "$",
+          '"',
+          "'",
+          /[0-7]{1,3}/,
+          /x[0-9A-Fa-f]{1,2}/
+        )
       )
     ),
     boolean: (_) => token(choice("true", "false")),

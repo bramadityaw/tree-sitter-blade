@@ -2470,7 +2470,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "arguments",
@@ -2774,6 +2774,10 @@
         },
         {
           "type": "name",
+          "named": true
+        },
+        {
+          "type": "object_creation_expression",
           "named": true
         },
         {

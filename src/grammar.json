@@ -6832,6 +6832,10 @@
         {
           "type": "SYMBOL",
           "name": "arrow_function"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "object_creation_expression"
         }
       ]
     },
