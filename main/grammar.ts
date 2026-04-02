@@ -18,8 +18,8 @@ const nodes = new NodeMap();
  *
  * @returns {SeqRule}
  */
-function pipeSep1(rule) {
-  return seq(rule, repeat(seq('|', rule)));
+function pipeSep1(rule: Rule): SeqRule {
+  return seq(rule, repeat(seq("|", rule)));
 }
 
 /**
@@ -28,8 +28,8 @@ function pipeSep1(rule) {
  * @param {Rule} rule
  * @returns {SeqRule}
  */
-function ampSep1(rule) {
-  return seq(rule, repeat(seq(token('&'), rule)));
+function ampSep1(rule: Rule): SeqRule {
+  return seq(rule, repeat(seq(token("&"), rule)));
 }
 
 /**
@@ -41,9 +41,9 @@ function ampSep1(rule) {
  *
  * @returns {RegExp|AliasRule}
  */
-function keyword(word, aliasAsWord = true) {
+function keyword(word: string, aliasAsWord = true) {
   /** @type {RegExp|AliasRule} */
-  let result = new RegExp(word, 'i');
+  let result: RegExp | AliasRule = new RegExp(word, "i");
   if (aliasAsWord) result = alias(result, word);
   return result;
 }
@@ -80,17 +80,17 @@ const PREC = {
   DEREF: 27,
 };
 
-function commaSep1(rule) {
+function commaSep1(rule: Rule): SeqRule {
   return seq(rule, repeat(seq(",", rule)));
 }
 
-function commaSep(rule) {
+function commaSep(rule: Rule): ChoiceRule {
   return optional(commaSep1(rule));
 }
 
 export default grammar(html, {
   name: "blade",
-  conflicts: $ => [
+  conflicts: ($) => [
     [$._array_destructing, $.array_creation_expression],
     [$.primary_expression, $._array_destructing_element],
 
@@ -184,10 +184,10 @@ export default grammar(html, {
       seq(
         "{{",
         optional(
-            choice(
-                $.expression,
-                alias($.text, $.php_only),
-            )
+          choice(
+            $.expression,
+            alias($.text, $.php_only),
+          ),
         ),
         "}}",
       ),
@@ -196,10 +196,10 @@ export default grammar(html, {
       seq(
         "{!!",
         optional(
-            choice(
-                $.expression,
-                alias($.text, $.php_only),
-            )
+          choice(
+            $.expression,
+            alias($.text, $.php_only),
+          ),
         ),
         "!!}",
       ),
@@ -267,14 +267,14 @@ export default grammar(html, {
         seq(
           "'",
           optional(
-              $.expression,
+            $.expression,
           ),
           "'",
         ),
         seq(
           '"',
           optional(
-              $.expression,
+            $.expression,
           ),
           '"',
         ),
@@ -292,9 +292,9 @@ export default grammar(html, {
         ),
       ),
 
-    _expression_attribute: ($) => 
+    _expression_attribute: ($) =>
       seq(
-        ':',
+        ":",
         $.attribute_name,
         seq(
           "=",
@@ -302,7 +302,7 @@ export default grammar(html, {
         ),
       ),
 
-    _short_attribute: ($) => seq(':', $.variable_name),
+    _short_attribute: ($) => seq(":", $.variable_name),
 
     // ! Conditional Blade Attribute Directives
     _blade_attribute: ($) =>
@@ -324,55 +324,56 @@ export default grammar(html, {
 
     // !inline directives
     _inline_directive: ($) =>
-    choice(
-      $.props,
-      seq(
-        alias(
-          choice(
-            "@include",
-            "@includeIf",
-            "@includeWhen",
-            "@includeUnless",
-            "@includeFirst",
-            "@extends",
-            "@yield",
-            "@method",
-            "@inject",
-            "@each",
-            "@vite",
-            "@livewire",
-            "@aware",
-            "@servers",
-            "@import",
-            "@js",
-            "@svg",
-            "@use",
-            "@stack",
-            // log1x/sage-directives #77
-            "@asset",
-            "@json",
-            "@script",
-            "@thumbnail",
-            "@extract",
-            "@set",
-            // ACF (Advanced Custom Fields)
-            "@field",
-            "@options",
-            // WireUI
-            "@wireUiScripts",
+      choice(
+        $.props,
+        seq(
+          alias(
+            choice(
+              "@include",
+              "@includeIf",
+              "@includeWhen",
+              "@includeUnless",
+              "@includeFirst",
+              "@extends",
+              "@yield",
+              "@method",
+              "@inject",
+              "@each",
+              "@vite",
+              "@livewire",
+              "@aware",
+              "@servers",
+              "@import",
+              "@js",
+              "@svg",
+              "@use",
+              "@stack",
+              // log1x/sage-directives #77
+              "@asset",
+              "@json",
+              "@script",
+              "@thumbnail",
+              "@extract",
+              "@set",
+              // ACF (Advanced Custom Fields)
+              "@field",
+              "@options",
+              // WireUI
+              "@wireUiScripts",
+            ),
+            $.directive,
           ),
-          $.directive,
+          $._directive_parameter,
         ),
-        $._directive_parameter,
-      )
-    ),
+      ),
 
-    props: ($) => seq(
+    props: ($) =>
+      seq(
         "@props",
-        '(',
+        "(",
         $.array_creation_expression,
-        ')',
-    ),
+        ")",
+      ),
 
     // !nested directives
 
@@ -791,7 +792,7 @@ export default grammar(html, {
       ),
 
     // !Loops
-    _forelse_loop_operator: $ =>
+    _forelse_loop_operator: ($) =>
       choice(
         $._loop_operator,
         alias("@empty", $.directive),
@@ -806,13 +807,13 @@ export default grammar(html, {
     for_directive: ($) =>
       seq(
         field("directive_start", "@for"),
-        '(',
-        field('initialize', optional($._expressions)),
-        ';',
-        field('condition', optional($._expressions)),
-        ';',
-        field('update', optional($._expressions)),
-        ')',
+        "(",
+        field("initialize", optional($._expressions)),
+        ";",
+        field("condition", optional($._expressions)),
+        ";",
+        field("update", optional($._expressions)),
+        ")",
         field("body", optional($._loop_body)),
         field("directive_end", "@endfor"),
       ),
@@ -820,37 +821,38 @@ export default grammar(html, {
     foreach_directive: ($) =>
       seq(
         field("directive_start", "@foreach"),
-        '(',
+        "(",
         $.expression,
-        keyword('as'),
+        keyword("as"),
         choice(
           alias($.foreach_pair, $.pair),
           $._foreach_value,
         ),
-        ')',
+        ")",
         field("body", optional($._loop_body)),
         field("directive_end", "@endforeach"),
       ),
 
-    foreach_pair: $ => seq($.expression, '=>', $._foreach_value),
+    foreach_pair: ($) => seq($.expression, "=>", $._foreach_value),
 
-    _foreach_value: $ => choice(
-      $.by_ref,
-      $.expression,
-      $.list_literal,
-    ),
+    _foreach_value: ($) =>
+      choice(
+        $.by_ref,
+        $.expression,
+        $.list_literal,
+      ),
 
     forelse_directive: ($) =>
       seq(
         field("directive_start", "@forelse"),
-        '(',
+        "(",
         $.expression,
-        keyword('as'),
+        keyword("as"),
         choice(
           alias($.foreach_pair, $.pair),
           $._foreach_value,
         ),
-        ')',
+        ")",
         field("body", optional($._forelse_loop_body)),
         field("directive_end", "@endforelse"),
       ),
@@ -858,9 +860,9 @@ export default grammar(html, {
     while_directive: ($) =>
       seq(
         field("directive_start", "@while"),
-        '(',
+        "(",
         field("condition", $.expression),
-        ')',
+        ")",
         field("body", optional($._loop_body)),
         field("directive_end", "@endwhile"),
       ),
@@ -1109,7 +1111,6 @@ export default grammar(html, {
         ")",
       ),
 
-
     text: ($) => prec.right(repeat1($._text)),
     // hidden to reduce AST noise in php_only #39
     // It is selectively unhidden for other areas
@@ -1157,59 +1158,71 @@ export default grammar(html, {
         $._unary_expression,
       ),
 
-    match_expression: $ => seq(
-      keyword('match'),
-      field('condition', $.parenthesized_expression),
-      field('body', $.match_block),
-    ),
-
-    match_block: $ => prec.left(
+    match_expression: ($) =>
       seq(
-        '{',
-        commaSep(
-          choice(
-            $.match_conditional_expression,
-            $.match_default_expression,
-          ),
-        ),
-        optional(','),
-        '}',
+        keyword("match"),
+        field("condition", $.parenthesized_expression),
+        field("body", $.match_block),
       ),
-    ),
 
-    match_condition_list: $ => seq(commaSep1($.expression), optional(',')),
+    match_block: ($) =>
+      prec.left(
+        seq(
+          "{",
+          commaSep(
+            choice(
+              $.match_conditional_expression,
+              $.match_default_expression,
+            ),
+          ),
+          optional(","),
+          "}",
+        ),
+      ),
 
-    match_conditional_expression: $ => seq(
-      field('conditional_expressions', $.match_condition_list),
-      '=>',
-      field('return_expression', $.expression),
-    ),
+    match_condition_list: ($) => seq(commaSep1($.expression), optional(",")),
 
-    match_default_expression: $ => seq(
-      keyword('default'),
-      '=>',
-      field('return_expression', $.expression),
-    ),
-
-    _expressions: $ => choice(
-      $.expression,
-      $.sequence_expression,
-    ),
-
-    sequence_expression: $ => prec(PREC.COMMA, seq(
-      $.expression, ',', choice($.sequence_expression, $.expression)),
-    ),
-
-    conditional_expression: ($) => prec.left(
-      PREC.TERNARY,
+    match_conditional_expression: ($) =>
       seq(
-        field("condition", $.expression),
-        "?",
-        field("body", optional($.expression)),
-        ":",
-        field("alternative", $.expression),
-      )
-    ),
+        field("conditional_expressions", $.match_condition_list),
+        "=>",
+        field("return_expression", $.expression),
+      ),
+
+    match_default_expression: ($) =>
+      seq(
+        keyword("default"),
+        "=>",
+        field("return_expression", $.expression),
+      ),
+
+    _expressions: ($) =>
+      choice(
+        $.expression,
+        $.sequence_expression,
+      ),
+
+    sequence_expression: ($) =>
+      prec(
+        PREC.COMMA,
+        seq(
+          $.expression,
+          ",",
+          choice($.sequence_expression, $.expression),
+        ),
+      ),
+
+    conditional_expression: ($) =>
+      prec.left(
+        PREC.TERNARY,
+        seq(
+          field("condition", $.expression),
+          "?",
+          field("body", optional($.expression)),
+          ":",
+          field("alternative", $.expression),
+        ),
+      ),
 
     assignment_expression: ($) =>
       seq(
@@ -1218,149 +1231,190 @@ export default grammar(html, {
         field("right", $.expression),
       ),
 
-    binary_expression: $ => choice(
-      prec(PREC.INSTANCEOF, seq(
-        field('left', $._unary_expression),
-        field('operator', keyword('instanceof')),
-        field('right', $._class_name_reference),
-      )),
-      prec.right(PREC.NULL_COALESCE, seq(
-        field('left', $.expression),
-        field('operator', '??'),
-        field('right', $.expression),
-      )),
-      prec.right(PREC.EXPONENTIAL, seq(
-        field('left', $.expression),
-        field('operator', '**'),
-        field('right', $.expression),
-      )),
-      ...[
-        [keyword('and'), PREC.LOGICAL_AND_2],
-        [keyword('or'), PREC.LOGICAL_OR_2],
-        [keyword('xor'), PREC.LOGICAL_XOR],
-        ['||', PREC.LOGICAL_OR_1],
-        ['&&', PREC.LOGICAL_AND_1],
-        ['|', PREC.BITWISE_OR],
-        ['^', PREC.BITWISE_XOR],
-        ['&', PREC.BITWISE_AND],
-        ['==', PREC.EQUALITY],
-        ['!=', PREC.EQUALITY],
-        ['<>', PREC.EQUALITY],
-        ['===', PREC.EQUALITY],
-        ['!==', PREC.EQUALITY],
-        ['<', PREC.INEQUALITY],
-        ['>', PREC.INEQUALITY],
-        ['<=', PREC.INEQUALITY],
-        ['>=', PREC.INEQUALITY],
-        ['<=>', PREC.EQUALITY],
-        ['|>', PREC.PIPE],
-        ['.', PREC.CONCAT],
-        ['<<', PREC.SHIFT],
-        ['>>', PREC.SHIFT],
-        ['+', PREC.PLUS],
-        ['-', PREC.PLUS],
-        ['*', PREC.TIMES],
-        ['/', PREC.TIMES],
-        ['%', PREC.TIMES],
-        // @ts-ignore
-      ].map(([op, p]) => prec.left(p, seq(
-        field('left', $.expression),
-        // @ts-ignore
-        field('operator', op),
-        field('right', $.expression),
-      ))),
-    ),
+    binary_expression: ($) =>
+      choice(
+        prec(
+          PREC.INSTANCEOF,
+          seq(
+            field("left", $._unary_expression),
+            field("operator", keyword("instanceof")),
+            field("right", $._class_name_reference),
+          ),
+        ),
+        prec.right(
+          PREC.NULL_COALESCE,
+          seq(
+            field("left", $.expression),
+            field("operator", "??"),
+            field("right", $.expression),
+          ),
+        ),
+        prec.right(
+          PREC.EXPONENTIAL,
+          seq(
+            field("left", $.expression),
+            field("operator", "**"),
+            field("right", $.expression),
+          ),
+        ),
+        ...[
+          [keyword("and"), PREC.LOGICAL_AND_2],
+          [keyword("or"), PREC.LOGICAL_OR_2],
+          [keyword("xor"), PREC.LOGICAL_XOR],
+          ["||", PREC.LOGICAL_OR_1],
+          ["&&", PREC.LOGICAL_AND_1],
+          ["|", PREC.BITWISE_OR],
+          ["^", PREC.BITWISE_XOR],
+          ["&", PREC.BITWISE_AND],
+          ["==", PREC.EQUALITY],
+          ["!=", PREC.EQUALITY],
+          ["<>", PREC.EQUALITY],
+          ["===", PREC.EQUALITY],
+          ["!==", PREC.EQUALITY],
+          ["<", PREC.INEQUALITY],
+          [">", PREC.INEQUALITY],
+          ["<=", PREC.INEQUALITY],
+          [">=", PREC.INEQUALITY],
+          ["<=>", PREC.EQUALITY],
+          ["|>", PREC.PIPE],
+          [".", PREC.CONCAT],
+          ["<<", PREC.SHIFT],
+          [">>", PREC.SHIFT],
+          ["+", PREC.PLUS],
+          ["-", PREC.PLUS],
+          ["*", PREC.TIMES],
+          ["/", PREC.TIMES],
+          ["%", PREC.TIMES],
+          // @ts-ignore
+        ].map(([op, p]: [RegExp | AliasRule | string, number]) =>
+          prec.left(
+            p,
+            seq(
+              field("left", $.expression),
+              // @ts-ignore
+              field("operator", op),
+              field("right", $.expression),
+            ),
+          )
+        ),
+      ),
 
-    unary_op_expression: $ => prec.left(PREC.NEG, seq(
-      field('operator', choice('+', '-', '~', '!')),
-      field('argument', $.expression),
-    )),
+    unary_op_expression: ($) =>
+      prec.left(
+        PREC.NEG,
+        seq(
+          field("operator", choice("+", "-", "~", "!")),
+          field("argument", $.expression),
+        ),
+      ),
 
-    update_expression: $ => {
-      const argument = field('argument', $._variable);
-      const operator = field('operator', choice('--', '++'));
-      return prec.left(PREC.INC, choice(
-        seq(operator, argument),
-        seq(argument, operator),
-      ));
+    update_expression: ($) => {
+      const argument = field("argument", $._variable);
+      const operator = field("operator", choice("--", "++"));
+      return prec.left(
+        PREC.INC,
+        choice(
+          seq(operator, argument),
+          seq(argument, operator),
+        ),
+      );
     },
 
-    cast_expression: ($) => prec(PREC.CAST,
-      seq("(", field("type", $.cast_type), ")", field("value", $._unary_expression))
-    ),
+    cast_expression: ($) =>
+      prec(
+        PREC.CAST,
+        seq(
+          "(",
+          field("type", $.cast_type),
+          ")",
+          field("value", $._unary_expression),
+        ),
+      ),
 
-    type: $ => choice(
-      $._types,
-      $.union_type,
-      $.intersection_type,
-      $.disjunctive_normal_form_type,
-    ),
-
-    _types: $ => choice(
-      $.optional_type,
-      $.named_type,
-      $.primitive_type,
-    ),
-
-    named_type: $ => choice(
-      $.name,
-      $.qualified_name,
-      $.relative_name,
-    ),
-
-    optional_type: $ => seq(
-      '?',
+    type: ($) =>
       choice(
+        $._types,
+        $.union_type,
+        $.intersection_type,
+        $.disjunctive_normal_form_type,
+      ),
+
+    _types: ($) =>
+      choice(
+        $.optional_type,
         $.named_type,
         $.primitive_type,
       ),
-    ),
 
-    bottom_type: _ => keyword('never', false),
+    named_type: ($) =>
+      choice(
+        $.name,
+        $.qualified_name,
+        $.relative_name,
+      ),
 
-    union_type: $ => pipeSep1($._types),
+    optional_type: ($) =>
+      seq(
+        "?",
+        choice(
+          $.named_type,
+          $.primitive_type,
+        ),
+      ),
 
-    intersection_type: $ => ampSep1($._types),
+    bottom_type: (_) => keyword("never", false),
 
-    disjunctive_normal_form_type: $ => prec.dynamic(-1, pipeSep1(choice(
-      seq('(', $.intersection_type, ')'),
-      $._types,
-    ))),
+    union_type: ($) => pipeSep1($._types),
 
-    primitive_type: _ => choice(
-      'array',
-      'bool',
-      keyword('callable', false), // not legal in property types
-      keyword('false', false),
-      'float',
-      'int',
-      keyword('iterable', false),
-      keyword('mixed', false),
-      'null',
-      'object',
-      'string',
-      keyword('true', false),
-      keyword('void', false),
-    ),
+    intersection_type: ($) => ampSep1($._types),
 
-    cast_type: _ => choice(
-      keyword('array', false),
-      keyword('binary', false),
-      keyword('bool', false),
-      keyword('boolean', false),
-      keyword('double', false),
-      keyword('float', false),
-      keyword('int', false),
-      keyword('integer', false),
-      keyword('object', false),
-      keyword('real', false),
-      keyword('string', false),
-      keyword('unset', false),
-    ),
+    disjunctive_normal_form_type: ($) =>
+      prec.dynamic(
+        -1,
+        pipeSep1(choice(
+          seq("(", $.intersection_type, ")"),
+          $._types,
+        )),
+      ),
 
-    _return_type: $ => seq(':', field('return_type', choice($.type, $.bottom_type))),
+    primitive_type: (_) =>
+      choice(
+        "array",
+        "bool",
+        keyword("callable", false), // not legal in property types
+        keyword("false", false),
+        "float",
+        "int",
+        keyword("iterable", false),
+        keyword("mixed", false),
+        "null",
+        "object",
+        "string",
+        keyword("true", false),
+        keyword("void", false),
+      ),
 
-    _unary_expression: ($) => choice($.primary_expression, $.unary_op_expression, $.cast_expression),
+    cast_type: (_) =>
+      choice(
+        keyword("array", false),
+        keyword("binary", false),
+        keyword("bool", false),
+        keyword("boolean", false),
+        keyword("double", false),
+        keyword("float", false),
+        keyword("int", false),
+        keyword("integer", false),
+        keyword("object", false),
+        keyword("real", false),
+        keyword("string", false),
+        keyword("unset", false),
+      ),
+
+    _return_type: ($) =>
+      seq(":", field("return_type", choice($.type, $.bottom_type))),
+
+    _unary_expression: ($) =>
+      choice($.primary_expression, $.unary_op_expression, $.cast_expression),
 
     primary_expression: ($) =>
       choice(
@@ -1379,302 +1433,396 @@ export default grammar(html, {
         $.arrow_function,
       ),
 
-    anonymous_function: $ => seq(
-      $._anonymous_function_header,
-      field(
-        'body',
-         seq(
-           '{',
-           alias($.text, $.php_only),
-           '}'
-         )
+    anonymous_function: ($) =>
+      seq(
+        $._anonymous_function_header,
+        field(
+          "body",
+          seq(
+            "{",
+            alias($.text, $.php_only),
+            "}",
+          ),
+        ),
       ),
-    ),
 
-    anonymous_function_use_clause: $ => seq(
-      keyword('use'),
-      '(',
-      commaSep1(choice($.by_ref, $.variable_name)),
-      optional(','),
-      ')',
-    ),
+    anonymous_function_use_clause: ($) =>
+      seq(
+        keyword("use"),
+        "(",
+        commaSep1(choice($.by_ref, $.variable_name)),
+        optional(","),
+        ")",
+      ),
 
-    _anonymous_function_header: $ => seq(
-      optional(field('attributes', $.attribute_list)),
-      optional(field('static_modifier', $.static_modifier)),
-      keyword('function'),
-      optional(field('reference_modifier', $.reference_modifier)),
-      field('parameters', $.formal_parameters),
-      optional($.anonymous_function_use_clause),
-      optional($._return_type),
-    ),
+    _anonymous_function_header: ($) =>
+      seq(
+        optional(field("attributes", $.attribute_list)),
+        optional(field("static_modifier", $.static_modifier)),
+        keyword("function"),
+        optional(field("reference_modifier", $.reference_modifier)),
+        field("parameters", $.formal_parameters),
+        optional($.anonymous_function_use_clause),
+        optional($._return_type),
+      ),
 
-    _arrow_function_header: $ => seq(
-      optional(field('attributes', $.attribute_list)),
-      optional(field('static_modifier', $.static_modifier)),
-      keyword('fn'),
-      optional(field('reference_modifier', $.reference_modifier)),
-      field('parameters', $.formal_parameters),
-      optional($._return_type),
-    ),
+    _arrow_function_header: ($) =>
+      seq(
+        optional(field("attributes", $.attribute_list)),
+        optional(field("static_modifier", $.static_modifier)),
+        keyword("fn"),
+        optional(field("reference_modifier", $.reference_modifier)),
+        field("parameters", $.formal_parameters),
+        optional($._return_type),
+      ),
 
-      formal_parameters: $ => seq(
-        '(',
+    formal_parameters: ($) =>
+      seq(
+        "(",
         commaSep(choice(
           $.simple_parameter,
           $.variadic_parameter,
           $.property_promotion_parameter,
         )),
-        optional(','),
-        ')',
+        optional(","),
+        ")",
       ),
 
-    reference_modifier: _ => '&',
-    static_modifier: _ => keyword('static'),
+    reference_modifier: (_) => "&",
+    static_modifier: (_) => keyword("static"),
 
-    arrow_function: $ => seq(
-      $._arrow_function_header,
-      '=>',
-      field('body', $.expression),
-    ),
+    arrow_function: ($) =>
+      seq(
+        $._arrow_function_header,
+        "=>",
+        field("body", $.expression),
+      ),
 
-    property_promotion_parameter: $ => seq(
-      optional(field('attributes', $.attribute_list)),
-      field('visibility', $.visibility_modifier),
-      field('readonly', optional($.readonly_modifier)),
-      field('type', optional($.type)), // Note: callable is not a valid type here, but instead of complicating the parser, we defer this checking to any intelligence using the parser
-      field('name', choice($.by_ref, $.variable_name)),
-      optional(seq('=', field('default_value', $.expression))),
-      optional(alias($.text, $.property_hook_list)),
-    ),
+    property_promotion_parameter: ($) =>
+      seq(
+        optional(field("attributes", $.attribute_list)),
+        field("visibility", $.visibility_modifier),
+        field("readonly", optional($.readonly_modifier)),
+        field("type", optional($.type)), // Note: callable is not a valid type here, but instead of complicating the parser, we defer this checking to any intelligence using the parser
+        field("name", choice($.by_ref, $.variable_name)),
+        optional(seq("=", field("default_value", $.expression))),
+        optional(alias($.text, $.property_hook_list)),
+      ),
 
-    simple_parameter: $ => seq(
-      optional(field('attributes', $.attribute_list)),
-      field('type', optional($.type)),
-      optional(field('reference_modifier', $.reference_modifier)),
-      field('name', $.variable_name),
-      optional(seq('=', field('default_value', $.expression))),
-    ),
+    simple_parameter: ($) =>
+      seq(
+        optional(field("attributes", $.attribute_list)),
+        field("type", optional($.type)),
+        optional(field("reference_modifier", $.reference_modifier)),
+        field("name", $.variable_name),
+        optional(seq("=", field("default_value", $.expression))),
+      ),
 
-    variadic_parameter: $ => seq(
-      optional(field('attributes', $.attribute_list)),
-      field('type', optional($.type)),
-      optional(field('reference_modifier', $.reference_modifier)),
-      '...',
-      field('name', $.variable_name),
-    ),
+    variadic_parameter: ($) =>
+      seq(
+        optional(field("attributes", $.attribute_list)),
+        field("type", optional($.type)),
+        optional(field("reference_modifier", $.reference_modifier)),
+        "...",
+        field("name", $.variable_name),
+      ),
 
-    _variable: ($) => choice($.variable_name, $.member_access_expression, $.subscript_expression),
+    _variable: ($) =>
+      choice(
+        $.variable_name,
+        $.member_access_expression,
+        $.subscript_expression,
+      ),
 
     variable_name: ($) => seq("$", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)),
 
-    by_ref: $ => seq('&', $._variable),
+    by_ref: ($) => seq("&", $._variable),
 
-    _variable_member_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('object', $._new_variable),
-      '->',
-      $._member_name,
-    )),
-
-    member_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('object', $._dereferencable_expression),
-      '->',
-      $._member_name,
-    )),
-
-    _variable_nullsafe_member_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('object', $._new_variable),
-      '?->',
-      $._member_name,
-    )),
-
-    nullsafe_member_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('object', $._dereferencable_expression),
-      '?->',
-      $._member_name,
-    )),
-
-    final_modifier: _ => keyword('final'),
-    abstract_modifier: _ => keyword('abstract'),
-    readonly_modifier: _ => keyword('readonly'),
-
-    visibility_modifier: $ => seq(
-      choice(
-        keyword('public'),
-        keyword('protected'),
-        keyword('private'),
+    _variable_member_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("object", $._new_variable),
+          "->",
+          $._member_name,
+        ),
       ),
-      optional(seq(
-        token.immediate('('),
-        alias($.name, $.operation),
-        token.immediate(')'),
-      )),
-    ),
+
+    member_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("object", $._dereferencable_expression),
+          "->",
+          $._member_name,
+        ),
+      ),
+
+    _variable_nullsafe_member_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("object", $._new_variable),
+          "?->",
+          $._member_name,
+        ),
+      ),
+
+    nullsafe_member_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("object", $._dereferencable_expression),
+          "?->",
+          $._member_name,
+        ),
+      ),
+
+    final_modifier: (_) => keyword("final"),
+    abstract_modifier: (_) => keyword("abstract"),
+    readonly_modifier: (_) => keyword("readonly"),
+
+    visibility_modifier: ($) =>
+      seq(
+        choice(
+          keyword("public"),
+          keyword("protected"),
+          keyword("private"),
+        ),
+        optional(seq(
+          token.immediate("("),
+          alias($.name, $.operation),
+          token.immediate(")"),
+        )),
+      ),
 
     subscript_expression: ($) =>
-      seq(field("object", $._dereferencable_expression), "[", optional($.expression), "]"),
+      seq(
+        field("object", $._dereferencable_expression),
+        "[",
+        optional($.expression),
+        "]",
+      ),
 
-    _variable_subscript_expression: $ => seq(
-      $._new_variable,
-      seq('[', optional($.expression), ']'),
-    ),
+    _variable_subscript_expression: ($) =>
+      seq(
+        $._new_variable,
+        seq("[", optional($.expression), "]"),
+      ),
 
-    _dereferencable_subscript_expression: $ => seq(
-      $._dereferencable_expression,
-      seq('[', optional($.expression), ']'),
-    ),
+    _dereferencable_subscript_expression: ($) =>
+      seq(
+        $._dereferencable_expression,
+        seq("[", optional($.expression), "]"),
+      ),
 
-    _variable_scoped_property_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('scope', choice($._name, $._new_variable)),
-      '::',
-      field('name', $._simple_variable),
-    )),
+    _variable_scoped_property_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("scope", choice($._name, $._new_variable)),
+          "::",
+          field("name", $._simple_variable),
+        ),
+      ),
 
-    scoped_property_access_expression: $ => prec(PREC.MEMBER, seq(
-      field('scope', $._scope_resolution_qualifier),
-      '::',
-      field('name', $._simple_variable),
-    )),
+    scoped_property_access_expression: ($) =>
+      prec(
+        PREC.MEMBER,
+        seq(
+          field("scope", $._scope_resolution_qualifier),
+          "::",
+          field("name", $._simple_variable),
+        ),
+      ),
 
-    _member_name: $ => choice(
-      field('name', choice($.name, $._simple_variable)),
-      seq('{', field('name', $.expression), '}'),
-    ),
+    _member_name: ($) =>
+      choice(
+        field("name", choice($.name, $._simple_variable)),
+        seq("{", field("name", $.expression), "}"),
+      ),
 
-    _dereferencable_expression: ($) => prec(
-      PREC.DEREF,
-      choice($._variable, $.parenthesized_expression, $.array_creation_expression)
-    ),
-
-    _dereferencable_scalar: $ => prec(PREC.DEREF, choice(
-      $.array_creation_expression,
-      $._string,
-    )),
-
-    list_literal: $ => choice($._list_destructing, $._array_destructing),
-
-    _list_destructing: $ => seq(
-      keyword('list'),
-      '(',
-      commaSep1(optional(
+    _dereferencable_expression: ($) =>
+      prec(
+        PREC.DEREF,
         choice(
-          alias($._list_destructing, $.list_literal),
           $._variable,
-          $.by_ref,
-          seq(
-            $.expression,
-            '=>',
-            choice(
-              alias($._list_destructing, $.list_literal),
-              $._variable,
-              $.by_ref,
+          $.parenthesized_expression,
+          $.array_creation_expression,
+        ),
+      ),
+
+    _dereferencable_scalar: ($) =>
+      prec(
+        PREC.DEREF,
+        choice(
+          $.array_creation_expression,
+          $._string,
+        ),
+      ),
+
+    list_literal: ($) => choice($._list_destructing, $._array_destructing),
+
+    _list_destructing: ($) =>
+      seq(
+        keyword("list"),
+        "(",
+        commaSep1(optional(
+          choice(
+            alias($._list_destructing, $.list_literal),
+            $._variable,
+            $.by_ref,
+            seq(
+              $.expression,
+              "=>",
+              choice(
+                alias($._list_destructing, $.list_literal),
+                $._variable,
+                $.by_ref,
+              ),
             ),
           ),
-        ),
-      )),
-      ')',
-    ),
-
-    _array_destructing: $ => seq(
-      '[',
-      commaSep1(optional($._array_destructing_element)),
-      ']',
-    ),
-
-    _array_destructing_element: $ => choice(
-      choice(
-        alias($._array_destructing, $.list_literal),
-        $._variable,
-        $.by_ref,
+        )),
+        ")",
       ),
+
+    _array_destructing: ($) =>
       seq(
-        $.expression,
-        '=>',
+        "[",
+        commaSep1(optional($._array_destructing_element)),
+        "]",
+      ),
+
+    _array_destructing_element: ($) =>
+      choice(
         choice(
           alias($._array_destructing, $.list_literal),
           $._variable,
           $.by_ref,
         ),
+        seq(
+          $.expression,
+          "=>",
+          choice(
+            alias($._array_destructing, $.list_literal),
+            $._variable,
+            $.by_ref,
+          ),
+        ),
       ),
-    ),
 
     parenthesized_expression: ($) => seq("(", $.expression, ")"),
 
     function_call_expression: ($) =>
       seq(
-          field("function", choice($.name, $._callable_expression)),
-          field("arguments", $.arguments)
+        field("function", choice($.name, $._callable_expression)),
+        field("arguments", $.arguments),
       ),
 
-    _callable_expression: $ => choice(
-      $._callable_variable,
-      $.parenthesized_expression,
-      $._dereferencable_scalar,
-      alias($._new_dereferencable_expression, $.object_creation_expression),
-    ),
+    _callable_expression: ($) =>
+      choice(
+        $._callable_variable,
+        $.parenthesized_expression,
+        $._dereferencable_scalar,
+        alias($._new_dereferencable_expression, $.object_creation_expression),
+      ),
 
-    scoped_call_expression: $ => prec(PREC.CALL, seq(
-      field('scope', $._scope_resolution_qualifier),
-      '::',
-      $._member_name,
-      field('arguments', $.arguments),
-    )),
+    scoped_call_expression: ($) =>
+      prec(
+        PREC.CALL,
+        seq(
+          field("scope", $._scope_resolution_qualifier),
+          "::",
+          $._member_name,
+          field("arguments", $.arguments),
+        ),
+      ),
 
-    _scope_resolution_qualifier: $ => choice(
-      $.relative_scope,
-      $._name,
-      $._dereferencable_expression,
-    ),
+    _scope_resolution_qualifier: ($) =>
+      choice(
+        $.relative_scope,
+        $._name,
+        $._dereferencable_expression,
+      ),
 
-    relative_scope: _ => prec(PREC.SCOPE, choice(
-      keyword('self'),
-      keyword('parent'),
-      keyword('static'),
-    )),
+    relative_scope: (_) =>
+      prec(
+        PREC.SCOPE,
+        choice(
+          keyword("self"),
+          keyword("parent"),
+          keyword("static"),
+        ),
+      ),
 
-    arguments: ($) => seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
+    arguments: ($) =>
+      seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
 
     argument: ($) =>
-      seq(optional($._argument_name), choice($.expression, $.variadic_unpacking)),
+      seq(
+        optional($._argument_name),
+        choice($.expression, $.variadic_unpacking),
+      ),
 
     _argument_name: ($) => seq(field("name", alias($.name, $.name)), ":"),
 
-    member_call_expression: $ => prec(PREC.CALL, seq(
-      field('object', $._dereferencable_expression),
-      '->',
-      $._member_name,
-      field('arguments', $.arguments),
-    )),
+    member_call_expression: ($) =>
+      prec(
+        PREC.CALL,
+        seq(
+          field("object", $._dereferencable_expression),
+          "->",
+          $._member_name,
+          field("arguments", $.arguments),
+        ),
+      ),
 
-    nullsafe_member_call_expression: $ => prec(PREC.CALL, seq(
-      field('object', $._dereferencable_expression),
-      '?->',
-      $._member_name,
-      field('arguments', $.arguments),
-    )),
+    nullsafe_member_call_expression: ($) =>
+      prec(
+        PREC.CALL,
+        seq(
+          field("object", $._dereferencable_expression),
+          "?->",
+          $._member_name,
+          field("arguments", $.arguments),
+        ),
+      ),
 
     variadic_unpacking: ($) => seq("...", $.expression),
 
     class_constant_access_expression: ($) =>
-      seq(field("scope", $._scope_resolution_qualifier), "::", field("name", alias($.name, $.name))),
-
-    object_creation_expression: $ => choice(
-      $._new_dereferencable_expression,
-      $._new_non_dereferencable_expression,
-    ),
-
-    _new_non_dereferencable_expression: $ => prec.right(PREC.NEW, seq(
-      keyword('new'),
-      $._class_name_reference,
-    )),
-
-    _new_dereferencable_expression: $ => prec.right(PREC.NEW, seq(
-      keyword('new'),
-      choice(
-        seq($._class_name_reference, $.arguments),
-        alias($.text, $.php_only),
+      seq(
+        field("scope", $._scope_resolution_qualifier),
+        "::",
+        field("name", alias($.name, $.name)),
       ),
-    )),
+
+    object_creation_expression: ($) =>
+      choice(
+        $._new_dereferencable_expression,
+        $._new_non_dereferencable_expression,
+      ),
+
+    _new_non_dereferencable_expression: ($) =>
+      prec.right(
+        PREC.NEW,
+        seq(
+          keyword("new"),
+          $._class_name_reference,
+        ),
+      ),
+
+    _new_dereferencable_expression: ($) =>
+      prec.right(
+        PREC.NEW,
+        seq(
+          keyword("new"),
+          choice(
+            seq($._class_name_reference, $.arguments),
+            alias($.text, $.php_only),
+          ),
+        ),
+      ),
 
     qualified_name: ($) =>
       seq(
@@ -1682,88 +1830,119 @@ export default grammar(html, {
         alias($.name, $.name),
       ),
 
-    relative_name: $ => seq(
-      field('prefix', seq(
-        keyword('namespace'),
-        optional(seq('\\', $.namespace_name)),
-        '\\',
-      )),
-      $.name,
-    ),
+    relative_name: ($) =>
+      seq(
+        field(
+          "prefix",
+          seq(
+            keyword("namespace"),
+            optional(seq("\\", $.namespace_name)),
+            "\\",
+          ),
+        ),
+        $.name,
+      ),
 
-    _name: $ => choice(
-      alias(keyword('static', false), $.name),
-      $.name,
-      $.qualified_name,
-    ),
+    _name: ($) =>
+      choice(
+        alias(keyword("static", false), $.name),
+        $.name,
+        $.qualified_name,
+      ),
 
-    _class_name_reference: $ => choice(
-      $._name,
-      $._new_variable,
-      $.parenthesized_expression,
-    ),
+    _class_name_reference: ($) =>
+      choice(
+        $._name,
+        $._new_variable,
+        $.parenthesized_expression,
+      ),
 
-    dynamic_variable_name: $ => choice(
-      seq('$', $._simple_variable),
-      seq('$', '{', $.expression, '}'),
-    ),
+    dynamic_variable_name: ($) =>
+      choice(
+        seq("$", $._simple_variable),
+        seq("$", "{", $.expression, "}"),
+      ),
 
-    _simple_variable: $ => choice($.variable_name, $.dynamic_variable_name),
+    _simple_variable: ($) => choice($.variable_name, $.dynamic_variable_name),
 
-    _new_variable: $ => prec(1, choice(
-      $._simple_variable,
-      alias($._variable_subscript_expression, $.subscript_expression),
-      alias($._variable_member_access_expression, $.member_access_expression),
-      alias($._variable_nullsafe_member_access_expression, $.nullsafe_member_access_expression),
-      alias($._variable_scoped_property_access_expression, $.scoped_property_access_expression),
-    )),
+    _new_variable: ($) =>
+      prec(
+        1,
+        choice(
+          $._simple_variable,
+          alias($._variable_subscript_expression, $.subscript_expression),
+          alias(
+            $._variable_member_access_expression,
+            $.member_access_expression,
+          ),
+          alias(
+            $._variable_nullsafe_member_access_expression,
+            $.nullsafe_member_access_expression,
+          ),
+          alias(
+            $._variable_scoped_property_access_expression,
+            $.scoped_property_access_expression,
+          ),
+        ),
+      ),
 
-    _callable_variable: $ => choice(
-      $._simple_variable,
-      alias($._dereferencable_subscript_expression, $.subscript_expression),
-      $.member_call_expression,
-      $.nullsafe_member_call_expression,
-      $.function_call_expression,
-      $.scoped_call_expression,
-    ),
+    _callable_variable: ($) =>
+      choice(
+        $._simple_variable,
+        alias($._dereferencable_subscript_expression, $.subscript_expression),
+        $.member_call_expression,
+        $.nullsafe_member_call_expression,
+        $.function_call_expression,
+        $.scoped_call_expression,
+      ),
 
     namespace_name: ($) =>
-      seq(alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name), repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))),
+      seq(
+        alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name),
+        repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name))),
+      ),
 
-    array_creation_expression: ($) => choice(
-      seq("[", commaSep($.array_element_initializer), optional(","), "]"),
-      seq("array", "(", commaSep($.array_element_initializer), optional(","), ")"),
-    ),
+    array_creation_expression: ($) =>
+      choice(
+        seq("[", commaSep($.array_element_initializer), optional(","), "]"),
+        seq(
+          "array",
+          "(",
+          commaSep($.array_element_initializer),
+          optional(","),
+          ")",
+        ),
+      ),
 
-    attribute_group: $ => seq(
-      '#[',
-      commaSep1($.attribute),
-      optional(','),
-      ']',
-    ),
+    attribute_group: ($) =>
+      seq(
+        "#[",
+        commaSep1($.attribute),
+        optional(","),
+        "]",
+      ),
 
-    attribute_list: $ => repeat1($.attribute_group),
+    attribute_list: ($) => repeat1($.attribute_group),
 
-    array_element_initializer: $ => prec.right(choice(
-      $.array_element_value_initializer,
-      $.array_element_key_value_initializer,
-      $.array_element_spreading_initializer,
-    )),
+    array_element_initializer: ($) =>
+      prec.right(choice(
+        $.array_element_value_initializer,
+        $.array_element_key_value_initializer,
+        $.array_element_spreading_initializer,
+      )),
 
-    array_element_value_initializer: $ => $.expression,
-    array_element_key_value_initializer: $ =>
+    array_element_value_initializer: ($) => $.expression,
+    array_element_key_value_initializer: ($) =>
       seq(
         field("key", $.expression),
         "=>",
-        field("value", $.expression)
+        field("value", $.expression),
       ),
-    array_element_spreading_initializer: $ =>
-        seq("...", $.expression),
+    array_element_spreading_initializer: ($) => seq("...", $.expression),
 
-    literal: ($) =>
-      choice($.integer, $.float, $._string, $.boolean, $.null),
+    literal: ($) => choice($.integer, $.float, $._string, $.boolean, $.null),
 
-    integer: _ => {
+    integer: (_) => {
       const decimal = /[1-9]\d*(_\d+)*/;
       const octal = /0[oO]?[0-7]*(_[0-7]+)*/;
       const hex = /0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*/;
@@ -1776,7 +1955,8 @@ export default grammar(html, {
       ));
     },
 
-    float: _ => /\d*(_\d+)*((\.\d*(_\d+)*)?([eE][\+-]?\d+(_\d+)*)|(\.\d*(_\d+)*)([eE][\+-]?\d+(_\d+)*)?)/,
+    float: (_) =>
+      /\d*(_\d+)*((\.\d*(_\d+)*)?([eE][\+-]?\d+(_\d+)*)|(\.\d*(_\d+)*)([eE][\+-]?\d+(_\d+)*)?)/,
 
     _string: ($) => choice($.string, $.encapsed_string),
 
@@ -1804,7 +1984,17 @@ export default grammar(html, {
       token.immediate(
         seq(
           "\\",
-          choice("n", "r", "t", "\\", "$", '"', "'", /[0-7]{1,3}/, /x[0-9A-Fa-f]{1,2}/),
+          choice(
+            "n",
+            "r",
+            "t",
+            "\\",
+            "$",
+            '"',
+            "'",
+            /[0-7]{1,3}/,
+            /x[0-9A-Fa-f]{1,2}/,
+          ),
         ),
       ),
 
