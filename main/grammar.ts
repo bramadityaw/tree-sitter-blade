@@ -13,10 +13,6 @@ const nodes = new NodeMap();
 
 /**
  * Creates a rule to match one or more of the rules separated by a pipe
- *
- * @param {Rule} rule
- *
- * @returns {SeqRule}
  */
 function pipeSep1(rule: Rule): SeqRule {
   return seq(rule, repeat(seq("|", rule)));
@@ -24,9 +20,6 @@ function pipeSep1(rule: Rule): SeqRule {
 
 /**
  * Creates a rule to  match one or more of the rules separated by an ampersand
- *
- * @param {Rule} rule
- * @returns {SeqRule}
  */
 function ampSep1(rule: Rule): SeqRule {
   return seq(rule, repeat(seq(token("&"), rule)));
@@ -35,13 +28,8 @@ function ampSep1(rule: Rule): SeqRule {
 /**
  * Creates a regex that matches the given word case-insensitively,
  * and will alias the regex to the word if aliasAsWord is true
- *
- * @param {string} word
- * @param {boolean} aliasAsWord
- *
- * @returns {RegExp|AliasRule}
  */
-function keyword(word: string, aliasAsWord = true) {
+function keyword(word: string, aliasAsWord = true): RegExp | AliasRule {
   /** @type {RegExp|AliasRule} */
   let result: RegExp | AliasRule = new RegExp(word, "i");
   if (aliasAsWord) result = alias(result, word);
@@ -78,6 +66,11 @@ const PREC = {
   CALL: 25,
   MEMBER: 26,
   DEREF: 27,
+
+  IDENTIFIER: 1,
+  KEYWORD: 2,
+  ECHO: 3,
+  COMMENT: 4,
 };
 
 function commaSep1(rule: Rule): SeqRule {
@@ -99,6 +92,13 @@ export default grammar(html, {
     [$.intersection_type],
 
     [$.namespace_name],
+  ],
+
+  supertypes: ($) => [
+    $.expression,
+    $.primary_expression,
+    $.type,
+    $.literal,
   ],
 
   rules: {
@@ -139,7 +139,8 @@ export default grammar(html, {
     // ------------------
 
     // https://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-    comment: (_) => token(seq("{{--", /[^-]*-+([^}-][^-]*-+)*/, "}}")),
+    comment: (_) =>
+      token(prec(PREC.COMMENT, seq("{{--", /[^-]*-+([^}-][^-]*-+)*/, "}}"))),
 
     // !keywords
     keyword: ($) =>
@@ -182,26 +183,20 @@ export default grammar(html, {
 
     _escaped: ($) =>
       seq(
-        "{{",
+        token(prec(PREC.ECHO, "{{")),
         optional(
-          choice(
-            $.expression,
-            alias($.text, $.php_only),
-          ),
+          $.expression,
         ),
-        "}}",
+        token(prec(PREC.ECHO, "}}")),
       ),
 
     _unescaped: ($) =>
       seq(
-        "{!!",
+        token(prec(PREC.ECHO, "{!!")),
         optional(
-          choice(
-            $.expression,
-            alias($.text, $.php_only),
-          ),
+          $.expression,
         ),
-        "!!}",
+        token(prec(PREC.ECHO, "!!}")),
       ),
 
     // ! raw php
@@ -371,7 +366,7 @@ export default grammar(html, {
       seq(
         "@props",
         "(",
-        $.array_creation_expression,
+        choice($._string, $.array_creation_expression),
         ")",
       ),
 
@@ -401,34 +396,26 @@ export default grammar(html, {
 
     // ! section
     section: ($) =>
-      choice(
-        seq(
-          alias("@section", $.directive),
-          "(",
-          alias(/[^,()]+/, $.parameter),
-          ",",
-          alias(/[^,()]+/, $.parameter),
-          ")",
-        ),
+      prec.left(
         seq(
           alias("@section", $.directive_start),
-          "(",
-          alias(/[^,()]+/, $.parameter),
-          ")",
+          $._directive_parameter,
           optional(
-            repeat1(
-              choice(
-                ...nodes.without(
-                  $.doctype,
-                  $.section,
-                  $.once,
-                  $.envoy,
-                  $.fragment,
+            seq(
+              repeat1(
+                choice(
+                  ...nodes.without(
+                    $.doctype,
+                    $.section,
+                    $.once,
+                    $.envoy,
+                    $.fragment,
+                  ),
                 ),
               ),
+              alias(/@(endsection|show)/, $.directive_end),
             ),
           ),
-          alias(/@(endsection|show)/, $.directive_end),
         ),
       ),
 
@@ -715,18 +702,41 @@ export default grammar(html, {
         $._conditional_directive_body,
         alias("@endcannot", $.directive_end),
       ),
+
     _canany: ($) =>
       seq(
         alias("@canany", $.directive_start),
         $._conditional_directive_body,
         alias("@endcanany", $.directive_end),
       ),
+
     // !Laravel Pennant
     _feature: ($) =>
       seq(
         alias("@feature", $.directive_start),
-        $._conditional_directive_body,
+        seq(
+          $._directive_parameter,
+          optional($._feature_body),
+        ),
         alias("@endfeature", $.directive_end),
+      ),
+
+    _else_feature: ($) =>
+      seq(
+        alias("@elsefeature", $.directive),
+        choice(
+          $._directive_parameter,
+        ),
+      ),
+
+    _feature_body: ($) =>
+      repeat1(
+        choice(
+          ...nodes.with(
+            $.conditional_keyword,
+            $._else_feature,
+          ).all(),
+        ),
       ),
 
     // !Custom if Statements
@@ -1103,13 +1113,7 @@ export default grammar(html, {
     _loop_directive_body: ($) =>
       seq($._directive_parameter, optional($._loop_body)),
 
-    // !directive parameter
-    _directive_parameter: ($) =>
-      seq(
-        "(",
-        optional($.expression),
-        ")",
-      ),
+    _directive_parameter: ($) => seq("(", commaSep1($.expression), ")"),
 
     text: ($) => prec.right(repeat1($._text)),
     // hidden to reduce AST noise in php_only #39
@@ -1152,6 +1156,7 @@ export default grammar(html, {
     // ! PHP Expression Grammar (from tree-sitter-php)
     expression: ($) =>
       choice(
+        $.augmented_assignment_expression,
         $.conditional_expression,
         $.assignment_expression,
         $.binary_expression,
@@ -1209,6 +1214,33 @@ export default grammar(html, {
           $.expression,
           ",",
           choice($.sequence_expression, $.expression),
+        ),
+      ),
+
+    augmented_assignment_expression: ($) =>
+      prec.right(
+        PREC.ASSIGNMENT,
+        seq(
+          field("left", $._variable),
+          field(
+            "operator",
+            choice(
+              "**=",
+              "*=",
+              "/=",
+              "%=",
+              "+=",
+              "-=",
+              ".=",
+              "<<=",
+              ">>=",
+              "&=",
+              "^=",
+              "|=",
+              "??=",
+            ),
+          ),
+          field("right", $.expression),
         ),
       ),
 
@@ -1378,37 +1410,43 @@ export default grammar(html, {
       ),
 
     primitive_type: (_) =>
-      choice(
-        "array",
-        "bool",
-        keyword("callable", false), // not legal in property types
-        keyword("false", false),
-        "float",
-        "int",
-        keyword("iterable", false),
-        keyword("mixed", false),
-        "null",
-        "object",
-        "string",
-        keyword("true", false),
-        keyword("void", false),
-      ),
+      token(prec(
+        PREC.KEYWORD,
+        choice(
+          "array",
+          "bool",
+          keyword("callable", false), // not legal in property types
+          keyword("false", false),
+          "float",
+          "int",
+          keyword("iterable", false),
+          keyword("mixed", false),
+          "null",
+          "object",
+          "string",
+          keyword("true", false),
+          keyword("void", false),
+        ),
+      )),
 
     cast_type: (_) =>
-      choice(
-        keyword("array", false),
-        keyword("binary", false),
-        keyword("bool", false),
-        keyword("boolean", false),
-        keyword("double", false),
-        keyword("float", false),
-        keyword("int", false),
-        keyword("integer", false),
-        keyword("object", false),
-        keyword("real", false),
-        keyword("string", false),
-        keyword("unset", false),
-      ),
+      token(prec(
+        PREC.KEYWORD,
+        choice(
+          keyword("array", false),
+          keyword("binary", false),
+          keyword("bool", false),
+          keyword("boolean", false),
+          keyword("double", false),
+          keyword("float", false),
+          keyword("int", false),
+          keyword("integer", false),
+          keyword("object", false),
+          keyword("real", false),
+          keyword("string", false),
+          keyword("unset", false),
+        ),
+      )),
 
     _return_type: ($) =>
       seq(":", field("return_type", choice($.type, $.bottom_type))),
@@ -1420,6 +1458,7 @@ export default grammar(html, {
       choice(
         $._variable,
         $.literal,
+        $.print_intrinsic,
         $.array_creation_expression,
         $.parenthesized_expression,
         $.function_call_expression,
@@ -1432,6 +1471,19 @@ export default grammar(html, {
         $.anonymous_function,
         $.arrow_function,
         $.object_creation_expression,
+        $.throw_expression,
+      ),
+
+    print_intrinsic: ($) =>
+      seq(
+        token(prec(PREC.KEYWORD, keyword("print"))),
+        $.expression,
+      ),
+
+    throw_expression: ($) =>
+      seq(
+        token(prec(PREC.KEYWORD, keyword("throw"))),
+        $.expression,
       ),
 
     anonymous_function: ($) =>
@@ -1808,7 +1860,7 @@ export default grammar(html, {
       prec.right(
         PREC.NEW,
         seq(
-          keyword("new"),
+          token(prec(PREC.NEW, keyword("new"))),
           $._class_name_reference,
         ),
       ),
@@ -1817,18 +1869,15 @@ export default grammar(html, {
       prec.right(
         PREC.NEW,
         seq(
-          keyword("new"),
-          choice(
-            seq($._class_name_reference, $.arguments),
-            alias($.text, $.php_only),
-          ),
+          token(prec(PREC.NEW, keyword("new"))),
+          seq($._class_name_reference, $.arguments),
         ),
       ),
 
     qualified_name: ($) =>
       seq(
-        field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
-        alias($.name, $.name),
+        field("prefix", choice($.namespace_name, "\\")),
+        $.name,
       ),
 
     relative_name: ($) =>
@@ -1900,7 +1949,7 @@ export default grammar(html, {
     namespace_name: ($) =>
       seq(
         alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name),
-        repeat(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name))),
+        repeat1(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name))),
       ),
 
     array_creation_expression: ($) =>
@@ -1961,7 +2010,7 @@ export default grammar(html, {
 
     _string: ($) => choice($.string, $.encapsed_string),
 
-    string: ($) =>
+    string: (_) =>
       seq(
         "'",
         repeat(choice(token(prec(1, /[^'\\]+/)), token.immediate("\\'"))),
@@ -1999,10 +2048,10 @@ export default grammar(html, {
         ),
       ),
 
-    boolean: (_) => token(choice("true", "false")),
+    boolean: (_) => token(prec(PREC.KEYWORD, /true|false/i)),
 
     null: (_) => "null",
 
-    name: (_) => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    name: (_) => token(prec(PREC.IDENTIFIER, /[a-zA-Z_][a-zA-Z0-9_]*/)),
   },
 });
