@@ -11,7 +11,7 @@
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (directive_end)))
 
@@ -30,10 +30,10 @@
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (conditional
       (directive_start)
-      (parameter)
+      (boolean)
       (text)
       (directive_end))
     (directive_end)))
@@ -55,11 +55,11 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (conditional_keyword
       (directive)
-      (parameter))
+      (boolean))
     (text)
     (conditional_keyword
       (directive))
@@ -79,7 +79,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (directive_end)))
 
@@ -96,7 +96,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (directive_end)))
 
@@ -113,7 +113,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (directive_end)))
 
@@ -146,7 +146,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -179,7 +179,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -212,7 +212,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -229,7 +229,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -246,7 +246,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -263,7 +263,7 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (boolean)
     (text)
     (directive_end)))
 
@@ -358,11 +358,11 @@ conditional keywords
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
-    (conditional_keyword
-      (directive)
-      (parameter))
+    (directive)
+    (string)
+    (string)
     (text)
     (conditional_keyword
       (directive))
@@ -390,11 +390,11 @@ custom directive
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (conditional_keyword
       (directive)
-      (parameter))
+      (string))
     (text)
     (conditional_keyword
       (directive))
@@ -402,7 +402,7 @@ custom directive
     (directive_end))
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -420,10 +420,10 @@ complex custom directive
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (conditional
       (directive_start)
-      (parameter)
+      (string)
       (text)
       (directive_end))
     (directive_end)))

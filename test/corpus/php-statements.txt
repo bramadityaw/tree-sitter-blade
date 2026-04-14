@@ -2,38 +2,41 @@
 {{ escaped }}
 ================================================================================
 
-{{echo 'test'}}
+{{print 'test'}}
 
 --------------------------------------------------------------------------------
 
 (document
   (php_statement
-    (php_only)))
+    (print_intrinsic
+      (string))))
 
 ================================================================================
 {!! not escaped !!}
 ================================================================================
 
-{!!echo 'test'!!}
+{!!print 'test'!!}
 
 --------------------------------------------------------------------------------
 
 (document
   (php_statement
-    (php_only)))
+    (print_intrinsic
+      (string))))
 
 ================================================================================
 inline raw
 ================================================================================
 
-@php(echo 'test')
+@php(print 'test')
 
 --------------------------------------------------------------------------------
 
 (document
   (php_statement
     (directive)
-    (parameter)))
+    (print_intrinsic
+      (string))))
 
 ================================================================================
 multi line raw
@@ -51,3 +54,98 @@ multi line raw
     (directive_start)
     (php_only)
     (directive_end)))
+
+================================================================================
+object creation statement
+================================================================================
+
+{{ new F }}
+{{ new F() }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (php_statement
+    (object_creation_expression
+      (name)))
+  (php_statement
+    (object_creation_expression
+      (name)
+      (arguments))))
+
+================================================================================
+throw statement
+================================================================================
+
+{{ throw new F }}
+{{ throw new F() }}
+{{ throw new F("error") }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (php_statement
+    (throw_expression
+      (object_creation_expression
+        (name))))
+  (php_statement
+    (throw_expression
+      (object_creation_expression
+        (name)
+        (arguments))))
+  (php_statement
+    (throw_expression
+      (object_creation_expression
+        (name)
+        (arguments
+          (argument
+            (encapsed_string)))))))
+
+================================================================================
+cast statement
+================================================================================
+
+{{ (array) $x }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (php_statement
+    (cast_expression
+      (cast_type)
+      (variable_name
+        (name)))))
+
+================================================================================
+Qualified class constant access statement
+================================================================================
+
+{{ \App\Models\Post::class }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (php_statement))
+
+================================================================================
+Member call statement
+================================================================================
+
+{{ $this->getLocale() }}
+{{ app()->getLocale() }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (php_statement
+    (member_call_expression
+      object: (variable_name (name))
+      name: (name)
+      arguments: (arguments)))
+  (php_statement
+    (member_call_expression
+      object: (function_call_expression
+        function: (name)
+        arguments: (arguments))
+      name: (name)
+      arguments: (arguments))))

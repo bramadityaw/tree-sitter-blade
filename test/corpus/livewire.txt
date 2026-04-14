@@ -44,7 +44,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @persist
@@ -59,7 +59,7 @@
 (document
   (livewire
     (directive_start)
-    (parameter)
+    (string)
     (element
       (start_tag
         (tag_name))
@@ -81,7 +81,7 @@
 (document
   (livewire
     (directive_start)
-    (parameter)
+    (string)
     (element
       (start_tag
         (tag_name))
@@ -103,7 +103,7 @@
 (document
   (livewire
     (directive_start)
-    (parameter)
+    (string)
     (element
       (start_tag
         (tag_name))

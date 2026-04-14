@@ -8,7 +8,21 @@
 
 (document
   (directive)
-  (parameter))
+  (array_creation_expression
+    (array_element_initializer
+      (array_element_key_value_initializer
+        (string)
+        (array_creation_expression
+          (array_element_initializer
+            (array_element_value_initializer
+              (string))))))
+    (array_element_initializer
+      (array_element_key_value_initializer
+        (string)
+        (array_creation_expression
+          (array_element_initializer
+            (array_element_value_initializer
+              (string))))))))
 
 ================================================================================
 @import
@@ -19,7 +33,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @task
@@ -40,12 +54,19 @@
 (document
   (envoy
     (directive_start)
-    (parameter)
+    (string)
+    (array_creation_expression
+      (array_element_initializer
+        (array_element_key_value_initializer
+          (string)
+          (string))))
     (text)
     (directive_start)
-    (parameter)
+    (variable_name
+      (name))
     (text)
-    (php_only)
+    (variable_name
+      (name))
     (directive_end)
     (text)
     (directive_end)))
@@ -74,20 +95,27 @@
 
 (document
   (directive)
-  (parameter)
+  (array_creation_expression
+    (array_element_initializer
+      (array_element_key_value_initializer
+        (string)
+        (array_creation_expression
+          (array_element_initializer
+            (array_element_value_initializer
+              (string)))))))
   (envoy
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end))
   (envoy
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end))
   (envoy
     (directive_start)
-    (parameter)
+    (string)
     (text)
     (directive_end)))
 
@@ -123,11 +151,13 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -146,11 +176,13 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -169,11 +201,13 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -192,11 +226,13 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -215,11 +251,13 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -236,7 +274,9 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
+    (string)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -253,7 +293,7 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -270,7 +310,8 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
+    (string)
     (directive_end)))
 
 ================================================================================
@@ -287,5 +328,5 @@
   (envoy
     (directive_start)
     (directive)
-    (parameter)
+    (string)
     (directive_end)))

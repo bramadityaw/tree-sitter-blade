@@ -9,11 +9,19 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
-    (text)
-    (directive_end)))
+  (for_directive
+    (assignment_expression
+      (variable_name
+        (name))
+      (integer))
+    (binary_expression
+      (variable_name
+        (name))
+      (integer))
+    (update_expression
+      (variable_name
+        (name)))
+    (text)))
 
 ================================================================================
 @foreach
@@ -26,18 +34,22 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
+  (foreach_directive
+    (variable_name
+      (name))
+    (variable_name
+      (name))
     (element
       (start_tag
         (tag_name))
       (text)
       (php_statement
-        (php_only))
+        (member_access_expression
+          (variable_name
+            (name))
+          (name)))
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @forelse
@@ -50,11 +62,12 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
-    (text)
-    (directive_end)))
+  (forelse_directive
+    (variable_name
+      (name))
+    (variable_name
+      (name))
+    (text)))
 
 ================================================================================
 @while
@@ -67,16 +80,14 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
+  (while_directive
+    (boolean)
     (element
       (start_tag
         (tag_name))
       (text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @empty in loops
@@ -91,14 +102,19 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
+  (forelse_directive
+    (variable_name
+      (name))
+    (variable_name
+      (name))
     (element
       (start_tag
         (tag_name))
       (php_statement
-        (php_only))
+        (member_access_expression
+          (variable_name
+            (name))
+          (name)))
       (end_tag
         (tag_name)))
     (directive)
@@ -107,8 +123,7 @@
         (tag_name))
       (text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @continue and @break in loops
@@ -125,21 +140,35 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
+  (foreach_directive
+    (variable_name
+      (name))
+    (variable_name
+      (name))
     (directive)
-    (parameter)
+    (binary_expression
+      (member_access_expression
+        (variable_name
+          (name))
+        (name))
+      (integer))
     (element
       (start_tag
         (tag_name))
       (php_statement
-        (php_only))
+        (member_access_expression
+          (variable_name
+            (name))
+          (name)))
       (end_tag
         (tag_name)))
     (directive)
-    (parameter)
-    (directive_end)))
+    (binary_expression
+      (member_access_expression
+        (variable_name
+          (name))
+        (name))
+      (integer))))
 
 ================================================================================
 @foreach with casted parameter
@@ -152,21 +181,24 @@
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
-    (parameter
-      (parameter))
-    (parameter)
+  (foreach_directive
+    (cast_expression
+      (cast_type)
+      (variable_name
+        (name)))
+    (variable_name
+      (name))
     (element
       (start_tag
         (tag_name))
       (text)
       (php_statement
-        (php_only))
+        (member_access_expression
+          (variable_name
+            (name))
+          (name)))
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 loop and conditionals
@@ -182,19 +214,23 @@ loop and conditionals
 --------------------------------------------------------------------------------
 
 (document
-  (loop
-    (directive_start)
-    (parameter)
+  (foreach_directive
+    (variable_name
+      (name))
+    (variable_name
+      (name))
     (conditional
       (directive_start)
-      (parameter)
+      (boolean)
       (element
         (start_tag
           (tag_name))
         (text)
         (php_statement
-          (php_only))
+          (member_access_expression
+            (variable_name
+              (name))
+            (name)))
         (end_tag
           (tag_name)))
-      (directive_end))
-    (directive_end)))
+      (directive_end))))

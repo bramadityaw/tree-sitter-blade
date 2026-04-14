@@ -50,7 +50,7 @@ Named Entities
 (document
   (conditional
     (directive_start)
-    (parameter)
+    (string)
     (entity)
     (entity)
     (entity)
@@ -480,18 +480,58 @@ Laravel 12 Welcome.blade.php
       (comment)
       (conditional
         (directive_start)
-        (parameter)
-        (parameter
-          (parameter)
-          (parameter
-            (parameter)))
-        (parameter)
-        (parameter
-          (parameter)
-          (parameter
-            (parameter)))
+        (parenthesized_expression
+          (expression
+            (binary_expression
+              (expression
+                (primary_expression
+                  (function_call_expression
+                    (name)
+                    (arguments
+                      (argument
+                        (expression
+                          (primary_expression
+                            (function_call_expression
+                              (name)
+                              (arguments
+                                (argument
+                                  (expression
+                                    (primary_expression
+                                      (literal
+                                        (string))))))))))))))
+              (expression
+                (primary_expression
+                  (function_call_expression
+                    (name)
+                    (arguments
+                      (argument
+                        (expression
+                          (primary_expression
+                            (function_call_expression
+                              (name)
+                              (arguments
+                                (argument
+                                  (expression
+                                    (primary_expression
+                                      (literal
+                                        (string)))))))))))))))))
         (directive)
-        (parameter)
+        (parenthesized_expression
+          (expression
+            (primary_expression
+              (array_creation_expression
+                (array_element_initializer
+                  (array_element_value_initializer
+                    (expression
+                      (primary_expression
+                        (literal
+                          (string))))))
+                (array_element_initializer
+                  (array_element_value_initializer
+                    (expression
+                      (primary_expression
+                        (literal
+                          (string))))))))))
         (conditional_keyword
           (directive))
         (style_element
@@ -519,9 +559,18 @@ Laravel 12 Welcome.blade.php
               (attribute_value))))
         (conditional
           (directive_start)
-          (parameter)
-          (parameter
-            (parameter))
+          (parenthesized_expression
+            (expression
+              (primary_expression
+                (scoped_call_expression
+                  (name)
+                  (name)
+                  (arguments
+                    (argument
+                      (expression
+                        (primary_expression
+                          (literal
+                            (string))))))))))
           (element
             (start_tag
               (tag_name)
@@ -565,9 +614,18 @@ Laravel 12 Welcome.blade.php
                   (tag_name)))
               (conditional
                 (directive_start)
-                (parameter)
-                (parameter
-                  (parameter))
+                (parenthesized_expression
+                  (expression
+                    (primary_expression
+                      (scoped_call_expression
+                        (name)
+                        (name)
+                        (arguments
+                          (argument
+                            (expression
+                              (primary_expression
+                                (literal
+                                  (string))))))))))
                 (element
                   (start_tag
                     (tag_name)
@@ -903,7 +961,8 @@ Laravel 12 Welcome.blade.php
                 (attribute_name)
                 (quoted_attribute_value
                   (attribute_value))))
-            (comment)
+            (php_statement
+              (php_only))
             (element
               (start_tag
                 (tag_name)
@@ -1002,7 +1061,8 @@ Laravel 12 Welcome.blade.php
                       (attribute_value)))))
               (end_tag
                 (tag_name)))
-            (comment)
+            (php_statement
+              (php_only))
             (element
               (start_tag
                 (tag_name)
@@ -1985,7 +2045,8 @@ Laravel 12 Welcome.blade.php
                   (tag_name)))
               (end_tag
                 (tag_name)))
-            (comment)
+            (php_statement
+              (php_only))
             (element
               (start_tag
                 (tag_name)
@@ -2959,9 +3020,18 @@ Laravel 12 Welcome.blade.php
           (tag_name)))
       (conditional
         (directive_start)
-        (parameter)
-        (parameter
-          (parameter))
+        (parenthesized_expression
+          (expression
+            (primary_expression
+              (scoped_call_expression
+                (name)
+                (name)
+                (arguments
+                  (argument
+                    (expression
+                      (primary_expression
+                        (literal
+                          (string))))))))))
         (element
           (start_tag
             (tag_name)

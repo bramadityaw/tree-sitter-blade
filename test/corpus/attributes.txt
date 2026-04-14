@@ -12,7 +12,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter))
+        (string))
       (attribute
         (attribute_name)
         (quoted_attribute_value
@@ -38,7 +38,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))
 
@@ -56,7 +56,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))
 
@@ -74,7 +74,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))
 
@@ -92,7 +92,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))
 
@@ -110,7 +110,7 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))
 
@@ -128,6 +128,6 @@
       (tag_name)
       (attribute
         (directive)
-        (parameter)))
+        (string)))
     (end_tag
       (tag_name))))

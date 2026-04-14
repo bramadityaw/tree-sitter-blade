@@ -1,148 +1,160 @@
 ================================================================================
-@fragment
+@can
 ================================================================================
 
-@fragment('test')
-        fragment
-@endfragment
-
+@can('update', $post)
+    <!-- comment -->
+@elsecan('create', App\Models\Post::class)
+    Hello world
+@else
+    Hello world
+@endcan
 
 --------------------------------------------------------------------------------
 
 (document
-  (fragment
+  (conditional
+    (directive_start)
+    (parameter)
+    (comment)
+    (conditional_keyword
+      (directive)
+      (parameter))
+    (text)
+    (conditional_keyword
+      (directive))
+    (text)
+    (directive_end)))
+
+================================================================================
+@cannot
+================================================================================
+
+@cannot('update', $post)
+    <!-- comment -->
+@elsecannot('create', App\Models\Post::class)
+    Hello world
+@endcannot
+
+--------------------------------------------------------------------------------
+
+(document
+  (conditional
+    (directive_start)
+    (parameter)
+    (comment)
+    (conditional_keyword
+      (directive)
+      (parameter))
+    (text)
+    (directive_end)))
+
+================================================================================
+@canany
+================================================================================
+
+@canany(['update', 'view', 'delete'], $post)
+    <!-- comment -->
+@elsecanany(['create'], \App\Models\Post::class)
+    hello world
+@endcanany
+
+--------------------------------------------------------------------------------
+
+(document
+  (conditional
+    (directive_start)
+    (parameter)
+    (comment)
+    (conditional_keyword
+      (directive)
+      (parameter))
+    (text)
+    (directive_end)))
+
+================================================================================
+@feature
+================================================================================
+
+@feature('site-redesign')
+    hello world
+@elsefeature('purchase-button', 'seafoam-green')
+    hello world
+@else
+    hello world
+@endfeature
+
+--------------------------------------------------------------------------------
+
+(document
+  (conditional
+    (directive_start)
+    (string)
+    (text)
+    (directive)
+    (string)
+    (string)
+    (text)
+    (conditional_keyword
+      (directive))
+    (text)
+    (directive_end)))
+
+================================================================================
+custom directive
+================================================================================
+
+@disk('local')
+    test
+@elsedisk('s3')
+    test
+@else
+    test
+@enddisk
+
+@unlessdisk('local')
+    test
+@enddisk
+
+--------------------------------------------------------------------------------
+
+(document
+  (conditional
+    (directive_start)
+    (string)
+    (text)
+    (conditional_keyword
+      (directive)
+      (string))
+    (text)
+    (conditional_keyword
+      (directive))
+    (text)
+    (directive_end))
+  (conditional
     (directive_start)
     (string)
     (text)
     (directive_end)))
 
 ================================================================================
-@section
+complex custom directive
 ================================================================================
-
-        @section('sidebar')
-            This is the master sidebar.
-        @show
-
-        @section('test')
-          @parent
-            test
-        @endsection
-
+@example('test')
+    @example('test')
+        test
+    @endexample
+@endexample
 
 --------------------------------------------------------------------------------
 
 (document
-  (section
+  (conditional
     (directive_start)
-    (string))
-  (text)
-  (section
-    (directive_start)
-    (string))
-  (keyword
-    (directive))
-  (text))
-
-================================================================================
-@once
-================================================================================
-
-@once
-        once
-@endonce
-
-
---------------------------------------------------------------------------------
-
-(document
-  (once
-    (directive_start)
-    (text)
-    (directive_end)))
-
-================================================================================
-@verbatim
-================================================================================
-
-@verbatim
-        verbatim
-@endverbatim
-
-
---------------------------------------------------------------------------------
-
-(document
-  (verbatim
-    (directive_start)
-    (text)
-    (directive_end)))
-
-================================================================================
-@script
-================================================================================
-
-@script
-    <script>
-        setInterval(() => {
-            $wire.$refresh()
-        }, 2000)
-    </script>
-@endscript
-
-
---------------------------------------------------------------------------------
-
-(document
-  (livewire
-    (directive_start)
-    (script_element
-      (start_tag
-        (tag_name))
-      (raw_text)
-      (end_tag
-        (tag_name)))
-    (directive_end)))
-
-================================================================================
-@assets
-================================================================================
- @assets
-  <script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js" defer></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css"/>
-@endassets
-
-
---------------------------------------------------------------------------------
-
-(document
-  (livewire
-    (directive_start)
-    (script_element
-      (start_tag
-        (tag_name)
-        (attribute
-          (attribute_name)
-          (quoted_attribute_value
-            (attribute_value)))
-        (attribute
-          (attribute_name)))
-      (raw_text)
-      (end_tag
-        (tag_name)))
-    (element
-      (self_closing_tag
-        (tag_name)
-        (attribute
-          (attribute_name)
-          (quoted_attribute_value
-            (attribute_value)))
-        (attribute
-          (attribute_name)
-          (quoted_attribute_value
-            (attribute_value)))
-        (attribute
-          (attribute_name)
-          (quoted_attribute_value
-            (attribute_value)))))
+    (string)
+    (conditional
+      (directive_start)
+      (string)
+      (text)
+      (directive_end))
     (directive_end)))

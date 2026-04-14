@@ -8,7 +8,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @yield
@@ -20,7 +20,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @include
@@ -32,7 +32,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @includeIf
@@ -44,7 +44,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @includeWhen
@@ -56,7 +56,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @includeUnless
@@ -68,7 +68,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @includeFirst
@@ -80,7 +80,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @props
@@ -91,8 +91,8 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (parameter))
+  (props
+    (string)))
 
 ================================================================================
 @aware
@@ -104,7 +104,11 @@
 
 (document
   (directive)
-  (parameter))
+  (array_creation_expression
+    (array_element_initializer
+      (array_element_key_value_initializer
+        (string)
+        (string)))))
 
 ================================================================================
 @method
@@ -116,7 +120,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @inject
@@ -128,7 +132,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @each
@@ -140,7 +144,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @vite
@@ -152,7 +156,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @inlineSection
@@ -168,18 +172,18 @@
 
 (document
   (section
-    (directive)
-    (parameter)
-    (parameter))
+    (directive_start)
+    (string)
+    (string))
   (section
     (directive_start)
-    (parameter)
-    (element
-      (start_tag
-        (tag_name))
-      (end_tag
-        (tag_name)))
-    (directive_end)))
+    (string))
+  (element
+    (start_tag
+      (tag_name))
+    (end_tag
+      (tag_name)))
+  (text))
 
 ================================================================================
 @use
@@ -222,7 +226,8 @@
         (quoted_attribute_value
           (attribute_value)
           (directive)
-          (parameter)
+          (variable_name
+            (name))
           (attribute_value))))
     (end_tag
       (tag_name))))
@@ -237,7 +242,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @svg
@@ -249,7 +254,7 @@
 
 (document
   (directive)
-  (parameter))
+  (string))
 
 ================================================================================
 @wireUiScripts
