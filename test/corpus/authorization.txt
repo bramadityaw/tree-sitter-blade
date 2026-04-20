@@ -88,17 +88,14 @@
 
 (document
   (conditional
-    (directive_start)
     (string)
     (text)
-    (directive)
     (string)
     (string)
     (text)
     (conditional_keyword
       (directive))
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 custom directive
@@ -122,19 +119,21 @@ custom directive
   (conditional
     (directive_start)
     (string)
-    (text)
-    (conditional_keyword
-      (directive)
-      (string))
-    (text)
-    (conditional_keyword
-      (directive))
-    (text)
+    (conditional_body
+      (text)
+      (conditional_keyword
+        (directive)
+        (string))
+      (text)
+      (conditional_keyword
+        (directive))
+      (text))
     (directive_end))
   (conditional
     (directive_start)
     (string)
-    (text)
+    (conditional_body
+      (text))
     (directive_end)))
 
 ================================================================================
@@ -152,9 +151,11 @@ complex custom directive
   (conditional
     (directive_start)
     (string)
-    (conditional
-      (directive_start)
-      (string)
-      (text)
-      (directive_end))
+    (conditional_body
+      (conditional
+        (directive_start)
+        (string)
+        (conditional_body
+          (text))
+        (directive_end)))
     (directive_end)))

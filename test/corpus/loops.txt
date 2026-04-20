@@ -43,7 +43,7 @@
       (start_tag
         (tag_name))
       (text)
-      (php_statement
+      (escaped
         (member_access_expression
           (variable_name
             (name))
@@ -110,7 +110,7 @@
     (element
       (start_tag
         (tag_name))
-      (php_statement
+      (escaped
         (member_access_expression
           (variable_name
             (name))
@@ -155,7 +155,7 @@
     (element
       (start_tag
         (tag_name))
-      (php_statement
+      (escaped
         (member_access_expression
           (variable_name
             (name))
@@ -192,7 +192,7 @@
       (start_tag
         (tag_name))
       (text)
-      (php_statement
+      (escaped
         (member_access_expression
           (variable_name
             (name))
@@ -220,17 +220,16 @@ loop and conditionals
     (variable_name
       (name))
     (conditional
-      (directive_start)
       (boolean)
-      (element
-        (start_tag
-          (tag_name))
-        (text)
-        (php_statement
-          (member_access_expression
-            (variable_name
-              (name))
-            (name)))
-        (end_tag
-          (tag_name)))
-      (directive_end))))
+      (conditional_body
+        (element
+          (start_tag
+            (tag_name))
+          (text)
+          (escaped
+            (member_access_expression
+              (variable_name
+                (name))
+              (name)))
+          (end_tag
+            (tag_name)))))))

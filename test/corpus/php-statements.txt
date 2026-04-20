@@ -7,7 +7,7 @@
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (escaped
     (print_intrinsic
       (string))))
 
@@ -20,7 +20,7 @@
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (unescaped
     (print_intrinsic
       (string))))
 
@@ -33,8 +33,7 @@ inline raw
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
-    (directive)
+  (inline_raw
     (print_intrinsic
       (string))))
 
@@ -50,10 +49,8 @@ multi line raw
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
-    (directive_start)
-    (php_only)
-    (directive_end)))
+  (multi_line_raw
+    (php_only)))
 
 ================================================================================
 object creation statement
@@ -65,10 +62,10 @@ object creation statement
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (escaped
     (object_creation_expression
       (name)))
-  (php_statement
+  (escaped
     (object_creation_expression
       (name)
       (arguments))))
@@ -84,16 +81,16 @@ throw statement
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (escaped
     (throw_expression
       (object_creation_expression
         (name))))
-  (php_statement
+  (escaped
     (throw_expression
       (object_creation_expression
         (name)
         (arguments))))
-  (php_statement
+  (escaped
     (throw_expression
       (object_creation_expression
         (name)
@@ -110,11 +107,23 @@ cast statement
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (escaped
     (cast_expression
       (cast_type)
       (variable_name
         (name)))))
+
+================================================================================
+Class string
+================================================================================
+
+{{ '\App\Models\Post' }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (escaped
+    (string)))
 
 ================================================================================
 Qualified class constant access statement
@@ -139,7 +148,8 @@ Member call statement
 (document
   (php_statement
     (member_call_expression
-      object: (variable_name (name))
+      object: (variable_name
+        (name))
       name: (name)
       arguments: (arguments)))
   (php_statement

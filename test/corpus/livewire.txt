@@ -43,8 +43,9 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (string))
+  (inline_directive
+    (directive)
+    (string)))
 
 ================================================================================
 @persist
@@ -58,15 +59,13 @@
 
 (document
   (livewire
-    (directive_start)
     (string)
     (element
       (start_tag
         (tag_name))
       (text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @teleport
@@ -80,15 +79,13 @@
 
 (document
   (livewire
-    (directive_start)
     (string)
     (element
       (start_tag
         (tag_name))
       (text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @volt
@@ -102,12 +99,10 @@
 
 (document
   (livewire
-    (directive_start)
     (string)
     (element
       (start_tag
         (tag_name))
       (text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))

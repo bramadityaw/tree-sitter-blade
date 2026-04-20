@@ -49,37 +49,36 @@ Named Entities
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (entity)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (entity)
+      (text))))
 
 ================================================================================
 Numbered Entities
@@ -129,10 +128,8 @@ Numbered Entities
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
-    (directive_start)
-    (php_only)
-    (directive_end)))
+  (multi_line_raw
+    (php_only)))
 
 ================================================================================
 Laravel 12 Welcome.blade.php

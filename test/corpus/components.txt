@@ -114,7 +114,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name))))))
     (text)
@@ -126,7 +126,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name)))))))
   (element
@@ -136,7 +136,7 @@ PHP syntax inside attribute values
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
-          (php_statement
+          (escaped
             (variable_name
               (name))))))
     (text)
@@ -149,7 +149,7 @@ PHP syntax inside attribute values
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
-          (php_statement
+          (escaped
             (variable_name
               (name)))
           (attribute_value))))
@@ -162,7 +162,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name)))
           (attribute_value))))
@@ -175,7 +175,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name))))))
     (text)
@@ -187,7 +187,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name)))))))
   (element
@@ -197,7 +197,7 @@ PHP syntax inside attribute values
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
-          (php_statement
+          (escaped
             (variable_name
               (name))))))
     (text)
@@ -210,7 +210,7 @@ PHP syntax inside attribute values
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
-          (php_statement
+          (escaped
             (variable_name
               (name)))
           (attribute_value))))
@@ -223,7 +223,7 @@ PHP syntax inside attribute values
       (attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
+          (escaped
             (variable_name
               (name)))
           (attribute_value))))

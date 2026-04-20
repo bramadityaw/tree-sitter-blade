@@ -11,10 +11,8 @@
 
 (document
   (fragment
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @section
@@ -34,11 +32,9 @@
 
 (document
   (section
-    (directive_start)
     (string))
   (text)
   (section
-    (directive_start)
     (string))
   (keyword
     (directive))
@@ -57,9 +53,7 @@
 
 (document
   (once
-    (directive_start)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @verbatim
@@ -74,9 +68,7 @@
 
 (document
   (verbatim
-    (directive_start)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @script
@@ -95,14 +87,12 @@
 
 (document
   (livewire
-    (directive_start)
     (script_element
       (start_tag
         (tag_name))
       (raw_text)
       (end_tag
-        (tag_name)))
-    (directive_end)))
+        (tag_name)))))
 
 ================================================================================
 @assets
@@ -117,7 +107,6 @@
 
 (document
   (livewire
-    (directive_start)
     (script_element
       (start_tag
         (tag_name)
@@ -144,5 +133,4 @@
         (attribute
           (attribute_name)
           (quoted_attribute_value
-            (attribute_value)))))
-    (directive_end)))
+            (attribute_value)))))))

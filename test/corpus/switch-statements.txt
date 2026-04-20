@@ -24,7 +24,6 @@
 
 (document
   (switch
-    (directive_start)
     (variable_name
       (name))
     (directive)
@@ -42,5 +41,4 @@
     (text)
     (directive)
     (directive)
-    (text)
-    (directive_end)))
+    (text)))

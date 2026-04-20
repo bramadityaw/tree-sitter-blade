@@ -7,22 +7,23 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (array_creation_expression
-    (array_element_initializer
-      (array_element_key_value_initializer
-        (string)
-        (array_creation_expression
-          (array_element_initializer
-            (array_element_value_initializer
-              (string))))))
-    (array_element_initializer
-      (array_element_key_value_initializer
-        (string)
-        (array_creation_expression
-          (array_element_initializer
-            (array_element_value_initializer
-              (string))))))))
+  (inline_directive
+    (directive)
+    (array_creation_expression
+      (array_element_initializer
+        (array_element_key_value_initializer
+          (string)
+          (array_creation_expression
+            (array_element_initializer
+              (array_element_value_initializer
+                (string))))))
+      (array_element_initializer
+        (array_element_key_value_initializer
+          (string)
+          (array_creation_expression
+            (array_element_initializer
+              (array_element_value_initializer
+                (string)))))))))
 
 ================================================================================
 @import
@@ -32,8 +33,9 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (string))
+  (inline_directive
+    (directive)
+    (string)))
 
 ================================================================================
 @task
@@ -53,7 +55,6 @@
 
 (document
   (envoy
-    (directive_start)
     (string)
     (array_creation_expression
       (array_element_initializer
@@ -61,15 +62,13 @@
           (string)
           (string))))
     (text)
-    (directive_start)
     (variable_name
       (name))
     (text)
-    (variable_name
-      (name))
-    (directive_end)
-    (text)
-    (directive_end)))
+    (escaped
+      (variable_name
+        (name)))
+    (text)))
 
 ================================================================================
 @story
@@ -94,30 +93,25 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (array_creation_expression
-    (array_element_initializer
-      (array_element_key_value_initializer
-        (string)
-        (array_creation_expression
-          (array_element_initializer
-            (array_element_value_initializer
-              (string)))))))
+  (inline_directive
+    (directive)
+    (array_creation_expression
+      (array_element_initializer
+        (array_element_key_value_initializer
+          (string)
+          (array_creation_expression
+            (array_element_initializer
+              (array_element_value_initializer
+                (string))))))))
   (envoy
-    (directive_start)
     (string)
-    (text)
-    (directive_end))
+    (text))
   (envoy
-    (directive_start)
     (string)
-    (text)
-    (directive_end))
+    (text))
   (envoy
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @setup
@@ -130,10 +124,8 @@
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
-    (directive_start)
-    (php_only)
-    (directive_end)))
+  (setup
+    (php_only)))
 
 ================================================================================
 @before
@@ -149,7 +141,6 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (directive)
@@ -157,8 +148,7 @@
     (string)
     (string)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @after
@@ -174,7 +164,6 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (directive)
@@ -182,8 +171,7 @@
     (string)
     (string)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @error
@@ -199,7 +187,6 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (directive)
@@ -207,8 +194,7 @@
     (string)
     (string)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @success
@@ -224,7 +210,6 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (directive)
@@ -232,8 +217,7 @@
     (string)
     (string)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @finished
@@ -249,7 +233,6 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (directive)
@@ -257,8 +240,7 @@
     (string)
     (string)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @slack
@@ -272,12 +254,10 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
     (string)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @discord
@@ -291,10 +271,8 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @telegram
@@ -308,11 +286,9 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
     (string)
-    (string)
-    (directive_end)))
+    (string)))
 
 ================================================================================
 @microsoftTeams
@@ -326,7 +302,5 @@
 
 (document
   (envoy
-    (directive_start)
     (directive)
-    (string)
-    (directive_end)))
+    (string)))

@@ -10,10 +10,9 @@
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @if nesting
@@ -29,14 +28,12 @@
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (conditional
-      (directive_start)
-      (boolean)
-      (text)
-      (directive_end))
-    (directive_end)))
+    (conditional_body
+      (conditional
+        (boolean)
+        (conditional_body
+          (text))))))
 
 ================================================================================
 conditional keywords
@@ -54,17 +51,16 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (conditional_keyword
-      (directive)
-      (boolean))
-    (text)
-    (conditional_keyword
-      (directive))
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text)
+      (conditional_keyword
+        (directive)
+        (boolean))
+      (text)
+      (conditional_keyword
+        (directive))
+      (text))))
 
 ================================================================================
 @unless
@@ -78,10 +74,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @isset
@@ -95,10 +90,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @empty
@@ -112,10 +106,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @auth
@@ -129,9 +122,8 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @auth with parameters
@@ -145,10 +137,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @guest
@@ -162,9 +153,8 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @guest with parameters
@@ -178,10 +168,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @production
@@ -195,9 +184,8 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @env
@@ -211,10 +199,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @hasSection
@@ -228,10 +215,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @sectionMissing
@@ -245,10 +231,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @error
@@ -262,10 +247,9 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (boolean)
-    (text)
-    (directive_end)))
+    (conditional_body
+      (text))))
 
 ================================================================================
 @can
@@ -357,17 +341,14 @@ conditional keywords
 
 (document
   (conditional
-    (directive_start)
     (string)
     (text)
-    (directive)
     (string)
     (string)
     (text)
     (conditional_keyword
       (directive))
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 custom directive
@@ -391,19 +372,21 @@ custom directive
   (conditional
     (directive_start)
     (string)
-    (text)
-    (conditional_keyword
-      (directive)
-      (string))
-    (text)
-    (conditional_keyword
-      (directive))
-    (text)
+    (conditional_body
+      (text)
+      (conditional_keyword
+        (directive)
+        (string))
+      (text)
+      (conditional_keyword
+        (directive))
+      (text))
     (directive_end))
   (conditional
     (directive_start)
     (string)
-    (text)
+    (conditional_body
+      (text))
     (directive_end)))
 
 ================================================================================
@@ -421,9 +404,11 @@ complex custom directive
   (conditional
     (directive_start)
     (string)
-    (conditional
-      (directive_start)
-      (string)
-      (text)
-      (directive_end))
+    (conditional_body
+      (conditional
+        (directive_start)
+        (string)
+        (conditional_body
+          (text))
+        (directive_end)))
     (directive_end)))

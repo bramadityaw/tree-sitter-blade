@@ -28,7 +28,8 @@ test@test.com
   (conditional
     (directive_start)
     (string)
-    (text)
+    (conditional_body
+      (text))
     (directive_end)))
 
 ================================================================================

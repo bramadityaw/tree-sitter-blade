@@ -11,10 +11,8 @@
 
 (document
   (stack
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @pushOnce
@@ -28,10 +26,8 @@
 
 (document
   (stack
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @pushIf
@@ -45,10 +41,8 @@
 
 (document
   (stack
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @prepend
@@ -62,10 +56,8 @@
 
 (document
   (stack
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
 
 ================================================================================
 @prependOnce
@@ -79,7 +71,5 @@
 
 (document
   (stack
-    (directive_start)
     (string)
-    (text)
-    (directive_end)))
+    (text)))
