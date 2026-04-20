@@ -99,6 +99,7 @@ export default grammar(html, {
     $.primary_expression,
     $.type,
     $.literal,
+    $.php_statement,
   ],
 
   rules: {
@@ -117,7 +118,8 @@ export default grammar(html, {
           // tree-sitter-blade
           $.keyword,
           $.php_statement,
-          $._inline_directive,
+          $.inline_directive,
+          $.props,
           $.comment,
           $.switch,
           $.for_directive,
@@ -167,10 +169,17 @@ export default grammar(html, {
       ),
     // ! PHP Statements
     php_statement: ($) =>
-      choice($._escaped, $._unescaped, $._setup, $._raw, $._php),
+      choice(
+        $.escaped,
+        $.unescaped,
+        $.setup,
+        $.inline_raw,
+        $.multi_line_raw,
+        $.php,
+      ),
 
     // From tree-sitter-php
-    _php: ($) =>
+    php: ($) =>
       seq(
         $.php_tag,
         optional(alias($.text, $.php_only)),
@@ -181,7 +190,7 @@ export default grammar(html, {
     php_end_tag: (_) => "?>",
     // --------------------
 
-    _escaped: ($) =>
+    escaped: ($) =>
       seq(
         token(prec(PREC.ECHO, "{{")),
         optional(
@@ -190,7 +199,7 @@ export default grammar(html, {
         token(prec(PREC.ECHO, "}}")),
       ),
 
-    _unescaped: ($) =>
+    unescaped: ($) =>
       seq(
         token(prec(PREC.ECHO, "{!!")),
         optional(
@@ -199,16 +208,17 @@ export default grammar(html, {
         token(prec(PREC.ECHO, "!!}")),
       ),
 
-    // ! raw php
-    _raw: ($) => choice($._inline_raw, $._multi_line_raw),
-
-    _inline_raw: ($) => seq(alias("@php", $.directive), $._directive_parameter),
-
-    _multi_line_raw: ($) =>
+    inline_raw: ($) =>
       seq(
-        alias("@php", $.directive_start),
+        field("directive", "@php"),
+        field("parameter", $._directive_parameter),
+      ),
+
+    multi_line_raw: ($) =>
+      seq(
+        field("directive_start", "@php"),
         optional(alias($.text, $.php_only)),
-        alias("@endphp", $.directive_end),
+        field("directive_end", "@endphp"),
       ),
 
     // tree-sitter-html override
@@ -232,7 +242,7 @@ export default grammar(html, {
               choice(
                 $.php_statement,
                 $.conditional,
-                $._inline_directive,
+                $.inline_directive,
                 $.comment,
                 alias($._singly_quoted_attribute_text, $.attribute_value),
               ),
@@ -247,7 +257,7 @@ export default grammar(html, {
               choice(
                 $.php_statement,
                 $.conditional,
-                $._inline_directive,
+                $.inline_directive,
                 $.comment,
                 alias($._doubly_quoted_attribute_text, $.attribute_value),
               ),
@@ -314,13 +324,12 @@ export default grammar(html, {
           ),
           $.directive,
         ),
-        $._directive_parameter,
+        field("parameter", $._directive_parameter),
       ),
 
     // !inline directives
-    _inline_directive: ($) =>
+    inline_directive: ($) =>
       choice(
-        $.props,
         seq(
           alias(
             choice(
@@ -358,7 +367,7 @@ export default grammar(html, {
             ),
             $.directive,
           ),
-          $._directive_parameter,
+          field("parameter", $._directive_parameter),
         ),
       ),
 
@@ -374,8 +383,8 @@ export default grammar(html, {
 
     fragment: ($) =>
       seq(
-        alias("@fragment", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@fragment"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -391,15 +400,15 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endfragment", $.directive_end),
+        field("directive_end", "@endfragment"),
       ),
 
     // ! section
     section: ($) =>
       prec.left(
         seq(
-          alias("@section", $.directive_start),
-          $._directive_parameter,
+          field("directive_start", "@section"),
+          field("parameter", $._directive_parameter),
           optional(
             seq(
               repeat1(
@@ -421,24 +430,24 @@ export default grammar(html, {
 
     once: ($) =>
       seq(
-        alias("@once", $.directive_start),
+        field("directive_start", "@once"),
         optional(
           repeat1(
             choice(...nodes.without($.doctype, $.envoy, $.section)),
           ),
         ),
-        alias("@endonce", $.directive_end),
+        field("directive_end", "@endonce"),
       ),
 
     verbatim: ($) =>
       seq(
-        alias("@verbatim", $.directive_start),
+        field("directive_start", "@verbatim"),
         optional(
           repeat1(
             choice(...nodes.without($.doctype, $.livewire, $.envoy)),
           ),
         ),
-        alias("@endverbatim", $.directive_end),
+        field("directive_end", "@endverbatim"),
       ),
 
     stack: ($) =>
@@ -452,8 +461,8 @@ export default grammar(html, {
 
     _push: ($) =>
       seq(
-        alias("@push", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@push"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -473,13 +482,13 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endpush", $.directive_end),
+        field("directive_end", "@endpush"),
       ),
 
     _pushOnce: ($) =>
       seq(
-        alias("@pushOnce", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@pushOnce"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -499,13 +508,13 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endPushOnce", $.directive_end),
+        field("directive_end", "@endPushOnce"),
       ),
 
     _pushIf: ($) =>
       seq(
-        alias("@pushIf", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@pushIf"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -525,13 +534,13 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endPushIf", $.directive_end),
+        field("directive_end", "@endPushIf"),
       ),
 
     _prepend: ($) =>
       seq(
-        alias("@prepend", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@prepend"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -551,13 +560,13 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endprepend", $.directive_end),
+        field("directive_end", "@endprepend"),
       ),
 
     _prependOnce: ($) =>
       seq(
-        alias("@prependOnce", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@prependOnce"),
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -577,7 +586,7 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endPrependOnce", $.directive_end),
+        field("directive_end", "@endPrependOnce"),
       ),
 
     // !Conditionals
@@ -605,85 +614,95 @@ export default grammar(html, {
         alias("@else", $.directive),
         seq(
           alias(/@(elseif|else[a-zA-Z]+)/, $.directive),
-          $._directive_parameter,
+          field("parameter", $._directive_parameter),
         ),
       ),
 
     _if: ($) =>
       seq(
-        alias("@if", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endif", $.directive_end),
+        field("directive_start", "@if"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endif"),
       ),
 
     _unless: ($) =>
       seq(
-        alias("@unless", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endunless", $.directive_end),
+        field("directive_start", "@unless"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endunless"),
       ),
 
     _isset: ($) =>
       seq(
-        alias("@isset", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endisset", $.directive_end),
+        field("directive_start", "@isset"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endisset"),
       ),
 
     _empty: ($) =>
       seq(
-        alias("@empty", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endempty", $.directive_end),
+        field("directive_start", "@empty"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endempty"),
       ),
 
     _auth: ($) =>
       seq(
-        alias("@auth", $.directive_start),
-        $._conditional_body_with_optional_parameter,
-        alias("@endauth", $.directive_end),
+        field("directive_start", "@auth"),
+        field("parameter", optional($._directive_parameter)),
+        field("body", $.conditional_body),
+        field("directive_end", "@endauth"),
       ),
 
     _guest: ($) =>
       seq(
-        alias("@guest", $.directive_start),
-        $._conditional_body_with_optional_parameter,
-        alias("@endguest", $.directive_end),
+        field("directive_start", "@guest"),
+        field("parameter", optional($._directive_parameter)),
+        field("body", $.conditional_body),
+        field("directive_end", "@endguest"),
       ),
 
     _production: ($) =>
       seq(
-        alias("@production", $.directive_start),
-        optional($._conditonal_body),
-        alias("@endproduction", $.directive_end),
+        field("directive_start", "@production"),
+        optional($.conditional_body),
+        field("directive_end", "@endproduction"),
       ),
 
     _env: ($) =>
       seq(
-        alias("@env", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endenv", $.directive_end),
+        field("directive_start", "@env"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endenv"),
       ),
 
     _hasSection: ($) =>
       seq(
-        alias("@hasSection", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endif", $.directive_end),
+        field("directive_start", "@hasSection"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endif"),
       ),
 
     _sectionMissing: ($) =>
       seq(
-        alias("@sectionMissing", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endif", $.directive_end),
+        field("directive_start", "@sectionMissing"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endif"),
       ),
 
     _error: ($) =>
       seq(
-        alias("@error", $.directive_start),
-        $._conditional_directive_body,
-        alias("@enderror", $.directive_end),
+        field("directive_start", "@error"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@enderror"),
       ),
 
     // !Authorisation Directives
@@ -691,41 +710,44 @@ export default grammar(html, {
 
     _can: ($) =>
       seq(
-        alias("@can", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endcan", $.directive_end),
+        field("directive_start", "@can"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endcan"),
       ),
 
     _cannot: ($) =>
       seq(
-        alias("@cannot", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endcannot", $.directive_end),
+        field("directive_start", "@cannot"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endcannot"),
       ),
 
     _canany: ($) =>
       seq(
-        alias("@canany", $.directive_start),
-        $._conditional_directive_body,
-        alias("@endcanany", $.directive_end),
+        field("directive_start", "@canany"),
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
+        field("directive_end", "@endcanany"),
       ),
 
     // !Laravel Pennant
     _feature: ($) =>
       seq(
-        alias("@feature", $.directive_start),
+        field("directive_start", "@feature"),
         seq(
-          $._directive_parameter,
+          field("parameter", $._directive_parameter),
           optional($._feature_body),
         ),
-        alias("@endfeature", $.directive_end),
+        field("directive_end", "@endfeature"),
       ),
 
     _else_feature: ($) =>
       seq(
-        alias("@elsefeature", $.directive),
+        field("directive", "@elsefeature"),
         choice(
-          $._directive_parameter,
+          field("parameter", $._directive_parameter),
         ),
       ),
 
@@ -746,15 +768,16 @@ export default grammar(html, {
           alias(/@unless[a-zA-Z\d]+/, $.directive_start),
           alias(token(prec(-1, /@[a-zA-Z\d]+/)), $.directive_start),
         ),
-        $._conditional_directive_body,
+        field("parameter", $._directive_parameter),
+        field("body", $.conditional_body),
         alias(token(prec(1, /@end[a-zA-Z\d]+/)), $.directive_end),
       ),
 
     // !switch
     switch: ($) =>
       seq(
-        alias("@switch", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@switch"),
+        field("parameter", $._directive_parameter),
         repeat($._case),
         optional(
           seq(
@@ -775,13 +798,13 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endswitch", $.directive_end),
+        field("directive_end", "@endswitch"),
       ),
 
     _case: ($) =>
       seq(
         alias("@case", $.directive),
-        $._directive_parameter,
+        field("parameter", $._directive_parameter),
         optional(
           repeat1(
             choice(
@@ -811,7 +834,7 @@ export default grammar(html, {
     _loop_operator: ($) =>
       seq(
         alias(/@(continue|break)/, $.directive),
-        optional($._directive_parameter),
+        optional(field("parameter", $._directive_parameter)),
       ),
 
     for_directive: ($) =>
@@ -824,7 +847,7 @@ export default grammar(html, {
         ";",
         field("update", optional($._expressions)),
         ")",
-        field("body", optional($._loop_body)),
+        field("body", field("body", optional($._loop_body))),
         field("directive_end", "@endfor"),
       ),
 
@@ -839,7 +862,7 @@ export default grammar(html, {
           $._foreach_value,
         ),
         ")",
-        field("body", optional($._loop_body)),
+        field("body", field("body", optional($._loop_body))),
         field("directive_end", "@endforeach"),
       ),
 
@@ -863,7 +886,7 @@ export default grammar(html, {
           $._foreach_value,
         ),
         ")",
-        field("body", optional($._forelse_loop_body)),
+        field("body", field("body", optional($._forelse_loop_body))),
         field("directive_end", "@endforelse"),
       ),
 
@@ -873,32 +896,32 @@ export default grammar(html, {
         "(",
         field("condition", $.expression),
         ")",
-        field("body", optional($._loop_body)),
+        field("body", field("body", optional($._loop_body))),
         field("directive_end", "@endwhile"),
       ),
 
     // !envoy
     envoy: ($) => choice($._task, $._story, $._hooks),
 
-    _setup: ($) =>
+    setup: ($) =>
       seq(
-        alias("@setup", $.directive_start),
+        field("directive_start", "@setup"),
         optional(alias($.text, $.php_only)),
-        alias("@endsetup", $.directive_end),
+        field("directive_end", "@endsetup"),
       ),
 
     _task: ($) =>
       seq(
-        alias("@task", $.directive_start),
+        field("directive_start", "@task"),
         $._envoy_directive_body,
-        alias("@endtask", $.directive_end),
+        field("directive_end", "@endtask"),
       ),
 
     _story: ($) =>
       seq(
-        alias("@story", $.directive_start),
+        field("directive_start", "@story"),
         $._envoy_directive_body,
-        alias("@endstory", $.directive_end),
+        field("directive_end", "@endstory"),
       ),
 
     _hooks: ($) =>
@@ -912,33 +935,33 @@ export default grammar(html, {
 
     _before: ($) =>
       seq(
-        alias("@before", $.directive_start),
+        field("directive_start", "@before"),
         optional(repeat($._notification)),
-        alias("@endbefore", $.directive_end),
+        field("directive_end", "@endbefore"),
       ),
     _after: ($) =>
       seq(
-        alias("@after", $.directive_start),
+        field("_directive_start", "@after"),
         optional(repeat($._notification)),
-        alias("@endafter", $.directive_end),
+        field("_directive_end", "@endafter"),
       ),
     _envoy_error: ($) =>
       seq(
-        alias("@error", $.directive_start),
+        field("directive_start", "@error"),
         optional(repeat($._notification)),
-        alias("@enderror", $.directive_end),
+        field("directive_end", "@enderror"),
       ),
     _success: ($) =>
       seq(
-        alias("@success", $.directive_start),
+        field("directive_start", "@success"),
         optional(repeat($._notification)),
-        alias("@endsuccess", $.directive_end),
+        field("directive_end", "@endsuccess"),
       ),
     _finished: ($) =>
       seq(
-        alias("@finished", $.directive_start),
+        field("directive_start", "@finished"),
         optional(repeat($._notification)),
-        alias("@endfinished", $.directive_end),
+        field("directive_end", "@endfinished"),
       ),
 
     // !envoy:notification
@@ -948,15 +971,15 @@ export default grammar(html, {
           /@(slack|discord|telegram|microsoftTeams)/,
           $.directive,
         ),
-        $._directive_parameter,
+        field("parameter", $._directive_parameter),
       ),
     // !livewire 🪼
     livewire: ($) =>
       choice($._persist, $._teleport, $._volt, $._script, $._assets),
     _persist: ($) =>
       seq(
-        alias("@persist", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@persist"),
+        field("parameter", $._directive_parameter),
         repeat1(
           choice(
             $.entity,
@@ -966,12 +989,12 @@ export default grammar(html, {
             $.conditional,
           ),
         ),
-        alias("@endpersist", $.directive_end),
+        field("directive_end", "@endpersist"),
       ),
     _teleport: ($) =>
       seq(
-        alias("@teleport", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@teleport"),
+        field("parameter", $._directive_parameter),
         repeat1(
           choice(
             ...nodes.without(
@@ -985,12 +1008,12 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endteleport", $.directive_end),
+        field("directive_end", "@endteleport"),
       ),
     _volt: ($) =>
       seq(
-        alias("@volt", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@volt"),
+        field("parameter", $._directive_parameter),
         repeat1(
           choice(
             ...nodes.without(
@@ -1004,11 +1027,11 @@ export default grammar(html, {
             ),
           ),
         ),
-        alias("@endvolt", $.directive_end),
+        field("directive_end", "@endvolt"),
       ),
     _script: ($) =>
       seq(
-        alias("@script", $.directive_start),
+        field("directive_start", "@script"),
         optional(repeat1(
           choice(
             ...nodes.without(
@@ -1022,11 +1045,11 @@ export default grammar(html, {
             ),
           ),
         )),
-        alias("@endscript", $.directive_end),
+        field("directive_end", "@endscript"),
       ),
     _assets: ($) =>
       seq(
-        alias("@assets", $.directive_start),
+        field("directive_start", "@assets"),
         optional(repeat1(
           choice(
             ...nodes.without(
@@ -1040,7 +1063,7 @@ export default grammar(html, {
             ),
           ),
         )),
-        alias("@endassets", $.directive_end),
+        field("directive_end", "@endassets"),
       ),
 
     /*-----------------------------------*
@@ -1051,27 +1074,27 @@ export default grammar(html, {
 
     // !conditional helpers
 
-    _conditonal_body: ($) =>
+    conditional_body: ($) =>
       repeat1(choice(...nodes.with($.conditional_keyword).all())),
 
-    _conditional_directive_body: ($) =>
-      seq($._directive_parameter, optional($._conditonal_body)),
-
     _conditional_body_with_optional_parameter: ($) =>
-      seq(optional($._directive_parameter), $._conditonal_body),
+      seq(
+        optional(field("parameter", $._directive_parameter)),
+        $.conditional_body,
+      ),
 
     // ! envoy helpers
     _envoy_if: ($) =>
       seq(
-        alias("@if", $.directive_start),
-        $._directive_parameter,
+        field("directive_start", "@if"),
+        field("parameter", $._directive_parameter),
         choice($.conditional_keyword, $._envoy_body),
-        alias("@endif", $.directive_end),
+        field("directive_end", "@endif"),
       ),
 
-    _envoy_body: ($) => repeat1(choice($.text, $._envoy_if, $._escaped)),
+    _envoy_body: ($) => repeat1(choice($.text, $._envoy_if, $.escaped)),
     _envoy_directive_body: ($) =>
-      seq($._directive_parameter, optional($._envoy_body)),
+      seq(field("parameter", $._directive_parameter), optional($._envoy_body)),
 
     // !loop helpers
     _loop_body: ($) =>
@@ -1111,7 +1134,10 @@ export default grammar(html, {
       ),
 
     _loop_directive_body: ($) =>
-      seq($._directive_parameter, optional($._loop_body)),
+      seq(
+        field("parameter", $._directive_parameter),
+        field("body", optional($._loop_body)),
+      ),
 
     _directive_parameter: ($) => seq("(", commaSep1($.expression), ")"),
 
@@ -2013,7 +2039,7 @@ export default grammar(html, {
     string: (_) =>
       seq(
         "'",
-        repeat(choice(token(prec(1, /[^'\\]+/)), token.immediate("\\'"))),
+        repeat(choice(token(prec(3, /(\\.|[^'\\])+/)), token.immediate("\\'"))),
         "'",
       ),
 
