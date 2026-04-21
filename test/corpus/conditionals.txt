@@ -9,7 +9,7 @@
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (if
     (boolean)
     (conditional_body
       (text))))
@@ -27,10 +27,10 @@
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (if
     (boolean)
     (conditional_body
-      (conditional
+      (if
         (boolean)
         (conditional_body
           (text))))))
@@ -50,7 +50,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (if
     (boolean)
     (conditional_body
       (text)
@@ -73,7 +73,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (unless
     (boolean)
     (conditional_body
       (text))))
@@ -89,7 +89,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (isset
     (boolean)
     (conditional_body
       (text))))
@@ -105,7 +105,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (empty
     (boolean)
     (conditional_body
       (text))))
@@ -121,7 +121,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (auth
     (conditional_body
       (text))))
 
@@ -136,7 +136,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (auth
     (string)
     (conditional_body
       (text))))
@@ -152,7 +152,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (guest
     (conditional_body
       (text))))
 
@@ -167,7 +167,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (guest
     (string)
     (conditional_body
       (text))))
@@ -183,7 +183,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (production
     (conditional_body
       (text))))
 
@@ -198,7 +198,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (env
     (string)
     (conditional_body
       (text))))
@@ -214,7 +214,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (hasSection
     (string)
     (conditional_body
       (text))))
@@ -230,7 +230,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (sectionMissing
     (string)
     (conditional_body
       (text))))
@@ -246,7 +246,7 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (error
     (boolean)
     (conditional_body
       (text))))
@@ -340,11 +340,12 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
+  (feature
     (string)
     (text)
-    (string)
-    (string)
+    (else_feature
+      (string)
+      (string))
     (text)
     (conditional_keyword
       (directive))
@@ -369,8 +370,7 @@ custom directive
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
-    (directive_start)
+  (custom
     (string)
     (conditional_body
       (text)
@@ -380,14 +380,11 @@ custom directive
       (text)
       (conditional_keyword
         (directive))
-      (text))
-    (directive_end))
-  (conditional
-    (directive_start)
+      (text)))
+  (custom
     (string)
     (conditional_body
-      (text))
-    (directive_end)))
+      (text))))
 
 ================================================================================
 complex custom directive
@@ -401,14 +398,10 @@ complex custom directive
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
-    (directive_start)
+  (custom
     (string)
     (conditional_body
-      (conditional
-        (directive_start)
+      (custom
         (string)
         (conditional_body
-          (text))
-        (directive_end)))
-    (directive_end)))
+          (text))))))

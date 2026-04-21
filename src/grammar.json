@@ -97,19 +97,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "for_directive"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "foreach_directive"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "forelse_directive"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "while_directive"
+          "name": "loops"
         },
         {
           "type": "SYMBOL",
@@ -1319,19 +1307,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -1442,19 +1418,7 @@
                         },
                         {
                           "type": "SYMBOL",
-                          "name": "for_directive"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "foreach_directive"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "forelse_directive"
-                        },
-                        {
-                          "type": "SYMBOL",
-                          "name": "while_directive"
+                          "name": "loops"
                         },
                         {
                           "type": "SYMBOL",
@@ -1563,19 +1527,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -1688,19 +1640,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -1846,19 +1786,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   }
                 ]
               }
@@ -1955,19 +1883,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   }
                 ]
               }
@@ -2064,19 +1980,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   }
                 ]
               }
@@ -2173,19 +2077,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   }
                 ]
               }
@@ -2282,19 +2174,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   }
                 ]
               }
@@ -2319,59 +2199,59 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_if"
+          "name": "if"
         },
         {
           "type": "SYMBOL",
-          "name": "_unless"
+          "name": "unless"
         },
         {
           "type": "SYMBOL",
-          "name": "_isset"
+          "name": "isset"
         },
         {
           "type": "SYMBOL",
-          "name": "_empty"
+          "name": "empty"
         },
         {
           "type": "SYMBOL",
-          "name": "_auth"
+          "name": "auth"
         },
         {
           "type": "SYMBOL",
-          "name": "_guest"
+          "name": "guest"
         },
         {
           "type": "SYMBOL",
-          "name": "_production"
+          "name": "production"
         },
         {
           "type": "SYMBOL",
-          "name": "_env"
+          "name": "env"
         },
         {
           "type": "SYMBOL",
-          "name": "_hasSection"
+          "name": "hasSection"
         },
         {
           "type": "SYMBOL",
-          "name": "_sectionMissing"
+          "name": "sectionMissing"
         },
         {
           "type": "SYMBOL",
-          "name": "_error"
+          "name": "error"
         },
         {
           "type": "SYMBOL",
-          "name": "_authorization"
+          "name": "authorization"
         },
         {
           "type": "SYMBOL",
-          "name": "_feature"
+          "name": "feature"
         },
         {
           "type": "SYMBOL",
-          "name": "_custom"
+          "name": "custom"
         }
       ]
     },
@@ -2411,7 +2291,7 @@
         }
       ]
     },
-    "_if": {
+    "if": {
       "type": "SEQ",
       "members": [
         {
@@ -2448,7 +2328,7 @@
         }
       ]
     },
-    "_unless": {
+    "unless": {
       "type": "SEQ",
       "members": [
         {
@@ -2485,7 +2365,7 @@
         }
       ]
     },
-    "_isset": {
+    "isset": {
       "type": "SEQ",
       "members": [
         {
@@ -2522,7 +2402,7 @@
         }
       ]
     },
-    "_empty": {
+    "empty": {
       "type": "SEQ",
       "members": [
         {
@@ -2559,7 +2439,7 @@
         }
       ]
     },
-    "_auth": {
+    "auth": {
       "type": "SEQ",
       "members": [
         {
@@ -2604,7 +2484,7 @@
         }
       ]
     },
-    "_guest": {
+    "guest": {
       "type": "SEQ",
       "members": [
         {
@@ -2649,7 +2529,7 @@
         }
       ]
     },
-    "_production": {
+    "production": {
       "type": "SEQ",
       "members": [
         {
@@ -2682,7 +2562,7 @@
         }
       ]
     },
-    "_env": {
+    "env": {
       "type": "SEQ",
       "members": [
         {
@@ -2719,7 +2599,7 @@
         }
       ]
     },
-    "_hasSection": {
+    "hasSection": {
       "type": "SEQ",
       "members": [
         {
@@ -2756,7 +2636,7 @@
         }
       ]
     },
-    "_sectionMissing": {
+    "sectionMissing": {
       "type": "SEQ",
       "members": [
         {
@@ -2793,7 +2673,7 @@
         }
       ]
     },
-    "_error": {
+    "error": {
       "type": "SEQ",
       "members": [
         {
@@ -2830,24 +2710,24 @@
         }
       ]
     },
-    "_authorization": {
+    "authorization": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
-          "name": "_can"
+          "name": "can"
         },
         {
           "type": "SYMBOL",
-          "name": "_canany"
+          "name": "canany"
         },
         {
           "type": "SYMBOL",
-          "name": "_cannot"
+          "name": "cannot"
         }
       ]
     },
-    "_can": {
+    "can": {
       "type": "SEQ",
       "members": [
         {
@@ -2884,7 +2764,7 @@
         }
       ]
     },
-    "_cannot": {
+    "cannot": {
       "type": "SEQ",
       "members": [
         {
@@ -2921,7 +2801,7 @@
         }
       ]
     },
-    "_canany": {
+    "canany": {
       "type": "SEQ",
       "members": [
         {
@@ -2958,7 +2838,7 @@
         }
       ]
     },
-    "_feature": {
+    "feature": {
       "type": "SEQ",
       "members": [
         {
@@ -3004,7 +2884,7 @@
         }
       ]
     },
-    "_else_feature": {
+    "else_feature": {
       "type": "SEQ",
       "members": [
         {
@@ -3016,17 +2896,12 @@
           }
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "FIELD",
-              "name": "parameter",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_directive_parameter"
-              }
-            }
-          ]
+          "type": "FIELD",
+          "name": "parameter",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_directive_parameter"
+          }
         }
       ]
     },
@@ -3041,7 +2916,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "_else_feature"
+            "name": "else_feature"
           },
           {
             "type": "SYMBOL",
@@ -3097,19 +2972,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "for_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "foreach_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "forelse_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "while_directive"
+            "name": "loops"
           },
           {
             "type": "SYMBOL",
@@ -3146,24 +3009,20 @@
         ]
       }
     },
-    "_custom": {
+    "custom": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "ALIAS",
-              "content": {
+          "type": "FIELD",
+          "name": "directive_start",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
                 "type": "PATTERN",
                 "value": "@unless[a-zA-Z\\d]+"
               },
-              "named": true,
-              "value": "directive_start"
-            },
-            {
-              "type": "ALIAS",
-              "content": {
+              {
                 "type": "TOKEN",
                 "content": {
                   "type": "PREC",
@@ -3173,11 +3032,9 @@
                     "value": "@[a-zA-Z\\d]+"
                   }
                 }
-              },
-              "named": true,
-              "value": "directive_start"
-            }
-          ]
+              }
+            ]
+          }
         },
         {
           "type": "FIELD",
@@ -3196,7 +3053,8 @@
           }
         },
         {
-          "type": "ALIAS",
+          "type": "FIELD",
+          "name": "directive_start",
           "content": {
             "type": "TOKEN",
             "content": {
@@ -3207,9 +3065,7 @@
                 "value": "@end[a-zA-Z\\d]+"
               }
             }
-          },
-          "named": true,
-          "value": "directive_end"
+          }
         }
       ]
     },
@@ -3305,19 +3161,7 @@
                       },
                       {
                         "type": "SYMBOL",
-                        "name": "for_directive"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "foreach_directive"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "forelse_directive"
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "while_directive"
+                        "name": "loops"
                       },
                       {
                         "type": "SYMBOL",
@@ -3421,19 +3265,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -3467,6 +3299,27 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "loops": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "for_directive"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "foreach_directive"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "forelse_directive"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "while_directive"
         }
       ]
     },
@@ -4364,19 +4217,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "for_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "foreach_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "forelse_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "while_directive"
+                "name": "loops"
               },
               {
                 "type": "SYMBOL",
@@ -4473,19 +4314,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "for_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "foreach_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "forelse_directive"
-              },
-              {
-                "type": "SYMBOL",
-                "name": "while_directive"
+                "name": "loops"
               },
               {
                 "type": "SYMBOL",
@@ -4577,19 +4406,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -4686,19 +4503,7 @@
                   },
                   {
                     "type": "SYMBOL",
-                    "name": "for_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "foreach_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "forelse_directive"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "while_directive"
+                    "name": "loops"
                   },
                   {
                     "type": "SYMBOL",
@@ -4789,19 +4594,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "for_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "foreach_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "forelse_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "while_directive"
+            "name": "loops"
           },
           {
             "type": "SYMBOL",
@@ -5009,19 +4802,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "for_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "foreach_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "forelse_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "while_directive"
+            "name": "loops"
           },
           {
             "type": "SYMBOL",
@@ -5089,19 +4870,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "for_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "foreach_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "forelse_directive"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "while_directive"
+            "name": "loops"
           },
           {
             "type": "SYMBOL",
@@ -10201,7 +9970,9 @@
     "primary_expression",
     "type",
     "literal",
-    "php_statement"
+    "php_statement",
+    "conditional",
+    "loops"
   ],
   "reserved": {}
 }

@@ -219,7 +219,7 @@ loop and conditionals
       (name))
     (variable_name
       (name))
-    (conditional
+    (if
       (boolean)
       (conditional_body
         (element

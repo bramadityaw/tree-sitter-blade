@@ -25,12 +25,10 @@ test@test.com
 
 (document
   (text)
-  (conditional
-    (directive_start)
+  (custom
     (string)
     (conditional_body
-      (text))
-    (directive_end)))
+      (text))))
 
 ================================================================================
 Comments Ending with Punctuation Conflict

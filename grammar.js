@@ -286,7 +286,9 @@ var grammar_default = grammar(import_grammar.default, {
     $.primary_expression,
     $.type,
     $.literal,
-    $.php_statement
+    $.php_statement,
+    $.conditional,
+    $.loops
   ],
   rules: {
     // The entire grammar
@@ -307,10 +309,7 @@ var grammar_default = grammar(import_grammar.default, {
         $.props,
         $.comment,
         $.switch,
-        $.for_directive,
-        $.foreach_directive,
-        $.forelse_directive,
-        $.while_directive,
+        $.loops,
         $.envoy,
         $.livewire,
         // nested
@@ -721,20 +720,20 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     // !Conditionals
     conditional: ($) => choice(
-      $._if,
-      $._unless,
-      $._isset,
-      $._empty,
-      $._auth,
-      $._guest,
-      $._production,
-      $._env,
-      $._hasSection,
-      $._sectionMissing,
-      $._error,
-      $._authorization,
-      $._feature,
-      $._custom
+      $.if,
+      $.unless,
+      $.isset,
+      $.empty,
+      $.auth,
+      $.guest,
+      $.production,
+      $.env,
+      $.hasSection,
+      $.sectionMissing,
+      $.error,
+      $.authorization,
+      $.feature,
+      $.custom
     ),
     // used in the conditional body rules
     conditional_keyword: ($) => choice(
@@ -744,93 +743,93 @@ var grammar_default = grammar(import_grammar.default, {
         field("parameter", $._directive_parameter)
       )
     ),
-    _if: ($) => seq(
+    if: ($) => seq(
       field("directive_start", "@if"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endif")
     ),
-    _unless: ($) => seq(
+    unless: ($) => seq(
       field("directive_start", "@unless"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endunless")
     ),
-    _isset: ($) => seq(
+    isset: ($) => seq(
       field("directive_start", "@isset"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endisset")
     ),
-    _empty: ($) => seq(
+    empty: ($) => seq(
       field("directive_start", "@empty"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endempty")
     ),
-    _auth: ($) => seq(
+    auth: ($) => seq(
       field("directive_start", "@auth"),
       field("parameter", optional($._directive_parameter)),
       field("body", $.conditional_body),
       field("directive_end", "@endauth")
     ),
-    _guest: ($) => seq(
+    guest: ($) => seq(
       field("directive_start", "@guest"),
       field("parameter", optional($._directive_parameter)),
       field("body", $.conditional_body),
       field("directive_end", "@endguest")
     ),
-    _production: ($) => seq(
+    production: ($) => seq(
       field("directive_start", "@production"),
       optional($.conditional_body),
       field("directive_end", "@endproduction")
     ),
-    _env: ($) => seq(
+    env: ($) => seq(
       field("directive_start", "@env"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endenv")
     ),
-    _hasSection: ($) => seq(
+    hasSection: ($) => seq(
       field("directive_start", "@hasSection"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endif")
     ),
-    _sectionMissing: ($) => seq(
+    sectionMissing: ($) => seq(
       field("directive_start", "@sectionMissing"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endif")
     ),
-    _error: ($) => seq(
+    error: ($) => seq(
       field("directive_start", "@error"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@enderror")
     ),
     // !Authorisation Directives
-    _authorization: ($) => choice($._can, $._canany, $._cannot),
-    _can: ($) => seq(
+    authorization: ($) => choice($.can, $.canany, $.cannot),
+    can: ($) => seq(
       field("directive_start", "@can"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endcan")
     ),
-    _cannot: ($) => seq(
+    cannot: ($) => seq(
       field("directive_start", "@cannot"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endcannot")
     ),
-    _canany: ($) => seq(
+    canany: ($) => seq(
       field("directive_start", "@canany"),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
       field("directive_end", "@endcanany")
     ),
     // !Laravel Pennant
-    _feature: ($) => seq(
+    feature: ($) => seq(
       field("directive_start", "@feature"),
       seq(
         field("parameter", $._directive_parameter),
@@ -838,29 +837,33 @@ var grammar_default = grammar(import_grammar.default, {
       ),
       field("directive_end", "@endfeature")
     ),
-    _else_feature: ($) => seq(
+    else_feature: ($) => seq(
       field("directive", "@elsefeature"),
-      choice(
-        field("parameter", $._directive_parameter)
-      )
+      field("parameter", $._directive_parameter)
     ),
     _feature_body: ($) => repeat1(
       choice(
         ...nodes.with(
           $.conditional_keyword,
-          $._else_feature
+          $.else_feature
         ).all()
       )
     ),
     // !Custom if Statements
-    _custom: ($) => seq(
-      choice(
-        alias(/@unless[a-zA-Z\d]+/, $.directive_start),
-        alias(token(prec(-1, /@[a-zA-Z\d]+/)), $.directive_start)
+    custom: ($) => seq(
+      field(
+        "directive_start",
+        choice(
+          /@unless[a-zA-Z\d]+/,
+          token(prec(-1, /@[a-zA-Z\d]+/))
+        )
       ),
       field("parameter", $._directive_parameter),
       field("body", $.conditional_body),
-      alias(token(prec(1, /@end[a-zA-Z\d]+/)), $.directive_end)
+      field(
+        "directive_start",
+        token(prec(1, /@end[a-zA-Z\d]+/))
+      )
     ),
     // !switch
     switch: ($) => seq(
@@ -908,6 +911,12 @@ var grammar_default = grammar(import_grammar.default, {
         )
       ),
       optional(alias("@break", $.directive))
+    ),
+    loops: ($) => choice(
+      $.for_directive,
+      $.foreach_directive,
+      $.forelse_directive,
+      $.while_directive
     ),
     // !Loops
     _forelse_loop_operator: ($) => choice(
