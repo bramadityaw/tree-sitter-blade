@@ -22,6 +22,12 @@
         "generate"
       ]
     },
+    "generate-ast": {
+      "command": "cargo build -p ast",
+      "dependencies": [
+        "generate"
+      ]
+    },
     "generate": {
       "command": "deno task build",
       "dependencies": [
