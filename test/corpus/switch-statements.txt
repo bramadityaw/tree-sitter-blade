@@ -26,19 +26,15 @@
   (switch
     (variable_name
       (name))
-    (directive)
-    (integer)
-    (text)
-    (directive)
-    (directive)
-    (integer)
-    (text)
-    (directive)
-    (directive)
-    (integer)
-    (directive)
-    (integer)
-    (text)
-    (directive)
-    (directive)
+    (case
+      (integer)
+      (text))
+    (case
+      (integer)
+      (text))
+    (case
+      (integer))
+    (case
+      (integer)
+      (text))
     (text)))

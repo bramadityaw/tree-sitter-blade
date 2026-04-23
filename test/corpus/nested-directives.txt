@@ -36,8 +36,7 @@
   (text)
   (section
     (string))
-  (keyword
-    (directive))
+  (keyword)
   (text))
 
 ================================================================================
@@ -110,11 +109,11 @@
     (script_element
       (start_tag
         (tag_name)
-        (attribute
+        (html_attribute
           (attribute_name)
           (quoted_attribute_value
             (attribute_value)))
-        (attribute
+        (html_attribute
           (attribute_name)))
       (raw_text)
       (end_tag
@@ -122,15 +121,15 @@
     (element
       (self_closing_tag
         (tag_name)
-        (attribute
+        (html_attribute
           (attribute_name)
           (quoted_attribute_value
             (attribute_value)))
-        (attribute
+        (html_attribute
           (attribute_name)
           (quoted_attribute_value
             (attribute_value)))
-        (attribute
+        (html_attribute
           (attribute_name)
           (quoted_attribute_value
             (attribute_value)))))))

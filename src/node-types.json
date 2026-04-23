@@ -1,5 +1,31 @@
 [
   {
+    "type": "attribute",
+    "named": true,
+    "subtypes": [
+      {
+        "type": "blade_attribute",
+        "named": true
+      },
+      {
+        "type": "expression_attribute",
+        "named": true
+      },
+      {
+        "type": "html_attribute",
+        "named": true
+      },
+      {
+        "type": "php_statement",
+        "named": true
+      },
+      {
+        "type": "short_attribute",
+        "named": true
+      }
+    ]
+  },
+  {
     "type": "conditional",
     "named": true,
     "subtypes": [
@@ -9,6 +35,10 @@
       },
       {
         "type": "authorization",
+        "named": true
+      },
+      {
+        "type": "context",
         "named": true
       },
       {
@@ -53,6 +83,10 @@
       },
       {
         "type": "sectionMissing",
+        "named": true
+      },
+      {
+        "type": "session",
         "named": true
       },
       {
@@ -636,64 +670,6 @@
     }
   },
   {
-    "type": "attribute",
-    "named": true,
-    "fields": {
-      "parameter": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "attribute_name",
-          "named": true
-        },
-        {
-          "type": "attribute_value",
-          "named": true
-        },
-        {
-          "type": "directive",
-          "named": true
-        },
-        {
-          "type": "php_statement",
-          "named": true
-        },
-        {
-          "type": "quoted_attribute_value",
-          "named": true
-        },
-        {
-          "type": "variable_name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "attribute_group",
     "named": true,
     "fields": {},
@@ -1095,6 +1071,62 @@
     }
   },
   {
+    "type": "blade_attribute",
+    "named": true,
+    "fields": {
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "break",
+    "named": true,
+    "fields": {
+      "parameter": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "by_ref",
     "named": true,
     "fields": {},
@@ -1289,6 +1321,96 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "case",
+    "named": true,
+    "fields": {
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "comment",
+          "named": true
+        },
+        {
+          "type": "conditional",
+          "named": true
+        },
+        {
+          "type": "element",
+          "named": true
+        },
+        {
+          "type": "entity",
+          "named": true
+        },
+        {
+          "type": "erroneous_end_tag",
+          "named": true
+        },
+        {
+          "type": "inline_directive",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "livewire",
+          "named": true
+        },
+        {
+          "type": "loops",
+          "named": true
+        },
+        {
+          "type": "php_statement",
+          "named": true
+        },
+        {
+          "type": "props",
+          "named": true
+        },
+        {
+          "type": "script_element",
+          "named": true
+        },
+        {
+          "type": "style_element",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1521,6 +1643,79 @@
   {
     "type": "conditional_keyword",
     "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "elseif",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "context",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "conditional_body",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endcontext",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@context",
+            "named": false
+          }
+        ]
+      },
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "continue",
+    "named": true,
     "fields": {
       "parameter": {
         "multiple": true,
@@ -1544,16 +1739,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "directive",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -1870,6 +2055,44 @@
         "types": [
           {
             "type": "@elsefeature",
+            "named": false
+          }
+        ]
+      },
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "elseif",
+    "named": true,
+    "fields": {
+      "directive": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@elseif",
             "named": false
           }
         ]
@@ -2275,6 +2498,25 @@
     }
   },
   {
+    "type": "expression_attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute_name",
+          "named": true
+        },
+        {
+          "type": "quoted_attribute_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "feature",
     "named": true,
     "fields": {
@@ -2433,16 +2675,8 @@
         "required": false,
         "types": [
           {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
+            "type": "break",
+            "named": true
           },
           {
             "type": "comment",
@@ -2453,7 +2687,7 @@
             "named": true
           },
           {
-            "type": "directive",
+            "type": "continue",
             "named": true
           },
           {
@@ -2466,10 +2700,6 @@
           },
           {
             "type": "erroneous_end_tag",
-            "named": true
-          },
-          {
-            "type": "expression",
             "named": true
           },
           {
@@ -2558,28 +2788,6 @@
           }
         ]
       },
-      "parameter": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
       "update": {
         "multiple": false,
         "required": false,
@@ -2605,16 +2813,8 @@
         "required": false,
         "types": [
           {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
+            "type": "break",
+            "named": true
           },
           {
             "type": "comment",
@@ -2625,7 +2825,7 @@
             "named": true
           },
           {
-            "type": "directive",
+            "type": "continue",
             "named": true
           },
           {
@@ -2638,10 +2838,6 @@
           },
           {
             "type": "erroneous_end_tag",
-            "named": true
-          },
-          {
-            "type": "expression",
             "named": true
           },
           {
@@ -2701,28 +2897,6 @@
             "named": false
           }
         ]
-      },
-      "parameter": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
       }
     },
     "children": {
@@ -2757,16 +2931,12 @@
         "required": false,
         "types": [
           {
-            "type": "(",
+            "type": "@empty",
             "named": false
           },
           {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
+            "type": "break",
+            "named": true
           },
           {
             "type": "comment",
@@ -2777,7 +2947,7 @@
             "named": true
           },
           {
-            "type": "directive",
+            "type": "continue",
             "named": true
           },
           {
@@ -2790,10 +2960,6 @@
           },
           {
             "type": "erroneous_end_tag",
-            "named": true
-          },
-          {
-            "type": "expression",
             "named": true
           },
           {
@@ -2851,28 +3017,6 @@
           {
             "type": "@forelse",
             "named": false
-          }
-        ]
-      },
-      "parameter": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
           }
         ]
       }
@@ -3228,6 +3372,29 @@
     }
   },
   {
+    "type": "html_attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attribute_name",
+          "named": true
+        },
+        {
+          "type": "attribute_value",
+          "named": true
+        },
+        {
+          "type": "quoted_attribute_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "if",
     "named": true,
     "fields": {
@@ -3289,6 +3456,128 @@
     "type": "inline_directive",
     "named": true,
     "fields": {
+      "directive": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@asset",
+            "named": false
+          },
+          {
+            "type": "@aware",
+            "named": false
+          },
+          {
+            "type": "@each",
+            "named": false
+          },
+          {
+            "type": "@extends",
+            "named": false
+          },
+          {
+            "type": "@extract",
+            "named": false
+          },
+          {
+            "type": "@field",
+            "named": false
+          },
+          {
+            "type": "@import",
+            "named": false
+          },
+          {
+            "type": "@include",
+            "named": false
+          },
+          {
+            "type": "@includeFirst",
+            "named": false
+          },
+          {
+            "type": "@includeIf",
+            "named": false
+          },
+          {
+            "type": "@includeIsolated",
+            "named": false
+          },
+          {
+            "type": "@includeUnless",
+            "named": false
+          },
+          {
+            "type": "@includeWhen",
+            "named": false
+          },
+          {
+            "type": "@inject",
+            "named": false
+          },
+          {
+            "type": "@js",
+            "named": false
+          },
+          {
+            "type": "@json",
+            "named": false
+          },
+          {
+            "type": "@livewire",
+            "named": false
+          },
+          {
+            "type": "@method",
+            "named": false
+          },
+          {
+            "type": "@options",
+            "named": false
+          },
+          {
+            "type": "@script",
+            "named": false
+          },
+          {
+            "type": "@servers",
+            "named": false
+          },
+          {
+            "type": "@set",
+            "named": false
+          },
+          {
+            "type": "@stack",
+            "named": false
+          },
+          {
+            "type": "@svg",
+            "named": false
+          },
+          {
+            "type": "@thumbnail",
+            "named": false
+          },
+          {
+            "type": "@use",
+            "named": false
+          },
+          {
+            "type": "@vite",
+            "named": false
+          },
+          {
+            "type": "@wireUiScripts",
+            "named": false
+          },
+          {
+            "type": "@yield",
+            "named": false
+          }
+        ]
+      },
       "parameter": {
         "multiple": true,
         "required": true,
@@ -3311,16 +3600,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "directive",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -3445,17 +3724,7 @@
   {
     "type": "keyword",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "directive",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "list_literal",
@@ -4858,6 +5127,64 @@
     }
   },
   {
+    "type": "session",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "conditional_body",
+            "named": true
+          }
+        ]
+      },
+      "directive_end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@endsession",
+            "named": false
+          }
+        ]
+      },
+      "directive_start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@session",
+            "named": false
+          }
+        ]
+      },
+      "parameter": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "setup",
     "named": true,
     "fields": {
@@ -4888,6 +5215,21 @@
       "types": [
         {
           "type": "php_only",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "short_attribute",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "variable_name",
           "named": true
         }
       ]
@@ -5272,15 +5614,15 @@
       "required": false,
       "types": [
         {
+          "type": "case",
+          "named": true
+        },
+        {
           "type": "comment",
           "named": true
         },
         {
           "type": "conditional",
-          "named": true
-        },
-        {
-          "type": "directive",
           "named": true
         },
         {
@@ -5734,16 +6076,8 @@
         "required": false,
         "types": [
           {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
+            "type": "break",
+            "named": true
           },
           {
             "type": "comment",
@@ -5754,7 +6088,7 @@
             "named": true
           },
           {
-            "type": "directive",
+            "type": "continue",
             "named": true
           },
           {
@@ -5767,10 +6101,6 @@
           },
           {
             "type": "erroneous_end_tag",
-            "named": true
-          },
-          {
-            "type": "expression",
             "named": true
           },
           {
@@ -5838,28 +6168,6 @@
           {
             "type": "@while",
             "named": false
-          }
-        ]
-      },
-      "parameter": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
           }
         ]
       }
@@ -6094,6 +6402,10 @@
     "named": false
   },
   {
+    "type": "@asset",
+    "named": false
+  },
+  {
     "type": "@assets",
     "named": false
   },
@@ -6102,7 +6414,15 @@
     "named": false
   },
   {
+    "type": "@aware",
+    "named": false
+  },
+  {
     "type": "@before",
+    "named": false
+  },
+  {
+    "type": "@break",
     "named": false
   },
   {
@@ -6118,7 +6438,55 @@
     "named": false
   },
   {
+    "type": "@case",
+    "named": false
+  },
+  {
+    "type": "@checked",
+    "named": false
+  },
+  {
+    "type": "@class",
+    "named": false
+  },
+  {
+    "type": "@content",
+    "named": false
+  },
+  {
+    "type": "@context",
+    "named": false
+  },
+  {
+    "type": "@continue",
+    "named": false
+  },
+  {
+    "type": "@csrf",
+    "named": false
+  },
+  {
+    "type": "@default",
+    "named": false
+  },
+  {
+    "type": "@disabled",
+    "named": false
+  },
+  {
+    "type": "@each",
+    "named": false
+  },
+  {
+    "type": "@else",
+    "named": false
+  },
+  {
     "type": "@elsefeature",
+    "named": false
+  },
+  {
+    "type": "@elseif",
     "named": false
   },
   {
@@ -6163,6 +6531,10 @@
   },
   {
     "type": "@endcannot",
+    "named": false
+  },
+  {
+    "type": "@endcontext",
     "named": false
   },
   {
@@ -6242,6 +6614,10 @@
     "named": false
   },
   {
+    "type": "@endsession",
+    "named": false
+  },
+  {
     "type": "@endsetup",
     "named": false
   },
@@ -6290,7 +6666,23 @@
     "named": false
   },
   {
+    "type": "@excerpt",
+    "named": false
+  },
+  {
+    "type": "@extends",
+    "named": false
+  },
+  {
+    "type": "@extract",
+    "named": false
+  },
+  {
     "type": "@feature",
+    "named": false
+  },
+  {
+    "type": "@field",
     "named": false
   },
   {
@@ -6326,11 +6718,91 @@
     "named": false
   },
   {
+    "type": "@import",
+    "named": false
+  },
+  {
+    "type": "@include",
+    "named": false
+  },
+  {
+    "type": "@includeFirst",
+    "named": false
+  },
+  {
+    "type": "@includeIf",
+    "named": false
+  },
+  {
+    "type": "@includeIsolated",
+    "named": false
+  },
+  {
+    "type": "@includeUnless",
+    "named": false
+  },
+  {
+    "type": "@includeWhen",
+    "named": false
+  },
+  {
+    "type": "@inertia",
+    "named": false
+  },
+  {
+    "type": "@inertiaHead",
+    "named": false
+  },
+  {
+    "type": "@inject",
+    "named": false
+  },
+  {
     "type": "@isset",
     "named": false
   },
   {
+    "type": "@js",
+    "named": false
+  },
+  {
+    "type": "@json",
+    "named": false
+  },
+  {
+    "type": "@livewire",
+    "named": false
+  },
+  {
+    "type": "@livewireScriptConfig",
+    "named": false
+  },
+  {
+    "type": "@livewireScripts",
+    "named": false
+  },
+  {
+    "type": "@livewireStyles",
+    "named": false
+  },
+  {
+    "type": "@method",
+    "named": false
+  },
+  {
     "type": "@once",
+    "named": false
+  },
+  {
+    "type": "@options",
+    "named": false
+  },
+  {
+    "type": "@parent",
+    "named": false
+  },
+  {
+    "type": "@permalink",
     "named": false
   },
   {
@@ -6370,6 +6842,18 @@
     "named": false
   },
   {
+    "type": "@readonly",
+    "named": false
+  },
+  {
+    "type": "@required",
+    "named": false
+  },
+  {
+    "type": "@routes",
+    "named": false
+  },
+  {
     "type": "@script",
     "named": false
   },
@@ -6382,7 +6866,27 @@
     "named": false
   },
   {
+    "type": "@selected",
+    "named": false
+  },
+  {
+    "type": "@servers",
+    "named": false
+  },
+  {
+    "type": "@session",
+    "named": false
+  },
+  {
+    "type": "@set",
+    "named": false
+  },
+  {
     "type": "@setup",
+    "named": false
+  },
+  {
+    "type": "@stack",
     "named": false
   },
   {
@@ -6390,7 +6894,15 @@
     "named": false
   },
   {
+    "type": "@style",
+    "named": false
+  },
+  {
     "type": "@success",
+    "named": false
+  },
+  {
+    "type": "@svg",
     "named": false
   },
   {
@@ -6406,11 +6918,31 @@
     "named": false
   },
   {
+    "type": "@thumbnail",
+    "named": false
+  },
+  {
+    "type": "@title",
+    "named": false
+  },
+  {
     "type": "@unless",
     "named": false
   },
   {
+    "type": "@use",
+    "named": false
+  },
+  {
     "type": "@verbatim",
+    "named": false
+  },
+  {
+    "type": "@vite",
+    "named": false
+  },
+  {
+    "type": "@viteReactRefresh",
     "named": false
   },
   {
@@ -6419,6 +6951,14 @@
   },
   {
     "type": "@while",
+    "named": false
+  },
+  {
+    "type": "@wireUiScripts",
+    "named": false
+  },
+  {
+    "type": "@yield",
     "named": false
   },
   {

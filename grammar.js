@@ -288,7 +288,8 @@ var grammar_default = grammar(import_grammar.default, {
     $.literal,
     $.php_statement,
     $.conditional,
-    $.loops
+    $.loops,
+    $.attribute
   ],
   rules: {
     // The entire grammar
@@ -326,26 +327,23 @@ var grammar_default = grammar(import_grammar.default, {
     // https://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     comment: (_) => token(prec(PREC.COMMENT, seq("{{--", /[^-]*-+([^}-][^-]*-+)*/, "}}"))),
     // !keywords
-    keyword: ($) => alias(
-      choice(
-        "@csrf",
-        "@viteReactRefresh",
-        "@livewireStyles",
-        "@livewireScripts",
-        "@livewireScriptConfig",
-        "@parent",
-        "@inertia",
-        "@inertiaHead",
-        // log1x/sage-directives #77
-        "@routes",
-        "@permalink",
-        "@title",
-        "@content",
-        "@excerpt",
-        // WireUI
-        "@wireUiScripts"
-      ),
-      $.directive
+    keyword: (_) => choice(
+      "@csrf",
+      "@viteReactRefresh",
+      "@livewireStyles",
+      "@livewireScripts",
+      "@livewireScriptConfig",
+      "@parent",
+      "@inertia",
+      "@inertiaHead",
+      // log1x/sage-directives #77
+      "@routes",
+      "@permalink",
+      "@title",
+      "@content",
+      "@excerpt",
+      // WireUI
+      "@wireUiScripts"
     ),
     // ! PHP Statements
     php_statement: ($) => choice(
@@ -390,10 +388,10 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     // tree-sitter-html override
     attribute: ($) => choice(
-      $._blade_attribute,
-      $._html_attribute,
-      $._expression_attribute,
-      $._short_attribute,
+      $.blade_attribute,
+      $.html_attribute,
+      $.expression_attribute,
+      $.short_attribute,
       $.php_statement
     ),
     attribute_name: (_) => token(prec(-1, /[^<>"'/=\s]+/)),
@@ -447,7 +445,7 @@ var grammar_default = grammar(import_grammar.default, {
       )
     ),
     // utilised from tree-sitter-html
-    _html_attribute: ($) => seq(
+    html_attribute: ($) => seq(
       $.attribute_name,
       optional(
         seq(
@@ -456,7 +454,7 @@ var grammar_default = grammar(import_grammar.default, {
         )
       )
     ),
-    _expression_attribute: ($) => seq(
+    expression_attribute: ($) => seq(
       ":",
       $.attribute_name,
       seq(
@@ -464,33 +462,32 @@ var grammar_default = grammar(import_grammar.default, {
         alias($._quoted_expression, $.quoted_attribute_value)
       )
     ),
-    _short_attribute: ($) => seq(":", $.variable_name),
+    short_attribute: ($) => seq(":", $.variable_name),
     // ! Conditional Blade Attribute Directives
-    _blade_attribute: ($) => seq(
-      alias(
-        choice(
-          "@class",
-          "@style",
-          "@checked",
-          "@selected",
-          "@disabled",
-          "@readonly",
-          "@required"
-        ),
-        $.directive
+    blade_attribute: ($) => seq(
+      choice(
+        "@class",
+        "@style",
+        "@checked",
+        "@selected",
+        "@disabled",
+        "@readonly",
+        "@required"
       ),
       field("parameter", $._directive_parameter)
     ),
     // !inline directives
     inline_directive: ($) => choice(
       seq(
-        alias(
+        field(
+          "directive",
           choice(
             "@include",
             "@includeIf",
             "@includeWhen",
             "@includeUnless",
             "@includeFirst",
+            "@includeIsolated",
             "@extends",
             "@yield",
             "@method",
@@ -517,8 +514,7 @@ var grammar_default = grammar(import_grammar.default, {
             "@options",
             // WireUI
             "@wireUiScripts"
-          ),
-          $.directive
+          )
         ),
         field("parameter", $._directive_parameter)
       )
@@ -733,15 +729,30 @@ var grammar_default = grammar(import_grammar.default, {
       $.error,
       $.authorization,
       $.feature,
-      $.custom
+      $.custom,
+      $.session,
+      $.context
+    ),
+    session: ($) => seq(
+      field("directive_start", "@session"),
+      field("parameter", $._directive_parameter),
+      field("body", $.conditional_body),
+      field("directive_end", "@endsession")
+    ),
+    context: ($) => seq(
+      field("directive_start", "@context"),
+      field("parameter", $._directive_parameter),
+      field("body", $.conditional_body),
+      field("directive_end", "@endcontext")
     ),
     // used in the conditional body rules
     conditional_keyword: ($) => choice(
-      alias("@else", $.directive),
-      seq(
-        alias(/@(elseif|else[a-zA-Z]+)/, $.directive),
-        field("parameter", $._directive_parameter)
-      )
+      "@else",
+      $.elseif
+    ),
+    elseif: ($) => seq(
+      field("directive", choice("@elseif", /@else[a-zA-Z]+/)),
+      field("parameter", $._directive_parameter)
     ),
     if: ($) => seq(
       field("directive_start", "@if"),
@@ -869,10 +880,10 @@ var grammar_default = grammar(import_grammar.default, {
     switch: ($) => seq(
       field("directive_start", "@switch"),
       field("parameter", $._directive_parameter),
-      repeat($._case),
+      repeat($.case),
       optional(
         seq(
-          alias("@default", $.directive),
+          "@default",
           repeat1(
             choice(
               ...nodes.without(
@@ -891,8 +902,8 @@ var grammar_default = grammar(import_grammar.default, {
       ),
       field("directive_end", "@endswitch")
     ),
-    _case: ($) => seq(
-      alias("@case", $.directive),
+    case: ($) => seq(
+      "@case",
       field("parameter", $._directive_parameter),
       optional(
         repeat1(
@@ -910,7 +921,7 @@ var grammar_default = grammar(import_grammar.default, {
           )
         )
       ),
-      optional(alias("@break", $.directive))
+      optional("@break")
     ),
     loops: ($) => choice(
       $.for_directive,
@@ -921,12 +932,11 @@ var grammar_default = grammar(import_grammar.default, {
     // !Loops
     _forelse_loop_operator: ($) => choice(
       $._loop_operator,
-      alias("@empty", $.directive)
+      "@empty"
     ),
-    _loop_operator: ($) => seq(
-      alias(/@(continue|break)/, $.directive),
-      optional(field("parameter", $._directive_parameter))
-    ),
+    _loop_operator: ($) => choice($.continue, $.break),
+    continue: ($) => seq("@continue", optional(field("parameter", $._directive_parameter))),
+    break: ($) => seq("@break", optional(field("parameter", $._directive_parameter))),
     for_directive: ($) => seq(
       field("directive_start", "@for"),
       "(",

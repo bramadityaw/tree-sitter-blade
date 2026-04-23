@@ -94,8 +94,7 @@
       (string)
       (string))
     (text)
-    (conditional_keyword
-      (directive))
+    (conditional_keyword)
     (text)))
 
 ================================================================================
@@ -122,11 +121,10 @@ custom directive
     (conditional_body
       (text)
       (conditional_keyword
-        (directive)
-        (string))
+        (elseif
+          (string)))
       (text)
-      (conditional_keyword
-        (directive))
+      (conditional_keyword)
       (text)))
   (custom
     (string)

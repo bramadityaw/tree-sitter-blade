@@ -40,7 +40,7 @@ Heavily Nested
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (attribute_value))))
@@ -111,7 +111,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -123,7 +123,7 @@ PHP syntax inside attribute values
   (element
     (self_closing_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -132,7 +132,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
@@ -145,7 +145,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
@@ -159,7 +159,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -172,7 +172,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -184,7 +184,7 @@ PHP syntax inside attribute values
   (element
     (self_closing_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -193,7 +193,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
@@ -206,7 +206,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (attribute_value)
@@ -220,7 +220,7 @@ PHP syntax inside attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
           (escaped
@@ -244,7 +244,7 @@ Expression attribute values
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (expression_attribute
         (attribute_name)
         (quoted_attribute_value
           (variable_name
@@ -255,7 +255,7 @@ Expression attribute values
   (element
     (self_closing_tag
       (tag_name)
-      (attribute
+      (expression_attribute
         (attribute_name)
         (quoted_attribute_value
           (variable_name
@@ -274,7 +274,7 @@ Short attribute syntax
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (short_attribute
         (variable_name
           (name))))
     (text)
@@ -283,6 +283,6 @@ Short attribute syntax
   (element
     (self_closing_tag
       (tag_name)
-      (attribute
+      (short_attribute
         (variable_name
           (name))))))

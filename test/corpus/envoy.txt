@@ -8,7 +8,6 @@
 
 (document
   (inline_directive
-    (directive)
     (array_creation_expression
       (array_element_initializer
         (array_element_key_value_initializer
@@ -34,7 +33,6 @@
 
 (document
   (inline_directive
-    (directive)
     (string)))
 
 ================================================================================
@@ -94,7 +92,6 @@
 
 (document
   (inline_directive
-    (directive)
     (array_creation_expression
       (array_element_initializer
         (array_element_key_value_initializer

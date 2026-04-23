@@ -55,11 +55,10 @@ conditional keywords
     (conditional_body
       (text)
       (conditional_keyword
-        (directive)
-        (boolean))
+        (elseif
+          (boolean)))
       (text)
-      (conditional_keyword
-        (directive))
+      (conditional_keyword)
       (text))))
 
 ================================================================================
@@ -347,8 +346,7 @@ conditional keywords
       (string)
       (string))
     (text)
-    (conditional_keyword
-      (directive))
+    (conditional_keyword)
     (text)))
 
 ================================================================================
@@ -375,11 +373,10 @@ custom directive
     (conditional_body
       (text)
       (conditional_keyword
-        (directive)
-        (string))
+        (elseif
+          (string)))
       (text)
-      (conditional_keyword
-        (directive))
+      (conditional_keyword)
       (text)))
   (custom
     (string)

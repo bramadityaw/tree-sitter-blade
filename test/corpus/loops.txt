@@ -117,7 +117,6 @@
           (name)))
       (end_tag
         (tag_name)))
-    (directive)
     (element
       (start_tag
         (tag_name))
@@ -145,13 +144,13 @@
       (name))
     (variable_name
       (name))
-    (directive)
-    (binary_expression
-      (member_access_expression
-        (variable_name
+    (continue
+      (binary_expression
+        (member_access_expression
+          (variable_name
+            (name))
           (name))
-        (name))
-      (integer))
+        (integer)))
     (element
       (start_tag
         (tag_name))
@@ -162,13 +161,13 @@
           (name)))
       (end_tag
         (tag_name)))
-    (directive)
-    (binary_expression
-      (member_access_expression
-        (variable_name
+    (break
+      (binary_expression
+        (member_access_expression
+          (variable_name
+            (name))
           (name))
-        (name))
-      (integer))))
+        (integer)))))
 
 ================================================================================
 @foreach with casted parameter
