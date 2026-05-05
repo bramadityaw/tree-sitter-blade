@@ -122,6 +122,7 @@ export default grammar(html, {
           $.keyword,
           $.php_statement,
           $.inline_directive,
+          $.wire_ui,
           $.props,
           $.comment,
           $.switch,
@@ -161,8 +162,6 @@ export default grammar(html, {
         "@title",
         "@content",
         "@excerpt",
-        // WireUI
-        "@wireUiScripts",
       ),
 
     // ! PHP Statements
@@ -359,12 +358,39 @@ export default grammar(html, {
               // ACF (Advanced Custom Fields)
               "@field",
               "@options",
-              // WireUI
-              "@wireUiScripts",
             ),
           ),
           field("parameter", $._directive_parameter),
         ),
+      ),
+
+    // WireUI
+    wire_ui: ($) =>
+      seq(
+        "@wireUiScripts",
+        field("parameter", optional($._wire_ui_param)),
+      ),
+
+    _wire_ui_param: ($) =>
+      seq(
+        "(",
+        "[",
+        commaSep(
+          choice(
+            $.array_element_initializer,
+            $.wire_ui_script_attribute,
+          ),
+        ),
+        optional(","),
+        "]",
+        ")",
+      ),
+
+    wire_ui_script_attribute: ($) =>
+      seq(
+        field("name", $.expression),
+        ":",
+        field("value", $.expression),
       ),
 
     props: ($) =>
@@ -1520,6 +1546,8 @@ export default grammar(html, {
         $.parenthesized_expression,
         $.function_call_expression,
         $.scoped_call_expression,
+        $.member_call_expression,
+        $.nullsafe_member_call_expression,
         $.class_constant_access_expression,
         $.qualified_name,
         $.relative_name,
@@ -1757,8 +1785,13 @@ export default grammar(html, {
         PREC.DEREF,
         choice(
           $._variable,
+          $.function_call_expression,
+          $.member_call_expression,
+          $.nullsafe_member_call_expression,
+          $.class_constant_access_expression,
           $.parenthesized_expression,
           $.array_creation_expression,
+          $._name,
         ),
       ),
 
@@ -1931,12 +1964,6 @@ export default grammar(html, {
         ),
       ),
 
-    qualified_name: ($) =>
-      seq(
-        field("prefix", choice($.namespace_name, "\\")),
-        $.name,
-      ),
-
     relative_name: ($) =>
       seq(
         field(
@@ -2005,8 +2032,14 @@ export default grammar(html, {
 
     namespace_name: ($) =>
       seq(
-        alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name),
-        repeat1(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name))),
+        $.name,
+        repeat(seq("\\", $.name)),
+      ),
+
+    qualified_name: ($) =>
+      seq(
+        field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
+        $.name,
       ),
 
     array_creation_expression: ($) =>

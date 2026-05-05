@@ -265,7 +265,15 @@
 --------------------------------------------------------------------------------
 
 (document
-  (directive)
-  (parameter)
-  (directive)
-  (parameter))
+  (wire_ui
+    (wire_ui_script_attribute
+      (string)
+      (string)))
+  (wire_ui
+    (wire_ui_script_attribute
+      (string)
+      (string))
+    (array_element_initializer
+      (array_element_key_value_initializer
+        (string)
+        (boolean)))))

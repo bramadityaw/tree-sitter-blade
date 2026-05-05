@@ -134,7 +134,14 @@ Qualified class constant access statement
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement))
+  (escaped
+    (class_constant_access_expression
+      scope: (qualified_name
+        prefix: (namespace_name
+          (name)
+          (name))
+        (name))
+      name: (name))))
 
 ================================================================================
 Member call statement
@@ -146,13 +153,13 @@ Member call statement
 --------------------------------------------------------------------------------
 
 (document
-  (php_statement
+  (escaped
     (member_call_expression
       object: (variable_name
         (name))
       name: (name)
       arguments: (arguments)))
-  (php_statement
+  (escaped
     (member_call_expression
       object: (function_call_expression
         function: (name)

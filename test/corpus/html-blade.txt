@@ -419,29 +419,42 @@ Laravel 12 Welcome.blade.php
   (element
     (start_tag
       (tag_name)
-      (attribute
+      (html_attribute
         (attribute_name)
         (quoted_attribute_value
-          (php_statement
-            (php_only)))))
+          (escaped
+            (function_call_expression
+              (name)
+              (arguments
+                (argument
+                  (string))
+                (argument
+                  (string))
+                (argument
+                  (member_call_expression
+                    (function_call_expression
+                      (name)
+                      (arguments))
+                    (name)
+                    (arguments)))))))))
     (element
       (start_tag
         (tag_name))
       (element
         (start_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))))
       (element
         (start_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))))
@@ -455,221 +468,190 @@ Laravel 12 Welcome.blade.php
       (element
         (start_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))))
       (element
         (self_closing_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value)))))
       (comment)
-      (conditional
-        (directive_start)
-        (parenthesized_expression
-          (expression
-            (binary_expression
-              (expression
-                (primary_expression
-                  (function_call_expression
-                    (name)
-                    (arguments
-                      (argument
-                        (expression
-                          (primary_expression
-                            (function_call_expression
-                              (name)
-                              (arguments
-                                (argument
-                                  (expression
-                                    (primary_expression
-                                      (literal
-                                        (string))))))))))))))
-              (expression
-                (primary_expression
-                  (function_call_expression
-                    (name)
-                    (arguments
-                      (argument
-                        (expression
-                          (primary_expression
-                            (function_call_expression
-                              (name)
-                              (arguments
-                                (argument
-                                  (expression
-                                    (primary_expression
-                                      (literal
-                                        (string)))))))))))))))))
-        (directive)
-        (parenthesized_expression
-          (expression
-            (primary_expression
-              (array_creation_expression
-                (array_element_initializer
-                  (array_element_value_initializer
-                    (expression
-                      (primary_expression
-                        (literal
-                          (string))))))
-                (array_element_initializer
-                  (array_element_value_initializer
-                    (expression
-                      (primary_expression
-                        (literal
-                          (string))))))))))
-        (conditional_keyword
-          (directive))
-        (style_element
-          (start_tag
-            (tag_name))
-          (raw_text)
-          (end_tag
-            (tag_name)))
-        (directive_end))
+      (if
+        (binary_expression
+          (function_call_expression
+            (name)
+            (arguments
+              (argument
+                (function_call_expression
+                  (name)
+                  (arguments
+                    (argument
+                      (string)))))))
+          (function_call_expression
+            (name)
+            (arguments
+              (argument
+                (function_call_expression
+                  (name)
+                  (arguments
+                    (argument
+                      (string))))))))
+        (conditional_body
+          (inline_directive
+            (array_creation_expression
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))))
+          (conditional_keyword)
+          (style_element
+            (start_tag
+              (tag_name))
+            (raw_text)
+            (end_tag
+              (tag_name)))))
       (end_tag
         (tag_name)))
     (element
       (start_tag
         (tag_name)
-        (attribute
+        (html_attribute
           (attribute_name)
           (quoted_attribute_value
             (attribute_value))))
       (element
         (start_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value))))
-        (conditional
-          (directive_start)
-          (parenthesized_expression
-            (expression
-              (primary_expression
-                (scoped_call_expression
-                  (name)
-                  (name)
-                  (arguments
-                    (argument
-                      (expression
-                        (primary_expression
-                          (literal
-                            (string))))))))))
-          (element
-            (start_tag
-              (tag_name)
-              (attribute
-                (attribute_name)
-                (quoted_attribute_value
-                  (attribute_value))))
-            (conditional
-              (directive_start)
-              (element
-                (start_tag
-                  (tag_name)
-                  (attribute
-                    (attribute_name)
-                    (quoted_attribute_value
-                      (php_statement
-                        (php_only))))
-                  (attribute
-                    (attribute_name)
-                    (quoted_attribute_value
-                      (attribute_value))))
-                (text)
-                (end_tag
-                  (tag_name)))
-              (conditional_keyword
-                (directive))
-              (element
-                (start_tag
-                  (tag_name)
-                  (attribute
-                    (attribute_name)
-                    (quoted_attribute_value
-                      (php_statement
-                        (php_only))))
-                  (attribute
-                    (attribute_name)
-                    (quoted_attribute_value
-                      (attribute_value))))
-                (text)
-                (end_tag
-                  (tag_name)))
-              (conditional
-                (directive_start)
-                (parenthesized_expression
-                  (expression
-                    (primary_expression
-                      (scoped_call_expression
-                        (name)
-                        (name)
-                        (arguments
-                          (argument
-                            (expression
-                              (primary_expression
-                                (literal
-                                  (string))))))))))
-                (element
-                  (start_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (php_statement
-                          (php_only))))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value))))
-                  (text)
-                  (end_tag
-                    (tag_name)))
-                (directive_end))
-              (directive_end))
-            (end_tag
-              (tag_name)))
-          (directive_end))
+        (if
+          (scoped_call_expression
+            (name)
+            (name)
+            (arguments
+              (argument
+                (string))))
+          (conditional_body
+            (element
+              (start_tag
+                (tag_name)
+                (html_attribute
+                  (attribute_name)
+                  (quoted_attribute_value
+                    (attribute_value))))
+              (auth
+                (conditional_body
+                  (element
+                    (start_tag
+                      (tag_name)
+                      (html_attribute
+                        (attribute_name)
+                        (quoted_attribute_value
+                          (escaped
+                            (function_call_expression
+                              (name)
+                              (arguments
+                                (argument
+                                  (string)))))))
+                      (html_attribute
+                        (attribute_name)
+                        (quoted_attribute_value
+                          (attribute_value))))
+                    (text)
+                    (end_tag
+                      (tag_name)))
+                  (conditional_keyword)
+                  (element
+                    (start_tag
+                      (tag_name)
+                      (html_attribute
+                        (attribute_name)
+                        (quoted_attribute_value
+                          (escaped
+                            (function_call_expression
+                              (name)
+                              (arguments
+                                (argument
+                                  (string)))))))
+                      (html_attribute
+                        (attribute_name)
+                        (quoted_attribute_value
+                          (attribute_value))))
+                    (text)
+                    (end_tag
+                      (tag_name)))
+                  (if
+                    (scoped_call_expression
+                      (name)
+                      (name)
+                      (arguments
+                        (argument
+                          (string))))
+                    (conditional_body
+                      (element
+                        (start_tag
+                          (tag_name)
+                          (html_attribute
+                            (attribute_name)
+                            (quoted_attribute_value
+                              (escaped
+                                (function_call_expression
+                                  (name)
+                                  (arguments
+                                    (argument
+                                      (string)))))))
+                          (html_attribute
+                            (attribute_name)
+                            (quoted_attribute_value
+                              (attribute_value))))
+                        (text)
+                        (end_tag
+                          (tag_name)))))))
+              (end_tag
+                (tag_name)))))
         (end_tag
           (tag_name)))
       (element
         (start_tag
           (tag_name)
-          (attribute
+          (html_attribute
             (attribute_name)
             (quoted_attribute_value
               (attribute_value))))
         (element
           (start_tag
             (tag_name)
-            (attribute
+            (html_attribute
               (attribute_name)
               (quoted_attribute_value
                 (attribute_value))))
           (element
             (start_tag
               (tag_name)
-              (attribute
+              (html_attribute
                 (attribute_name)
                 (quoted_attribute_value
                   (attribute_value))))
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
@@ -679,7 +661,7 @@ Laravel 12 Welcome.blade.php
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
@@ -693,35 +675,35 @@ Laravel 12 Welcome.blade.php
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (start_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value))))
                   (element
                     (start_tag
                       (tag_name)
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value))))
                     (element
                       (start_tag
                         (tag_name)
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value))))
@@ -738,15 +720,15 @@ Laravel 12 Welcome.blade.php
                   (element
                     (start_tag
                       (tag_name)
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value)))
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value)))
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value))))
@@ -759,42 +741,42 @@ Laravel 12 Welcome.blade.php
                     (element
                       (start_tag
                         (tag_name)
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value))))
                       (element
                         (self_closing_tag
                           (tag_name)
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))))
@@ -809,28 +791,28 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (start_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value))))
                   (element
                     (start_tag
                       (tag_name)
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value))))
                     (element
                       (start_tag
                         (tag_name)
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value))))
@@ -847,15 +829,15 @@ Laravel 12 Welcome.blade.php
                   (element
                     (start_tag
                       (tag_name)
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value)))
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value)))
-                      (attribute
+                      (html_attribute
                         (attribute_name)
                         (quoted_attribute_value
                           (attribute_value))))
@@ -868,42 +850,42 @@ Laravel 12 Welcome.blade.php
                     (element
                       (start_tag
                         (tag_name)
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value)))
-                        (attribute
+                        (html_attribute
                           (attribute_name)
                           (quoted_attribute_value
                             (attribute_value))))
                       (element
                         (self_closing_tag
                           (tag_name)
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))
-                          (attribute
+                          (html_attribute
                             (attribute_name)
                             (quoted_attribute_value
                               (attribute_value)))))
@@ -920,7 +902,7 @@ Laravel 12 Welcome.blade.php
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
@@ -930,15 +912,15 @@ Laravel 12 Welcome.blade.php
                 (element
                   (start_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value))))
@@ -954,239 +936,237 @@ Laravel 12 Welcome.blade.php
           (element
             (start_tag
               (tag_name)
-              (attribute
+              (html_attribute
                 (attribute_name)
                 (quoted_attribute_value
                   (attribute_value))))
-            (php_statement
-              (php_only))
+            (comment)
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (element
                 (self_closing_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))))
               (end_tag
                 (tag_name)))
-            (php_statement
-              (php_only))
+            (comment)
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -1195,63 +1175,63 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -1260,63 +1240,63 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -1325,634 +1305,634 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -1961,41 +1941,41 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2004,37 +1984,37 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2042,135 +2022,134 @@ Laravel 12 Welcome.blade.php
                   (tag_name)))
               (end_tag
                 (tag_name)))
-            (php_statement
-              (php_only))
+            (comment)
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value)))
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2179,63 +2158,63 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2244,37 +2223,37 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2283,634 +2262,634 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))))
-                (element
-                  (self_closing_tag
-                    (tag_name)
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
-                      (attribute_name)
-                      (quoted_attribute_value
-                        (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))))
+                (element
+                  (self_closing_tag
+                    (tag_name)
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
+                      (attribute_name)
+                      (quoted_attribute_value
+                        (attribute_value)))
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2919,41 +2898,41 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -2962,37 +2941,37 @@ Laravel 12 Welcome.blade.php
               (element
                 (start_tag
                   (tag_name)
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value)))
-                  (attribute
+                  (html_attribute
                     (attribute_name)
                     (quoted_attribute_value
                       (attribute_value))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
                 (element
                   (self_closing_tag
                     (tag_name)
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))
-                    (attribute
+                    (html_attribute
                       (attribute_name)
                       (quoted_attribute_value
                         (attribute_value)))))
@@ -3003,7 +2982,7 @@ Laravel 12 Welcome.blade.php
             (element
               (start_tag
                 (tag_name)
-                (attribute
+                (html_attribute
                   (attribute_name)
                   (quoted_attribute_value
                     (attribute_value))))
@@ -3015,30 +2994,23 @@ Laravel 12 Welcome.blade.php
             (tag_name)))
         (end_tag
           (tag_name)))
-      (conditional
-        (directive_start)
-        (parenthesized_expression
-          (expression
-            (primary_expression
-              (scoped_call_expression
-                (name)
-                (name)
-                (arguments
-                  (argument
-                    (expression
-                      (primary_expression
-                        (literal
-                          (string))))))))))
-        (element
-          (start_tag
-            (tag_name)
-            (attribute
-              (attribute_name)
-              (quoted_attribute_value
-                (attribute_value))))
-          (end_tag
-            (tag_name)))
-        (directive_end))
+      (if
+        (scoped_call_expression
+          (name)
+          (name)
+          (arguments
+            (argument
+              (string))))
+        (conditional_body
+          (element
+            (start_tag
+              (tag_name)
+              (html_attribute
+                (attribute_name)
+                (quoted_attribute_value
+                  (attribute_value))))
+            (end_tag
+              (tag_name)))))
       (end_tag
         (tag_name)))
     (end_tag

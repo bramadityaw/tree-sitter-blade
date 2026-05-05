@@ -265,18 +265,26 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
-    (directive_start)
-    (parameter)
-    (comment)
-    (conditional_keyword
-      (directive)
-      (parameter))
-    (text)
-    (conditional_keyword
-      (directive))
-    (text)
-    (directive_end)))
+  (authorization
+    (can
+      (string)
+      (variable_name
+        (name))
+      (conditional_body
+        (comment)
+        (conditional_keyword
+          (elseif
+            (string)
+            (class_constant_access_expression
+              (qualified_name
+                (namespace_name
+                  (name)
+                  (name))
+                (name))
+              (name))))
+        (text)
+        (conditional_keyword)
+        (text)))))
 
 ================================================================================
 @cannot
@@ -291,15 +299,24 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
-    (directive_start)
-    (parameter)
-    (comment)
-    (conditional_keyword
-      (directive)
-      (parameter))
-    (text)
-    (directive_end)))
+  (authorization
+    (cannot
+      (string)
+      (variable_name
+        (name))
+      (conditional_body
+        (comment)
+        (conditional_keyword
+          (elseif
+            (string)
+            (class_constant_access_expression
+              (qualified_name
+                (namespace_name
+                  (name)
+                  (name))
+                (name))
+              (name))))
+        (text)))))
 
 ================================================================================
 @canany
@@ -314,15 +331,36 @@ conditional keywords
 --------------------------------------------------------------------------------
 
 (document
-  (conditional
-    (directive_start)
-    (parameter)
-    (comment)
-    (conditional_keyword
-      (directive)
-      (parameter))
-    (text)
-    (directive_end)))
+  (authorization
+    (canany
+      (array_creation_expression
+        (array_element_initializer
+          (array_element_value_initializer
+            (string)))
+        (array_element_initializer
+          (array_element_value_initializer
+            (string)))
+        (array_element_initializer
+          (array_element_value_initializer
+            (string))))
+      (variable_name
+        (name))
+      (conditional_body
+        (comment)
+        (conditional_keyword
+          (elseif
+            (array_creation_expression
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string))))
+            (class_constant_access_expression
+              (qualified_name
+                (namespace_name
+                  (name)
+                  (name))
+                (name))
+              (name))))
+        (text)))))
 
 ================================================================================
 @feature
