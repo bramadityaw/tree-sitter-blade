@@ -244,7 +244,15 @@
         "named": true
       },
       {
+        "type": "member_call_expression",
+        "named": true
+      },
+      {
         "type": "name",
+        "named": true
+      },
+      {
+        "type": "nullsafe_member_call_expression",
         "named": true
       },
       {
@@ -1409,6 +1417,10 @@
         {
           "type": "text",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -1470,11 +1482,27 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
+            "named": true
+          },
+          {
             "type": "member_access_expression",
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
             "type": "name",
+            "named": true
+          },
+          {
+            "type": "nullsafe_member_call_expression",
             "named": true
           },
           {
@@ -1599,6 +1627,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -1907,6 +1939,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -2040,6 +2076,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -2662,6 +2702,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -2736,6 +2780,10 @@
           },
           {
             "type": "text",
+            "named": true
+          },
+          {
+            "type": "wire_ui",
             "named": true
           }
         ]
@@ -2875,6 +2923,10 @@
           {
             "type": "text",
             "named": true
+          },
+          {
+            "type": "wire_ui",
+            "named": true
           }
         ]
       },
@@ -2996,6 +3048,10 @@
           },
           {
             "type": "text",
+            "named": true
+          },
+          {
+            "type": "wire_ui",
             "named": true
           }
         ]
@@ -3176,6 +3232,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -3569,10 +3629,6 @@
             "named": false
           },
           {
-            "type": "@wireUiScripts",
-            "named": false
-          },
-          {
             "type": "@yield",
             "named": false
           }
@@ -3903,6 +3959,10 @@
         {
           "type": "text",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -3942,7 +4002,15 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
             "type": "dynamic_variable_name",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
             "named": true
           },
           {
@@ -3950,11 +4018,27 @@
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
             "type": "nullsafe_member_access_expression",
             "named": true
           },
           {
+            "type": "nullsafe_member_call_expression",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "qualified_name",
             "named": true
           },
           {
@@ -4018,11 +4102,35 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
+            "named": true
+          },
+          {
             "type": "member_access_expression",
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
+            "type": "nullsafe_member_call_expression",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "qualified_name",
             "named": true
           },
           {
@@ -4214,11 +4322,35 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
+            "named": true
+          },
+          {
             "type": "member_access_expression",
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
+            "type": "nullsafe_member_call_expression",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "qualified_name",
             "named": true
           },
           {
@@ -4387,6 +4519,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -4641,7 +4777,7 @@
     "named": true,
     "fields": {
       "prefix": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
           {
@@ -4795,11 +4931,27 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
+            "named": true
+          },
+          {
             "type": "member_access_expression",
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
             "type": "name",
+            "named": true
+          },
+          {
+            "type": "nullsafe_member_call_expression",
             "named": true
           },
           {
@@ -5018,6 +5170,10 @@
         },
         {
           "type": "verbatim",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -5425,6 +5581,10 @@
         {
           "type": "text",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -5501,11 +5661,35 @@
             "named": true
           },
           {
+            "type": "class_constant_access_expression",
+            "named": true
+          },
+          {
+            "type": "function_call_expression",
+            "named": true
+          },
+          {
             "type": "member_access_expression",
             "named": true
           },
           {
+            "type": "member_call_expression",
+            "named": true
+          },
+          {
+            "type": "name",
+            "named": true
+          },
+          {
+            "type": "nullsafe_member_call_expression",
+            "named": true
+          },
+          {
             "type": "parenthesized_expression",
+            "named": true
+          },
+          {
+            "type": "qualified_name",
             "named": true
           },
           {
@@ -5528,6 +5712,10 @@
           "named": true
         },
         {
+          "type": "class_constant_access_expression",
+          "named": true
+        },
+        {
           "type": "dynamic_variable_name",
           "named": true
         },
@@ -5536,7 +5724,19 @@
           "named": true
         },
         {
+          "type": "function_call_expression",
+          "named": true
+        },
+        {
           "type": "member_access_expression",
+          "named": true
+        },
+        {
+          "type": "member_call_expression",
+          "named": true
+        },
+        {
+          "type": "name",
           "named": true
         },
         {
@@ -5544,7 +5744,15 @@
           "named": true
         },
         {
+          "type": "nullsafe_member_call_expression",
+          "named": true
+        },
+        {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "qualified_name",
           "named": true
         },
         {
@@ -5671,6 +5879,10 @@
         },
         {
           "type": "text",
+          "named": true
+        },
+        {
+          "type": "wire_ui",
           "named": true
         }
       ]
@@ -6048,6 +6260,10 @@
         {
           "type": "verbatim",
           "named": true
+        },
+        {
+          "type": "wire_ui",
+          "named": true
         }
       ]
     }
@@ -6138,6 +6354,10 @@
           {
             "type": "text",
             "named": true
+          },
+          {
+            "type": "wire_ui",
+            "named": true
           }
         ]
       },
@@ -6168,6 +6388,72 @@
           {
             "type": "@while",
             "named": false
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "wire_ui",
+    "named": true,
+    "fields": {
+      "parameter": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "array_element_initializer",
+            "named": true
+          },
+          {
+            "type": "wire_ui_script_attribute",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "wire_ui_script_attribute",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
           }
         ]
       }

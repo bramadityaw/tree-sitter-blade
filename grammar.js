@@ -307,6 +307,7 @@ var grammar_default = grammar(import_grammar.default, {
         $.keyword,
         $.php_statement,
         $.inline_directive,
+        $.wire_ui,
         $.props,
         $.comment,
         $.switch,
@@ -341,9 +342,7 @@ var grammar_default = grammar(import_grammar.default, {
       "@permalink",
       "@title",
       "@content",
-      "@excerpt",
-      // WireUI
-      "@wireUiScripts"
+      "@excerpt"
     ),
     // ! PHP Statements
     php_statement: ($) => choice(
@@ -511,13 +510,34 @@ var grammar_default = grammar(import_grammar.default, {
             "@set",
             // ACF (Advanced Custom Fields)
             "@field",
-            "@options",
-            // WireUI
-            "@wireUiScripts"
+            "@options"
           )
         ),
         field("parameter", $._directive_parameter)
       )
+    ),
+    // WireUI
+    wire_ui: ($) => seq(
+      "@wireUiScripts",
+      field("parameter", optional($._wire_ui_param))
+    ),
+    _wire_ui_param: ($) => seq(
+      "(",
+      "[",
+      commaSep(
+        choice(
+          $.array_element_initializer,
+          $.wire_ui_script_attribute
+        )
+      ),
+      optional(","),
+      "]",
+      ")"
+    ),
+    wire_ui_script_attribute: ($) => seq(
+      field("name", $.expression),
+      ":",
+      field("value", $.expression)
     ),
     props: ($) => seq(
       "@props",
@@ -1482,6 +1502,8 @@ var grammar_default = grammar(import_grammar.default, {
       $.parenthesized_expression,
       $.function_call_expression,
       $.scoped_call_expression,
+      $.member_call_expression,
+      $.nullsafe_member_call_expression,
       $.class_constant_access_expression,
       $.qualified_name,
       $.relative_name,
@@ -1668,8 +1690,13 @@ var grammar_default = grammar(import_grammar.default, {
       PREC.DEREF,
       choice(
         $._variable,
+        $.function_call_expression,
+        $.member_call_expression,
+        $.nullsafe_member_call_expression,
+        $.class_constant_access_expression,
         $.parenthesized_expression,
-        $.array_creation_expression
+        $.array_creation_expression,
+        $._name
       )
     ),
     _dereferencable_scalar: ($) => prec(
@@ -1803,10 +1830,6 @@ var grammar_default = grammar(import_grammar.default, {
         seq($._class_name_reference, $.arguments)
       )
     ),
-    qualified_name: ($) => seq(
-      field("prefix", choice($.namespace_name, "\\")),
-      $.name
-    ),
     relative_name: ($) => seq(
       field(
         "prefix",
@@ -1861,8 +1884,12 @@ var grammar_default = grammar(import_grammar.default, {
       $.scoped_call_expression
     ),
     namespace_name: ($) => seq(
-      alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name),
-      repeat1(seq("\\", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)))
+      $.name,
+      repeat(seq("\\", $.name))
+    ),
+    qualified_name: ($) => seq(
+      field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
+      $.name
     ),
     array_creation_expression: ($) => choice(
       seq("[", commaSep($.array_element_initializer), optional(","), "]"),

@@ -85,6 +85,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "wire_ui"
+        },
+        {
+          "type": "SYMBOL",
           "name": "props"
         },
         {
@@ -655,10 +659,6 @@
         {
           "type": "STRING",
           "value": "@excerpt"
-        },
-        {
-          "type": "STRING",
-          "value": "@wireUiScripts"
         }
       ]
     },
@@ -1173,10 +1173,6 @@
                   {
                     "type": "STRING",
                     "value": "@options"
-                  },
-                  {
-                    "type": "STRING",
-                    "value": "@wireUiScripts"
                   }
                 ]
               }
@@ -1190,6 +1186,140 @@
               }
             }
           ]
+        }
+      ]
+    },
+    "wire_ui": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@wireUiScripts"
+        },
+        {
+          "type": "FIELD",
+          "name": "parameter",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_wire_ui_param"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "_wire_ui_param": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
+        {
+          "type": "STRING",
+          "value": "["
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "array_element_initializer"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "wire_ui_script_attribute"
+                    }
+                  ]
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "CHOICE",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "array_element_initializer"
+                          },
+                          {
+                            "type": "SYMBOL",
+                            "name": "wire_ui_script_attribute"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": ","
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "]"
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
+    "wire_ui_script_attribute": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
         }
       ]
     },
@@ -1285,6 +1415,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -1399,6 +1533,10 @@
                         },
                         {
                           "type": "SYMBOL",
+                          "name": "wire_ui"
+                        },
+                        {
+                          "type": "SYMBOL",
                           "name": "props"
                         },
                         {
@@ -1505,6 +1643,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -1618,6 +1760,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -1767,6 +1913,10 @@
                   },
                   {
                     "type": "SYMBOL",
+                    "name": "wire_ui"
+                  },
+                  {
+                    "type": "SYMBOL",
                     "name": "props"
                   },
                   {
@@ -1861,6 +2011,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -1961,6 +2115,10 @@
                   },
                   {
                     "type": "SYMBOL",
+                    "name": "wire_ui"
+                  },
+                  {
+                    "type": "SYMBOL",
                     "name": "props"
                   },
                   {
@@ -2058,6 +2216,10 @@
                   },
                   {
                     "type": "SYMBOL",
+                    "name": "wire_ui"
+                  },
+                  {
+                    "type": "SYMBOL",
                     "name": "props"
                   },
                   {
@@ -2152,6 +2314,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -3042,6 +3208,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "wire_ui"
+          },
+          {
+            "type": "SYMBOL",
             "name": "props"
           },
           {
@@ -3230,6 +3400,10 @@
                       },
                       {
                         "type": "SYMBOL",
+                        "name": "wire_ui"
+                      },
+                      {
+                        "type": "SYMBOL",
                         "name": "props"
                       },
                       {
@@ -3326,6 +3500,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -4300,6 +4478,10 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "wire_ui"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "props"
               },
               {
@@ -4397,6 +4579,10 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "wire_ui"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "props"
               },
               {
@@ -4486,6 +4672,10 @@
                   {
                     "type": "SYMBOL",
                     "name": "inline_directive"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "wire_ui"
                   },
                   {
                     "type": "SYMBOL",
@@ -4586,6 +4776,10 @@
                   },
                   {
                     "type": "SYMBOL",
+                    "name": "wire_ui"
+                  },
+                  {
+                    "type": "SYMBOL",
                     "name": "props"
                   },
                   {
@@ -4674,6 +4868,10 @@
           {
             "type": "SYMBOL",
             "name": "inline_directive"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "wire_ui"
           },
           {
             "type": "SYMBOL",
@@ -4885,6 +5083,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "wire_ui"
+          },
+          {
+            "type": "SYMBOL",
             "name": "props"
           },
           {
@@ -4950,6 +5152,10 @@
           {
             "type": "SYMBOL",
             "name": "inline_directive"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "wire_ui"
           },
           {
             "type": "SYMBOL",
@@ -7169,6 +7375,14 @@
         },
         {
           "type": "SYMBOL",
+          "name": "member_call_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "nullsafe_member_call_expression"
+        },
+        {
+          "type": "SYMBOL",
           "name": "class_constant_access_expression"
         },
         {
@@ -8415,11 +8629,31 @@
           },
           {
             "type": "SYMBOL",
+            "name": "function_call_expression"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "member_call_expression"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "nullsafe_member_call_expression"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "class_constant_access_expression"
+          },
+          {
+            "type": "SYMBOL",
             "name": "parenthesized_expression"
           },
           {
             "type": "SYMBOL",
             "name": "array_creation_expression"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_name"
           }
         ]
       }
@@ -9208,32 +9442,6 @@
         ]
       }
     },
-    "qualified_name": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "prefix",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "SYMBOL",
-                "name": "namespace_name"
-              },
-              {
-                "type": "STRING",
-                "value": "\\"
-              }
-            ]
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "name"
-        }
-      ]
-    },
     "relative_name": {
       "type": "SEQ",
       "members": [
@@ -9466,16 +9674,11 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "ALIAS",
-          "content": {
-            "type": "PATTERN",
-            "value": "[a-zA-Z_][a-zA-Z0-9_]*"
-          },
-          "named": true,
-          "value": "name"
+          "type": "SYMBOL",
+          "name": "name"
         },
         {
-          "type": "REPEAT1",
+          "type": "REPEAT",
           "content": {
             "type": "SEQ",
             "members": [
@@ -9484,16 +9687,57 @@
                 "value": "\\"
               },
               {
-                "type": "ALIAS",
-                "content": {
-                  "type": "PATTERN",
-                  "value": "[a-zA-Z_][a-zA-Z0-9_]*"
-                },
-                "named": true,
-                "value": "name"
+                "type": "SYMBOL",
+                "name": "name"
               }
             ]
           }
+        }
+      ]
+    },
+    "qualified_name": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "prefix",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "\\"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "namespace_name"
+                  },
+                  {
+                    "type": "BLANK"
+                  }
+                ]
+              },
+              {
+                "type": "STRING",
+                "value": "\\"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "name"
         }
       ]
     },
