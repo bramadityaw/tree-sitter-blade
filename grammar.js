@@ -228,7 +228,7 @@ function keyword(word, aliasAsWord = true) {
   let result = new RegExp(word, "i");
   if (aliasAsWord)
     result = alias(result, word);
-  return result;
+  return prec(PREC.KEYWORD, result);
 }
 var PREC = {
   COMMA: -1,
@@ -279,7 +279,8 @@ var grammar_default = grammar(import_grammar.default, {
     [$.type, $.union_type, $.intersection_type, $.disjunctive_normal_form_type],
     [$.union_type, $.disjunctive_normal_form_type],
     [$.intersection_type],
-    [$.namespace_name]
+    [$.namespace_name],
+    [$.relative_scope, $._name]
   ],
   supertypes: ($) => [
     $.expression,
@@ -427,20 +428,19 @@ var grammar_default = grammar(import_grammar.default, {
         '"'
       )
     ),
-    _quoted_expression: ($) => choice(
-      seq(
-        "'",
-        optional(
-          $.expression
+    quoted_expression: ($) => prec(
+      2,
+      choice(
+        seq(
+          "'",
+          $.expression,
+          "'"
         ),
-        "'"
-      ),
-      seq(
-        '"',
-        optional(
-          $.expression
-        ),
-        '"'
+        seq(
+          '"',
+          $.expression,
+          '"'
+        )
       )
     ),
     // utilised from tree-sitter-html
@@ -454,14 +454,14 @@ var grammar_default = grammar(import_grammar.default, {
       )
     ),
     expression_attribute: ($) => seq(
-      ":",
-      $.attribute_name,
+      $.expression_attribute_name,
       seq(
         "=",
-        alias($._quoted_expression, $.quoted_attribute_value)
+        $.quoted_expression
       )
     ),
-    short_attribute: ($) => seq(":", $.variable_name),
+    expression_attribute_name: (_) => token(prec(0, /:[^$<>"'/=\s]+/)),
+    short_attribute: ($) => prec(1, seq(":", $.variable_name)),
     // ! Conditional Blade Attribute Directives
     blade_attribute: ($) => seq(
       choice(
@@ -756,13 +756,13 @@ var grammar_default = grammar(import_grammar.default, {
     session: ($) => seq(
       field("directive_start", "@session"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endsession")
     ),
     context: ($) => seq(
       field("directive_start", "@context"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endcontext")
     ),
     // used in the conditional body rules
@@ -777,66 +777,66 @@ var grammar_default = grammar(import_grammar.default, {
     if: ($) => seq(
       field("directive_start", "@if"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endif")
     ),
     unless: ($) => seq(
       field("directive_start", "@unless"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endunless")
     ),
     isset: ($) => seq(
       field("directive_start", "@isset"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endisset")
     ),
     empty: ($) => seq(
       field("directive_start", "@empty"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endempty")
     ),
     auth: ($) => seq(
       field("directive_start", "@auth"),
       field("parameter", optional($._directive_parameter)),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endauth")
     ),
     guest: ($) => seq(
       field("directive_start", "@guest"),
       field("parameter", optional($._directive_parameter)),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endguest")
     ),
     production: ($) => seq(
       field("directive_start", "@production"),
-      optional($.conditional_body),
+      optional(optional($.conditional_body)),
       field("directive_end", "@endproduction")
     ),
     env: ($) => seq(
       field("directive_start", "@env"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endenv")
     ),
     hasSection: ($) => seq(
       field("directive_start", "@hasSection"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endif")
     ),
     sectionMissing: ($) => seq(
       field("directive_start", "@sectionMissing"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endif")
     ),
     error: ($) => seq(
       field("directive_start", "@error"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@enderror")
     ),
     // !Authorisation Directives
@@ -844,19 +844,19 @@ var grammar_default = grammar(import_grammar.default, {
     can: ($) => seq(
       field("directive_start", "@can"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endcan")
     ),
     cannot: ($) => seq(
       field("directive_start", "@cannot"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endcannot")
     ),
     canany: ($) => seq(
       field("directive_start", "@canany"),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field("directive_end", "@endcanany")
     ),
     // !Laravel Pennant
@@ -890,7 +890,7 @@ var grammar_default = grammar(import_grammar.default, {
         )
       ),
       field("parameter", $._directive_parameter),
-      field("body", $.conditional_body),
+      field("body", optional($.conditional_body)),
       field(
         "directive_start",
         token(prec(1, /@end[a-zA-Z\d]+/))
@@ -1159,10 +1159,6 @@ var grammar_default = grammar(import_grammar.default, {
     /*----------------------------------*/
     // !conditional helpers
     conditional_body: ($) => repeat1(choice(...nodes.with($.conditional_keyword).all())),
-    _conditional_body_with_optional_parameter: ($) => seq(
-      optional(field("parameter", $._directive_parameter)),
-      $.conditional_body
-    ),
     // ! envoy helpers
     _envoy_if: ($) => seq(
       field("directive_start", "@if"),
@@ -1541,7 +1537,7 @@ var grammar_default = grammar(import_grammar.default, {
       ")"
     ),
     _anonymous_function_header: ($) => seq(
-      optional(field("attributes", $.attribute_list)),
+      optional(field("attributes", $.attr_list)),
       optional(field("static_modifier", $.static_modifier)),
       keyword("function"),
       optional(field("reference_modifier", $.reference_modifier)),
@@ -1550,7 +1546,7 @@ var grammar_default = grammar(import_grammar.default, {
       optional($._return_type)
     ),
     _arrow_function_header: ($) => seq(
-      optional(field("attributes", $.attribute_list)),
+      optional(field("attributes", $.attr_list)),
       optional(field("static_modifier", $.static_modifier)),
       keyword("fn"),
       optional(field("reference_modifier", $.reference_modifier)),
@@ -1575,7 +1571,7 @@ var grammar_default = grammar(import_grammar.default, {
       field("body", $.expression)
     ),
     property_promotion_parameter: ($) => seq(
-      optional(field("attributes", $.attribute_list)),
+      optional(field("attributes", $.attr_list)),
       field("visibility", $.visibility_modifier),
       field("readonly", optional($.readonly_modifier)),
       field("type", optional($.type)),
@@ -1585,14 +1581,14 @@ var grammar_default = grammar(import_grammar.default, {
       optional(alias($.text, $.property_hook_list))
     ),
     simple_parameter: ($) => seq(
-      optional(field("attributes", $.attribute_list)),
+      optional(field("attributes", $.attr_list)),
       field("type", optional($.type)),
       optional(field("reference_modifier", $.reference_modifier)),
       field("name", $.variable_name),
       optional(seq("=", field("default_value", $.expression)))
     ),
     variadic_parameter: ($) => seq(
-      optional(field("attributes", $.attribute_list)),
+      optional(field("attributes", $.attr_list)),
       field("type", optional($.type)),
       optional(field("reference_modifier", $.reference_modifier)),
       "...",
@@ -1841,10 +1837,13 @@ var grammar_default = grammar(import_grammar.default, {
       ),
       $.name
     ),
-    _name: ($) => choice(
-      alias(keyword("static", false), $.name),
-      $.name,
-      $.qualified_name
+    _name: ($) => prec(
+      PREC.IDENTIFIER,
+      choice(
+        alias(keyword("static", false), $.name),
+        $.name,
+        $.qualified_name
+      )
     ),
     _class_name_reference: ($) => choice(
       $._name,
@@ -1901,13 +1900,17 @@ var grammar_default = grammar(import_grammar.default, {
         ")"
       )
     ),
-    attribute_group: ($) => seq(
+    attr_group: ($) => seq(
       "#[",
-      commaSep1($.attribute),
+      commaSep1($.attr),
       optional(","),
       "]"
     ),
-    attribute_list: ($) => repeat1($.attribute_group),
+    attr_list: ($) => repeat1($.attr_group),
+    attr: ($) => seq(
+      $._name,
+      optional(field("parameters", $.arguments))
+    ),
     array_element_initializer: ($) => prec.right(choice(
       $.array_element_value_initializer,
       $.array_element_key_value_initializer,
@@ -1969,7 +1972,7 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     boolean: (_) => token(prec(PREC.KEYWORD, /true|false/i)),
     null: (_) => "null",
-    name: (_) => token(prec(PREC.IDENTIFIER, /[a-zA-Z_][a-zA-Z0-9_]*/))
+    name: (_) => token(/[a-zA-Z_][a-zA-Z0-9_]*/)
   }
 });
 export {
