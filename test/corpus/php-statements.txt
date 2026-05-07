@@ -166,3 +166,54 @@ Member call statement
         arguments: (arguments))
       name: (name)
       arguments: (arguments))))
+
+================================================================================
+arrow function
+================================================================================
+
+{{ fn ($x) => $x }}
+
+--------------------------------------------------------------------------------
+
+(document
+  (escaped
+    (arrow_function
+      parameters: (formal_parameters
+        (simple_parameter
+          name: (variable_name
+            (name))))
+      body: (variable_name
+        (name)))))
+
+================================================================================
+anonymous function
+================================================================================
+
+{{ function ($x) { return $x; } }}
+{{
+   function ($status) {
+            $level = match ($status->value) {
+                'notified' => 'info',
+                'waiting' => 'warn',
+                'approved' => 'okay',
+                'rejected' => 'error',
+            };
+            $component = new App\View\Components\StatusInfo($level);
+            return $component
+                ->render()
+                ->with(array_merge([
+                    'slot' => __($status->value),
+                ], $component->data()));
+   }
+}}
+
+--------------------------------------------------------------------------------
+
+(document
+  (escaped
+    (anonymous_function
+      (formal_parameters
+        (simple_parameter
+          (variable_name
+            (name))))
+      (php_only))))

@@ -245,8 +245,8 @@ Expression attribute values
     (start_tag
       (tag_name)
       (expression_attribute
-        (attribute_name)
-        (quoted_attribute_value
+        (expression_attribute_name)
+        (quoted_expression
           (variable_name
             (name)))))
     (text)
@@ -256,8 +256,8 @@ Expression attribute values
     (self_closing_tag
       (tag_name)
       (expression_attribute
-        (attribute_name)
-        (quoted_attribute_value
+        (expression_attribute_name)
+        (quoted_expression
           (variable_name
             (name)))))))
 

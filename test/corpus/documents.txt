@@ -1,0 +1,227 @@
+================================================================================
+Example #1
+================================================================================
+
+<x-app-layout>
+    <x-index-table subject="user" :rows="$users" :columns="[
+        'full_name',
+        'user_name',
+        'is_active' => fn ($is_active) => $is_active ? 'Aktif' : 'Tidak Aktif',
+        'role' => fn ($role) => Str::title($role->value),
+    ]"/>
+</x-app-layout>
+
+--------------------------------------------------------------------------------
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (element
+      (self_closing_tag
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value)))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (variable_name
+              (name))))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (array_creation_expression
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_key_value_initializer
+                  (string)
+                  (arrow_function
+                    (formal_parameters
+                      (simple_parameter
+                        (variable_name
+                          (name))))
+                    (conditional_expression
+                      (variable_name
+                        (name))
+                      (string)
+                      (string)))))
+              (array_element_initializer
+                (array_element_key_value_initializer
+                  (string)
+                  (arrow_function
+                    (formal_parameters
+                      (simple_parameter
+                        (variable_name
+                          (name))))
+                    (scoped_call_expression
+                      (name)
+                      (name)
+                      (arguments
+                        (argument
+                          (member_access_expression
+                            (variable_name
+                              (name))
+                            (name)))))))))))))
+    (end_tag
+      (tag_name))))
+
+================================================================================
+Example #2
+================================================================================
+
+<x-app-layout>
+    <x-index-table subject="department" :rows="$departments" :columns="[
+        'code',
+        'name',
+        'head' => fn ($head) => $head->full_name,
+    ]"/>
+</x-app-layout>
+
+--------------------------------------------------------------------------------
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (element
+      (self_closing_tag
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value)))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (variable_name
+              (name))))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (array_creation_expression
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_key_value_initializer
+                  (string)
+                  (arrow_function
+                    (formal_parameters
+                      (simple_parameter
+                        (variable_name
+                          (name))))
+                    (member_access_expression
+                      (variable_name
+                        (name))
+                      (name))))))))))
+    (end_tag
+      (tag_name))))
+
+================================================================================
+Example #3
+================================================================================
+
+<x-app-layout>
+    <x-index-table subject="asset" :rows="$assets" :columns="[
+        'name',
+        'stock' => fn ($stock, $asset) => $stock . ' ' . $asset->unit->name,
+        'category',
+        'brand',
+    ]"/>
+</x-app-layout>
+
+--------------------------------------------------------------------------------
+
+(document
+  (element
+    (start_tag
+      (tag_name))
+    (element
+      (self_closing_tag
+        (tag_name)
+        (html_attribute
+          (attribute_name)
+          (quoted_attribute_value
+            (attribute_value)))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (variable_name
+              (name))))
+        (expression_attribute
+          (expression_attribute_name)
+          (quoted_expression
+            (array_creation_expression
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_key_value_initializer
+                  (string)
+                  (arrow_function
+                    (formal_parameters
+                      (simple_parameter
+                        (variable_name
+                          (name)))
+                      (simple_parameter
+                        (variable_name
+                          (name))))
+                    (binary_expression
+                      (binary_expression
+                        (variable_name
+                          (name))
+                        (string))
+                      (member_access_expression
+                        (member_access_expression
+                          (variable_name
+                            (name))
+                          (name))
+                        (name))))))
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string)))
+              (array_element_initializer
+                (array_element_value_initializer
+                  (string))))))))
+    (end_tag
+      (tag_name))))
+
+================================================================================
+Example #4
+================================================================================
+
+<x-app-layout>
+    <x-index-table subject="approval" :rows="$approvals" :columns="[
+        'request.requester' => fn ($m) => $m->full_name,
+        'request.created_at|Tanggal Diminta'
+           => fn ($tgl) => \App\Support\Fmt::tanggal($tgl),
+        'status' => function ($status) {
+            $level = match ($status->value) {
+                'notified' => 'info',
+                'waiting' => 'warn',
+                'approved' => 'okay',
+                'rejected' => 'error',
+            };
+            $component = new App\View\Components\StatusInfo($level);
+            return $component
+                ->render()
+                ->with(array_merge([
+                    'slot' => __($status->value),
+                ], $component->data()));
+        },
+    ]"/>
+</x-app-layout>
+
+--------------------------------------------------------------------------------
+
+(document)
