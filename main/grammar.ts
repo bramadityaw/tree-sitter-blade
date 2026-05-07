@@ -29,11 +29,11 @@ function ampSep1(rule: Rule): SeqRule {
  * Creates a regex that matches the given word case-insensitively,
  * and will alias the regex to the word if aliasAsWord is true
  */
-function keyword(word: string, aliasAsWord = true): RegExp | AliasRule {
+function keyword(word: string, aliasAsWord = true): PrecRule {
   /** @type {RegExp|AliasRule} */
   let result: RegExp | AliasRule = new RegExp(word, "i");
   if (aliasAsWord) result = alias(result, word);
-  return result;
+  return prec(PREC.KEYWORD, result);
 }
 
 const PREC = {
@@ -92,6 +92,7 @@ export default grammar(html, {
     [$.intersection_type],
 
     [$.namespace_name],
+    [$.relative_scope, $._name],
   ],
 
   supertypes: ($) => [
@@ -264,21 +265,20 @@ export default grammar(html, {
         ),
       ),
 
-    _quoted_expression: ($) =>
-      choice(
-        seq(
-          "'",
-          optional(
+    quoted_expression: ($) =>
+      prec(
+        2,
+        choice(
+          seq(
+            "'",
             $.expression,
+            "'",
           ),
-          "'",
-        ),
-        seq(
-          '"',
-          optional(
+          seq(
+            '"',
             $.expression,
+            '"',
           ),
-          '"',
         ),
       ),
 
@@ -296,15 +296,16 @@ export default grammar(html, {
 
     expression_attribute: ($) =>
       seq(
-        ":",
-        $.attribute_name,
+        $.expression_attribute_name,
         seq(
           "=",
-          alias($._quoted_expression, $.quoted_attribute_value),
+          $.quoted_expression,
         ),
       ),
 
-    short_attribute: ($) => seq(":", $.variable_name),
+    expression_attribute_name: (_) => token(prec(0, /:[^$<>"'/=\s]+/)),
+
+    short_attribute: ($) => prec(1, seq(":", $.variable_name)),
 
     // ! Conditional Blade Attribute Directives
     blade_attribute: ($) =>
@@ -636,7 +637,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@session"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endsession"),
       ),
 
@@ -644,7 +645,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@context"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endcontext"),
       ),
 
@@ -665,7 +666,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@if"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endif"),
       ),
 
@@ -673,7 +674,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@unless"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endunless"),
       ),
 
@@ -681,7 +682,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@isset"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endisset"),
       ),
 
@@ -689,7 +690,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@empty"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endempty"),
       ),
 
@@ -697,7 +698,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@auth"),
         field("parameter", optional($._directive_parameter)),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endauth"),
       ),
 
@@ -705,14 +706,14 @@ export default grammar(html, {
       seq(
         field("directive_start", "@guest"),
         field("parameter", optional($._directive_parameter)),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endguest"),
       ),
 
     production: ($) =>
       seq(
         field("directive_start", "@production"),
-        optional($.conditional_body),
+        optional(optional($.conditional_body)),
         field("directive_end", "@endproduction"),
       ),
 
@@ -720,7 +721,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@env"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endenv"),
       ),
 
@@ -728,7 +729,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@hasSection"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endif"),
       ),
 
@@ -736,7 +737,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@sectionMissing"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endif"),
       ),
 
@@ -744,7 +745,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@error"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@enderror"),
       ),
 
@@ -755,7 +756,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@can"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endcan"),
       ),
 
@@ -763,7 +764,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@cannot"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endcannot"),
       ),
 
@@ -771,7 +772,7 @@ export default grammar(html, {
       seq(
         field("directive_start", "@canany"),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field("directive_end", "@endcanany"),
       ),
 
@@ -813,7 +814,7 @@ export default grammar(html, {
           ),
         ),
         field("parameter", $._directive_parameter),
-        field("body", $.conditional_body),
+        field("body", optional($.conditional_body)),
         field(
           "directive_start",
           token(prec(1, /@end[a-zA-Z\d]+/)),
@@ -1133,12 +1134,6 @@ export default grammar(html, {
 
     conditional_body: ($) =>
       repeat1(choice(...nodes.with($.conditional_keyword).all())),
-
-    _conditional_body_with_optional_parameter: ($) =>
-      seq(
-        optional(field("parameter", $._directive_parameter)),
-        $.conditional_body,
-      ),
 
     // ! envoy helpers
     _envoy_if: ($) =>
@@ -1595,7 +1590,7 @@ export default grammar(html, {
 
     _anonymous_function_header: ($) =>
       seq(
-        optional(field("attributes", $.attribute_list)),
+        optional(field("attributes", $.attr_list)),
         optional(field("static_modifier", $.static_modifier)),
         keyword("function"),
         optional(field("reference_modifier", $.reference_modifier)),
@@ -1606,7 +1601,7 @@ export default grammar(html, {
 
     _arrow_function_header: ($) =>
       seq(
-        optional(field("attributes", $.attribute_list)),
+        optional(field("attributes", $.attr_list)),
         optional(field("static_modifier", $.static_modifier)),
         keyword("fn"),
         optional(field("reference_modifier", $.reference_modifier)),
@@ -1638,7 +1633,7 @@ export default grammar(html, {
 
     property_promotion_parameter: ($) =>
       seq(
-        optional(field("attributes", $.attribute_list)),
+        optional(field("attributes", $.attr_list)),
         field("visibility", $.visibility_modifier),
         field("readonly", optional($.readonly_modifier)),
         field("type", optional($.type)), // Note: callable is not a valid type here, but instead of complicating the parser, we defer this checking to any intelligence using the parser
@@ -1649,7 +1644,7 @@ export default grammar(html, {
 
     simple_parameter: ($) =>
       seq(
-        optional(field("attributes", $.attribute_list)),
+        optional(field("attributes", $.attr_list)),
         field("type", optional($.type)),
         optional(field("reference_modifier", $.reference_modifier)),
         field("name", $.variable_name),
@@ -1658,7 +1653,7 @@ export default grammar(html, {
 
     variadic_parameter: ($) =>
       seq(
-        optional(field("attributes", $.attribute_list)),
+        optional(field("attributes", $.attr_list)),
         field("type", optional($.type)),
         optional(field("reference_modifier", $.reference_modifier)),
         "...",
@@ -1978,10 +1973,13 @@ export default grammar(html, {
       ),
 
     _name: ($) =>
-      choice(
-        alias(keyword("static", false), $.name),
-        $.name,
-        $.qualified_name,
+      prec(
+        PREC.IDENTIFIER,
+        choice(
+          alias(keyword("static", false), $.name),
+          $.name,
+          $.qualified_name,
+        ),
       ),
 
     _class_name_reference: ($) =>
@@ -2054,15 +2052,21 @@ export default grammar(html, {
         ),
       ),
 
-    attribute_group: ($) =>
+    attr_group: ($) =>
       seq(
         "#[",
-        commaSep1($.attribute),
+        commaSep1($.attr),
         optional(","),
         "]",
       ),
 
-    attribute_list: ($) => repeat1($.attribute_group),
+    attr_list: ($) => repeat1($.attr_group),
+
+    attr: ($) =>
+      seq(
+        $._name,
+        optional(field("parameters", $.arguments)),
+      ),
 
     array_element_initializer: ($) =>
       prec.right(choice(
@@ -2142,6 +2146,6 @@ export default grammar(html, {
 
     null: (_) => "null",
 
-    name: (_) => token(prec(PREC.IDENTIFIER, /[a-zA-Z_][a-zA-Z0-9_]*/)),
+    name: (_) => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
   },
 });
