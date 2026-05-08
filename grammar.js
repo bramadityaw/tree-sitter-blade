@@ -283,6 +283,7 @@ var grammar_default = grammar(import_grammar.default, {
     [$.relative_scope, $._name]
   ],
   supertypes: ($) => [
+    $.statement,
     $.expression,
     $.primary_expression,
     $.type,
@@ -357,7 +358,7 @@ var grammar_default = grammar(import_grammar.default, {
     // From tree-sitter-php
     php: ($) => seq(
       $.php_tag,
-      optional(alias($.text, $.php_only)),
+      repeat($.statement),
       $.php_end_tag
     ),
     php_tag: (_) => /<\?([pP][hH][pP]|=)?/,
@@ -383,7 +384,7 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     multi_line_raw: ($) => seq(
       field("directive_start", "@php"),
-      optional(alias($.text, $.php_only)),
+      repeat($.statement),
       field("directive_end", "@endphp")
     ),
     // tree-sitter-html override
@@ -1013,7 +1014,7 @@ var grammar_default = grammar(import_grammar.default, {
     envoy: ($) => choice($._task, $._story, $._hooks),
     setup: ($) => seq(
       field("directive_start", "@setup"),
-      optional(alias($.text, $.php_only)),
+      repeat($.statement),
       field("directive_end", "@endsetup")
     ),
     _task: ($) => seq(
@@ -1201,7 +1202,7 @@ var grammar_default = grammar(import_grammar.default, {
       field("parameter", $._directive_parameter),
       field("body", optional($._loop_body))
     ),
-    _directive_parameter: ($) => seq("(", commaSep1($.expression), ")"),
+    _directive_parameter: ($) => prec(1, seq("(", commaSep1($.expression), ")")),
     text: ($) => prec.right(repeat1($._text)),
     // hidden to reduce AST noise in php_only #39
     // It is selectively unhidden for other areas
@@ -1273,6 +1274,103 @@ var grammar_default = grammar(import_grammar.default, {
       keyword("default"),
       "=>",
       field("return_expression", $.expression)
+    ),
+    return_statement: ($) => seq(
+      keyword("return"),
+      optional($.expression),
+      $._semicolon
+    ),
+    while_statement: ($) => seq(
+      keyword("while"),
+      field("condition", $.parenthesized_expression),
+      choice(
+        field("body", $.statement),
+        seq(
+          field("body", $.colon_block),
+          keyword("endwhile"),
+          $._semicolon
+        )
+      )
+    ),
+    do_statement: ($) => seq(
+      keyword("do"),
+      field("body", $.statement),
+      keyword("while"),
+      field("condition", $.parenthesized_expression),
+      $._semicolon
+    ),
+    for_statement: ($) => seq(
+      keyword("for"),
+      "(",
+      field("initialize", optional($._expressions)),
+      ";",
+      field("condition", optional($._expressions)),
+      ";",
+      field("update", optional($._expressions)),
+      ")",
+      choice(
+        $._semicolon,
+        field("body", $.statement),
+        seq(
+          ":",
+          field("body", repeat($.statement)),
+          keyword("endfor"),
+          $._semicolon
+        )
+      )
+    ),
+    foreach_statement: ($) => seq(
+      keyword("foreach"),
+      "(",
+      $.expression,
+      keyword("as"),
+      choice(
+        alias($.foreach_pair, $.pair),
+        $._foreach_value
+      ),
+      ")",
+      choice(
+        $._semicolon,
+        field("body", $.statement),
+        seq(
+          field("body", $.colon_block),
+          keyword("endforeach"),
+          $._semicolon
+        )
+      )
+    ),
+    try_statement: ($) => seq(
+      keyword("try"),
+      field("body", $.compound_statement),
+      repeat1(choice($.catch_clause, $.finally_clause))
+    ),
+    catch_clause: ($) => seq(
+      keyword("catch"),
+      "(",
+      field("type", $.type_list),
+      optional(field("name", $.variable_name)),
+      ")",
+      field("body", $.compound_statement)
+    ),
+    type_list: ($) => pipeSep1($.named_type),
+    finally_clause: ($) => seq(
+      keyword("finally"),
+      field("body", $.compound_statement)
+    ),
+    goto_statement: ($) => seq(
+      keyword("goto"),
+      $.name,
+      $._semicolon
+    ),
+    continue_statement: ($) => seq(
+      keyword("continue"),
+      optional($.expression),
+      $._semicolon
+    ),
+    break_statement: ($) => seq(
+      keyword("break"),
+      optional($.expression),
+      $._semicolon
     ),
     _expressions: ($) => choice(
       $.expression,
@@ -1489,6 +1587,8 @@ var grammar_default = grammar(import_grammar.default, {
       )
     )),
     _return_type: ($) => seq(":", field("return_type", choice($.type, $.bottom_type))),
+    _const_element: ($) => seq($.name, "=", $.expression),
+    _class_const_element: ($) => $._const_element,
     _unary_expression: ($) => choice($.primary_expression, $.unary_op_expression, $.cast_expression),
     primary_expression: ($) => choice(
       $._variable,
@@ -1518,15 +1618,20 @@ var grammar_default = grammar(import_grammar.default, {
       token(prec(PREC.KEYWORD, keyword("throw"))),
       $.expression
     ),
+    function_definition: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      keyword("function"),
+      optional($.reference_modifier),
+      field("name", $.name),
+      field("parameters", $.formal_parameters),
+      optional($._return_type),
+      field("body", $.compound_statement)
+    ),
     anonymous_function: ($) => seq(
       $._anonymous_function_header,
       field(
         "body",
-        seq(
-          "{",
-          alias($.text, $.php_only),
-          "}"
-        )
+        $.compound_statement
       )
     ),
     anonymous_function_use_clause: ($) => seq(
@@ -1536,6 +1641,14 @@ var grammar_default = grammar(import_grammar.default, {
       optional(","),
       ")"
     ),
+    _modifier: ($) => prec.left(choice(
+      $.var_modifier,
+      $.visibility_modifier,
+      $.static_modifier,
+      $.final_modifier,
+      $.abstract_modifier,
+      $.readonly_modifier
+    )),
     _anonymous_function_header: ($) => seq(
       optional(field("attributes", $.attr_list)),
       optional(field("static_modifier", $.static_modifier)),
@@ -1565,6 +1678,7 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     reference_modifier: (_) => "&",
     static_modifier: (_) => keyword("static"),
+    var_modifier: (_) => keyword("var", false),
     arrow_function: ($) => seq(
       $._arrow_function_header,
       "=>",
@@ -1972,7 +2086,385 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     boolean: (_) => token(prec(PREC.KEYWORD, /true|false/i)),
     null: (_) => "null",
-    name: (_) => token(/[a-zA-Z_][a-zA-Z0-9_]*/)
+    name: (_) => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
+    statement: ($) => choice(
+      $.empty_statement,
+      //
+      $.compound_statement,
+      //
+      $.named_label_statement,
+      //
+      $.expression_statement,
+      //
+      $.if_statement,
+      //
+      $.switch_statement,
+      //
+      $.while_statement,
+      //
+      $.do_statement,
+      //
+      $.for_statement,
+      //
+      $.foreach_statement,
+      //
+      $.goto_statement,
+      //
+      $.continue_statement,
+      //
+      $.break_statement,
+      //
+      $.return_statement,
+      //
+      $.try_statement,
+      //
+      $.declare_statement,
+      //
+      $.echo_statement,
+      //
+      $.exit_statement,
+      //
+      $.unset_statement,
+      //
+      $.const_declaration,
+      //
+      $.function_definition,
+      //
+      $.class_declaration,
+      //
+      $.interface_declaration,
+      //
+      $.trait_declaration,
+      //
+      $.enum_declaration,
+      //
+      $.namespace_definition,
+      //
+      $.namespace_use_declaration,
+      //
+      $.global_declaration,
+      //
+      $.function_static_declaration
+      //
+    ),
+    empty_statement: (_) => prec(-1, ";"),
+    compound_statement: ($) => seq("{", repeat($.statement), "}"),
+    named_label_statement: ($) => seq($.name, ":"),
+    expression_statement: ($) => seq($.expression, $._semicolon),
+    switch_statement: ($) => seq(
+      keyword("switch"),
+      field("condition", $.parenthesized_expression),
+      field("body", $.switch_block)
+    ),
+    switch_block: ($) => choice(
+      seq(
+        "{",
+        repeat(choice($.case_statement, $.default_statement)),
+        "}"
+      ),
+      seq(
+        ":",
+        repeat(choice($.case_statement, $.default_statement)),
+        keyword("endswitch"),
+        $._semicolon
+      )
+    ),
+    case_statement: ($) => seq(
+      keyword("case"),
+      field("value", $.expression),
+      choice(":", ";"),
+      repeat($.statement)
+    ),
+    default_statement: ($) => seq(
+      keyword("default"),
+      choice(":", ";"),
+      repeat($.statement)
+    ),
+    function_static_declaration: ($) => seq(
+      keyword("static"),
+      commaSep1($.static_variable_declaration),
+      $._semicolon
+    ),
+    static_variable_declaration: ($) => seq(
+      field("name", $.variable_name),
+      optional(seq(
+        "=",
+        field("value", $.expression)
+      ))
+    ),
+    global_declaration: ($) => seq(
+      keyword("global"),
+      commaSep1($._simple_variable),
+      $._semicolon
+    ),
+    namespace_definition: ($) => seq(
+      keyword("namespace"),
+      choice(
+        seq(field("name", $.namespace_name), $._semicolon),
+        seq(
+          field("name", optional($.namespace_name)),
+          field("body", $.compound_statement)
+        )
+      )
+    ),
+    namespace_use_declaration: ($) => seq(
+      keyword("use"),
+      choice(
+        commaSep1($.namespace_use_clause),
+        $._namespace_use_group
+      ),
+      $._semicolon
+    ),
+    namespace_use_clause: ($) => seq(
+      field("type", optional($._namespace_use_type)),
+      choice($.name, $.qualified_name),
+      optional(seq(keyword("as"), field("alias", $.name)))
+    ),
+    _namespace_use_group: ($) => seq(
+      field("type", optional($._namespace_use_type)),
+      $.namespace_name,
+      "\\",
+      field("body", $.namespace_use_group)
+    ),
+    namespace_use_group: ($) => seq("{", commaSep1($.namespace_use_clause), "}"),
+    echo_statement: ($) => seq(keyword("echo"), $._expressions, $._semicolon),
+    exit_statement: ($) => seq(
+      keyword("exit"),
+      optional(seq("(", optional($.expression), ")")),
+      $._semicolon
+    ),
+    unset_statement: ($) => seq(
+      "unset",
+      "(",
+      commaSep1($._variable),
+      optional(","),
+      ")",
+      $._semicolon
+    ),
+    declare_statement: ($) => seq(
+      keyword("declare"),
+      "(",
+      $.declare_directive,
+      ")",
+      choice(
+        $.statement,
+        $._semicolon,
+        seq(
+          ":",
+          repeat($.statement),
+          keyword("enddeclare"),
+          $._semicolon
+        )
+      )
+    ),
+    declare_directive: ($) => seq(
+      choice("ticks", "encoding", "strict_types"),
+      "=",
+      $.literal
+    ),
+    const_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      repeat($._modifier),
+      keyword("const"),
+      optional(field("type", $.type)),
+      commaSep1(alias($._const_element, $.const_element)),
+      $._semicolon
+    ),
+    _class_const_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      optional($.final_modifier),
+      repeat($._modifier),
+      keyword("const"),
+      optional(field("type", $.type)),
+      commaSep1(alias($._class_const_element, $.const_element)),
+      $._semicolon
+    ),
+    if_statement: ($) => prec.right(
+      seq(
+        keyword("if"),
+        field("condition", $.parenthesized_expression),
+        choice(
+          seq(
+            field("body", $.statement),
+            repeat(field("alternative", $.else_if_clause)),
+            optional(field("alternative", $.else_clause))
+          ),
+          seq(
+            field("body", $.colon_block),
+            repeat(
+              field(
+                "alternative",
+                alias($.else_if_clause_2, $.else_if_clause)
+              )
+            ),
+            optional(
+              field("alternative", alias($.else_clause_2, $.else_clause))
+            ),
+            keyword("endif"),
+            $._semicolon
+          )
+        )
+      )
+    ),
+    colon_block: ($) => seq(
+      ":",
+      repeat($.statement)
+    ),
+    else_if_clause: ($) => seq(
+      keyword("elseif"),
+      field("condition", $.parenthesized_expression),
+      field("body", $.statement)
+    ),
+    else_clause: ($) => seq(
+      keyword("else"),
+      field("body", $.statement)
+    ),
+    else_if_clause_2: ($) => seq(
+      keyword("elseif"),
+      field("condition", $.parenthesized_expression),
+      field("body", $.colon_block)
+    ),
+    else_clause_2: ($) => seq(
+      keyword("else"),
+      field("body", $.colon_block)
+    ),
+    method_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      repeat($._modifier),
+      keyword("function"),
+      optional($.reference_modifier),
+      field("name", $.name),
+      field("parameters", $.formal_parameters),
+      optional($._return_type),
+      choice(
+        field("body", $.compound_statement),
+        $._semicolon
+      )
+    ),
+    _member_declaration: ($) => choice(
+      alias($._class_const_declaration, $.const_declaration),
+      $.property_declaration,
+      $.method_declaration,
+      $.use_declaration
+    ),
+    property_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      repeat1($._modifier),
+      optional(field("type", $.type)),
+      commaSep1($.property_element),
+      choice(
+        $._semicolon,
+        $.property_hook_list
+      )
+    ),
+    property_element: ($) => seq(
+      field("name", $.variable_name),
+      optional(seq("=", field("default_value", $.expression)))
+    ),
+    property_hook_list: ($) => seq("{", repeat($.property_hook), "}"),
+    property_hook: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      optional(field("final", $.final_modifier)),
+      optional(field("reference_modifier", $.reference_modifier)),
+      $.name,
+      optional(field("parameters", $.formal_parameters)),
+      $._property_hook_body
+    ),
+    _property_hook_body: ($) => choice(
+      seq("=>", field("body", $.expression), $._semicolon),
+      field("body", $.compound_statement),
+      $._semicolon
+    ),
+    class_interface_clause: ($) => seq(
+      keyword("implements"),
+      commaSep1($._name)
+    ),
+    class_declaration: ($) => prec.right(seq(
+      optional(field("attributes", $.attr_list)),
+      repeat($._modifier),
+      keyword("class"),
+      field("name", $.name),
+      optional($.base_clause),
+      optional($.class_interface_clause),
+      field("body", $.declaration_list)
+    )),
+    declaration_list: ($) => seq("{", repeat($._member_declaration), "}"),
+    trait_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      keyword("trait"),
+      field("name", $.name),
+      field("body", $.declaration_list)
+    ),
+    interface_declaration: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      keyword("interface"),
+      field("name", $.name),
+      optional($.base_clause),
+      field("body", $.declaration_list)
+    ),
+    base_clause: ($) => seq(
+      keyword("extends"),
+      commaSep1($._name)
+    ),
+    enum_declaration: ($) => prec.right(seq(
+      optional(field("attributes", $.attr_list)),
+      keyword("enum"),
+      field("name", $.name),
+      optional(seq(":", alias(choice("string", "int"), $.primitive_type))),
+      optional($.class_interface_clause),
+      field("body", $.enum_declaration_list)
+    )),
+    enum_declaration_list: ($) => seq("{", repeat($._enum_member_declaration), "}"),
+    _enum_member_declaration: ($) => choice(
+      alias($._class_const_declaration, $.const_declaration),
+      $.enum_case,
+      $.method_declaration,
+      $.use_declaration
+    ),
+    enum_case: ($) => seq(
+      optional(field("attributes", $.attr_list)),
+      keyword("case"),
+      field("name", $.name),
+      optional(seq("=", field("value", $.expression))),
+      $._semicolon
+    ),
+    use_declaration: ($) => seq(
+      keyword("use"),
+      commaSep1($._name),
+      choice($.use_list, $._semicolon)
+    ),
+    use_list: ($) => seq(
+      "{",
+      repeat(seq(
+        choice(
+          $.use_instead_of_clause,
+          $.use_as_clause
+        ),
+        $._semicolon
+      )),
+      "}"
+    ),
+    use_instead_of_clause: ($) => prec.left(seq(
+      $.class_constant_access_expression,
+      keyword("insteadof"),
+      $.name
+    )),
+    use_as_clause: ($) => seq(
+      choice($.class_constant_access_expression, $.name),
+      keyword("as"),
+      choice(
+        seq(
+          optional($.visibility_modifier),
+          $.name
+        ),
+        seq(
+          $.visibility_modifier,
+          optional($.name)
+        )
+      )
+    ),
+    _namespace_use_type: (_) => choice(keyword("function"), keyword("const")),
+    _semicolon: (_) => ";"
   }
 });
 export {
