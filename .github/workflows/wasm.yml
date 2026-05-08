@@ -15,13 +15,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Deno
-        uses: denoland/setup-deno@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          deno-version: lts
+          node-version: 24
+
+      - name: Install tree-sitter-cli
+        run: npm install -g tree-sitter-cli
 
       - name: Build WASM
-        run: deno task wasm
+        run: tree-sitter build --wasm
 
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
