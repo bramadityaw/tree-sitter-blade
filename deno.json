@@ -37,7 +37,6 @@
     "wasm": {
       "command": "deno task prestart",
       "dependencies": [
-        "bundle",
         "generate"
       ]
     }
