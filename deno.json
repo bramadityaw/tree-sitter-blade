@@ -33,7 +33,7 @@
       "dependencies": [
         "bundle"
       ]
-    }
+    },
     "wasm": {
       "command": "deno task prestart",
       "dependencies": [
