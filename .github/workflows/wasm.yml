@@ -23,7 +23,7 @@ jobs:
           deno-version: lts
 
       - name: Install dependencies
-        run: deno install --allow-scripts=npm:tree-sitter-cli
+        run: deno cache --reload deno.json
 
       - name: Build WASM
         run: deno task wasm
