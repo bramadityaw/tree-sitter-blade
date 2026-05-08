@@ -34,6 +34,12 @@
         "bundle"
       ]
     }
+    "wasm": {
+      "command": "deno task prestart",
+      "dependencies": [
+        "generate"
+      ]
+    }
   },
   "allowScripts": ["npm:esbuild@0.20.2", "npm:tree-sitter-cli@0.25.6"]
 }
