@@ -384,7 +384,7 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     multi_line_raw: ($) => seq(
       field("directive_start", "@php"),
-      repeat($.statement),
+      repeat(choice($.statement, $.entity)),
       field("directive_end", "@endphp")
     ),
     // tree-sitter-html override
@@ -1198,10 +1198,6 @@ var grammar_default = grammar(import_grammar.default, {
         )
       )
     ),
-    _loop_directive_body: ($) => seq(
-      field("parameter", $._directive_parameter),
-      field("body", optional($._loop_body))
-    ),
     _directive_parameter: ($) => prec(1, seq("(", commaSep1($.expression), ")")),
     text: ($) => prec.right(repeat1($._text)),
     // hidden to reduce AST noise in php_only #39
@@ -1240,11 +1236,35 @@ var grammar_default = grammar(import_grammar.default, {
     ),
     // ! PHP Expression Grammar (from tree-sitter-php)
     expression: ($) => choice(
-      $.augmented_assignment_expression,
       $.conditional_expression,
+      $.match_expression,
+      $.augmented_assignment_expression,
       $.assignment_expression,
-      $.binary_expression,
-      $._unary_expression
+      $.reference_assignment_expression,
+      $.yield_expression,
+      $._unary_expression,
+      $.error_suppression_expression,
+      $.binary_expression
+    ),
+    error_suppression_expression: ($) => prec(PREC.INC, seq("@", $.expression)),
+    yield_expression: ($) => prec.right(choice(
+      seq(keyword("yield"), optional($.array_element_initializer)),
+      seq(keyword("yield from"), $.expression)
+    )),
+    reference_assignment_expression: ($) => prec.right(
+      PREC.ASSIGNMENT,
+      seq(
+        field(
+          "left",
+          choice(
+            $._variable,
+            $.list_literal
+          )
+        ),
+        "=",
+        "&",
+        field("right", $.expression)
+      )
     ),
     match_expression: ($) => seq(
       keyword("match"),
@@ -2031,10 +2051,13 @@ var grammar_default = grammar(import_grammar.default, {
       $.array_element_spreading_initializer
     )),
     array_element_value_initializer: ($) => $.expression,
-    array_element_key_value_initializer: ($) => seq(
-      field("key", $.expression),
-      "=>",
-      field("value", $.expression)
+    array_element_key_value_initializer: ($) => prec(
+      -1,
+      seq(
+        field("key", $.expression),
+        "=>",
+        field("value", $.expression)
+      )
     ),
     array_element_spreading_initializer: ($) => seq("...", $.expression),
     literal: ($) => choice($.integer, $.float, $._string, $.boolean, $.null),
