@@ -178,7 +178,7 @@ Qualified class constant access statement
           (name)
           (name))
         (name))
-      name: (name))))
+      (name))))
 
 ================================================================================
 Member call statement
@@ -192,17 +192,17 @@ Member call statement
 (document
   (escaped
     (member_call_expression
-      object: (variable_name
+      (variable_name
         (name))
-      name: (name)
-      arguments: (arguments)))
+      (name)
+      (arguments)))
   (escaped
     (member_call_expression
-      object: (function_call_expression
-        function: (name)
-        arguments: (arguments))
-      name: (name)
-      arguments: (arguments))))
+      (function_call_expression
+        (name)
+        (arguments))
+      (name)
+      (arguments))))
 
 ================================================================================
 arrow function
@@ -338,3 +338,109 @@ anonymous function
                           (name))
                         (name)
                         (arguments)))))))))))))
+
+================================================================================
+Member access statement
+================================================================================
+{{ Auth::user()->role }}
+--------------------------------------------------------------------------------
+
+(document
+  (escaped
+    (member_access_expression
+      (scoped_call_expression
+        (name)
+        (name)
+        (arguments))
+      (name))))
+
+================================================================================
+If statement
+================================================================================
+@php
+if ($a > 0) {
+  echo "Yes";
+}
+
+if ($a==0) {
+  echo "bad";
+} else {
+  echo "good";
+}
+
+if ($a==0) {
+  echo "bad";
+} elseif ($a==3) {
+  echo "bad";
+} else {
+  echo "good";
+}
+@endphp
+--------------------------------------------------------------------------------
+
+(document
+  (multi_line_raw
+    (if_statement
+      (parenthesized_expression
+        (binary_expression
+          (variable_name
+            (name))
+          (integer)))
+      (compound_statement
+        (echo_statement
+          (encapsed_string))))
+    (if_statement
+      (parenthesized_expression
+        (binary_expression
+          (variable_name
+            (name))
+          (integer)))
+      (compound_statement
+        (echo_statement
+          (encapsed_string)))
+      (else_clause
+        (compound_statement
+          (echo_statement
+            (encapsed_string)))))
+    (if_statement
+      (parenthesized_expression
+        (binary_expression
+          (variable_name
+            (name))
+          (integer)))
+      (compound_statement
+        (echo_statement
+          (encapsed_string)))
+      (else_if_clause
+        (parenthesized_expression
+          (binary_expression
+            (variable_name
+              (name))
+            (integer)))
+        (compound_statement
+          (echo_statement
+            (encapsed_string))))
+      (else_clause
+        (compound_statement
+          (echo_statement
+            (encapsed_string)))))))
+
+================================================================================
+Array destructuring assignment
+================================================================================
+@php
+    [$x, $y] = $val;
+@endphp
+--------------------------------------------------------------------------------
+
+(document
+  (multi_line_raw
+    (expression_statement
+      (assignment_expression
+        (list_literal
+          (variable_name
+            (name))
+          (variable_name
+            (name)))
+        (variable_name
+          (name))))))

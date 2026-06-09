@@ -277,3 +277,39 @@
       (array_element_key_value_initializer
         (string)
         (boolean)))))
+
+================================================================================
+Dynamic attributes
+================================================================================
+<a @if(isset($href)) href="{{ $href }}" @endif
+  {{ $href }}
+  class="block"
+></a>
+--------------------------------------------------------------------------------
+
+(document
+  (element
+    (start_tag
+      (tag_name)
+      (if
+        (function_call_expression
+          (name)
+          (arguments
+            (argument
+              (variable_name
+                (name)))))
+        (conditional_body
+          (text)
+          (escaped
+            (variable_name
+              (name)))
+          (text)))
+      (escaped
+        (variable_name
+          (name)))
+      (html_attribute
+        (attribute_name)
+        (quoted_attribute_value
+          (attribute_value))))
+    (end_tag
+      (tag_name))))

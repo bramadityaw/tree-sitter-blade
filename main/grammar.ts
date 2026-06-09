@@ -81,6 +81,82 @@ function commaSep(rule: Rule): ChoiceRule {
   return optional(commaSep1(rule));
 }
 
+const reserved_php = ($: GrammarSymbols<string>) => [
+  $._kw_abstract,
+  $._kw_and,
+  $._kw_as,
+  $._kw_break,
+  $._kw_callable,
+  $._kw_case,
+  $._kw_catch,
+  $._kw_class,
+  $._kw_clone,
+  $._kw_const,
+  $._kw_continue,
+  $._kw_declare,
+  $._kw_default,
+  $._kw_do,
+  $._kw_echo,
+  $._kw_else,
+  $._kw_elseif,
+  $._kw_enddeclare,
+  $._kw_endfor,
+  $._kw_endforeach,
+  $._kw_endif,
+  $._kw_endswitch,
+  $._kw_endwhile,
+  $._kw_extends,
+  $._kw_final,
+  $._kw_finally,
+  $._kw_fn,
+  $._kw_for,
+  $._kw_foreach,
+  $._kw_function,
+  $._kw_global,
+  $._kw_goto,
+  $._kw_if,
+  $._kw_implements,
+  $._kw_instanceof,
+  $._kw_insteadof,
+  $._kw_interface,
+  $._kw_match,
+  $._kw_namespace,
+  $._kw_new,
+  $._kw_or,
+  $._kw_print,
+  $._kw_private,
+  $._kw_protected,
+  $._kw_public,
+  $._kw_readonly,
+  $._kw_return,
+  $._kw_static,
+  $._kw_switch,
+  $._kw_throw,
+  $._kw_trait,
+  $._kw_try,
+  $._kw_use,
+  $._kw_var,
+  $._kw_while,
+  $._kw_xor,
+  $._kw_yield_from,
+  $._kw_yield,
+];
+
+const reserved_class = ($: GrammarSymbols<string>) => [
+  $._kw_bool,
+  $._kw_false,
+  $._kw_float,
+  $._kw_int,
+  $._kw_iterable,
+  $._kw_mixed,
+  $._kw_never,
+  $._kw_null,
+  $._kw_object,
+  $._kw_string,
+  $._kw_true,
+  $._kw_void,
+];
+
 export default grammar(html, {
   name: "blade",
   conflicts: ($) => [
@@ -92,8 +168,16 @@ export default grammar(html, {
     [$.intersection_type],
 
     [$.namespace_name],
-    [$.relative_scope, $._name],
+    [$.if_statement],
   ],
+
+  reserved: {
+    nothing: (_) => [],
+    php: reserved_php,
+    classes: (
+      $: GrammarSymbols<string>,
+    ) => [...reserved_php($), ...reserved_class($)],
+  },
 
   supertypes: ($) => [
     $.statement,
@@ -129,6 +213,7 @@ export default grammar(html, {
           $.comment,
           $.switch,
           $.loops,
+          $.conditional,
           $.envoy,
           $.livewire,
           // nested
@@ -137,8 +222,6 @@ export default grammar(html, {
           $.once,
           $.verbatim,
           $.stack,
-          // conditional
-          $.conditional,
         ),
       ),
     // ------------------
@@ -228,6 +311,20 @@ export default grammar(html, {
         $.expression_attribute,
         $.short_attribute,
         $.php_statement,
+        ...nodes.without(
+          $.doctype,
+          $.entity,
+          $.text,
+          $.element,
+          $.script_element,
+          $.style_element,
+          $.erroneous_end_tag,
+          $.fragment,
+          $.section,
+          $.once,
+          $.verbatim,
+          $.stack,
+        ),
       ),
     attribute_name: (_) => token(prec(-1, /[^<>"'/=\s]+/)),
 
@@ -915,7 +1012,7 @@ export default grammar(html, {
         field("directive_start", "@foreach"),
         "(",
         $.expression,
-        keyword("as"),
+        $._kw_as,
         choice(
           alias($.foreach_pair, $.pair),
           $._foreach_value,
@@ -939,7 +1036,7 @@ export default grammar(html, {
         field("directive_start", "@forelse"),
         "(",
         $.expression,
-        keyword("as"),
+        $._kw_as,
         choice(
           alias($.foreach_pair, $.pair),
           $._foreach_value,
@@ -1227,26 +1324,106 @@ export default grammar(html, {
         ),
       ),
 
+    /**
+     * The primary reserved keywords in PHP, but not in all contexts.
+     *
+     * @see https://www.php.net/manual/en/reserved.keywords.php
+     */
+    _kw_abstract: (_) => /abstract/i,
+    _kw_and: (_) => /and/i,
+    _kw_as: (_) => /as/i,
+    _kw_break: (_) => /break/i,
+    _kw_callable: (_) => /callable/i,
+    _kw_case: (_) => /case/i,
+    _kw_catch: (_) => /catch/i,
+    _kw_class: (_) => /class/i,
+    _kw_clone: (_) => /clone/i,
+    _kw_const: (_) => /const/i,
+    _kw_continue: (_) => /continue/i,
+    _kw_declare: (_) => /declare/i,
+    _kw_default: (_) => /default/i,
+    _kw_do: (_) => /do/i,
+    _kw_echo: (_) => /echo/i,
+    _kw_else: (_) => /else/i,
+    _kw_elseif: (_) => /elseif/i,
+    _kw_enddeclare: (_) => /enddeclare/i,
+    _kw_endfor: (_) => /endfor/i,
+    _kw_endforeach: (_) => /endforeach/i,
+    _kw_endif: (_) => /endif/i,
+    _kw_endswitch: (_) => /endswitch/i,
+    _kw_endwhile: (_) => /endwhile/i,
+    _kw_extends: (_) => /extends/i,
+    _kw_final: (_) => /final/i,
+    _kw_finally: (_) => /finally/i,
+    _kw_fn: (_) => /fn/i,
+    _kw_for: (_) => /for/i,
+    _kw_foreach: (_) => /foreach/i,
+    _kw_function: (_) => /function/i,
+    _kw_global: (_) => /global/i,
+    _kw_goto: (_) => /goto/i,
+    _kw_if: (_) => /if/i,
+    _kw_implements: (_) => /implements/i,
+    _kw_instanceof: (_) => /instanceof/i,
+    _kw_insteadof: (_) => /insteadof/i,
+    _kw_interface: (_) => /interface/i,
+    _kw_match: (_) => /match/i,
+    _kw_namespace: (_) => /namespace/i,
+    _kw_new: (_) => /new/i,
+    _kw_or: (_) => /or/i,
+    _kw_print: (_) => /print/i,
+    _kw_private: (_) => /private/i,
+    _kw_protected: (_) => /protected/i,
+    _kw_public: (_) => /public/i,
+    _kw_readonly: (_) => /readonly/i,
+    _kw_return: (_) => /return/i,
+    _kw_static: (_) => /static/i,
+    _kw_switch: (_) => /switch/i,
+    _kw_throw: (_) => /throw/i,
+    _kw_trait: (_) => /trait/i,
+    _kw_try: (_) => /try/i,
+    _kw_use: (_) => /use/i,
+    _kw_var: (_) => /var/i,
+    _kw_while: (_) => /while/i,
+    _kw_xor: (_) => /xor/i,
+    _kw_yield_from: (_) => /yield from/i,
+    _kw_yield: (_) => /yield/i,
+
+    _kw_bool: (_) => /bool/i,
+    _kw_false: (_) => /false/i,
+    _kw_float: (_) => /float/i,
+    _kw_int: (_) => /int/i,
+    _kw_iterable: (_) => /iterable/i,
+    _kw_mixed: (_) => /mixed/i,
+    _kw_never: (_) => /never/i,
+    _kw_null: (_) => /null/i,
+    _kw_object: (_) => /object/i,
+    _kw_string: (_) => /string/i,
+    _kw_true: (_) => /true/i,
+    _kw_void: (_) => /void/i,
+
     // ! PHP Expression Grammar (from tree-sitter-php)
     expression: ($) =>
-      choice(
-        $.conditional_expression,
-        $.match_expression,
-        $.augmented_assignment_expression,
-        $.assignment_expression,
-        $.reference_assignment_expression,
-        $.yield_expression,
-        $._unary_expression,
-        $.error_suppression_expression,
-        $.binary_expression,
+      reserved(
+        "php",
+        choice(
+          $.conditional_expression,
+          $.match_expression,
+          $.augmented_assignment_expression,
+          $.assignment_expression,
+          $.reference_assignment_expression,
+          $.yield_expression,
+          $._unary_expression,
+          $.error_suppression_expression,
+          $.binary_expression,
+        ),
       ),
 
     error_suppression_expression: ($) => prec(PREC.INC, seq("@", $.expression)),
 
     yield_expression: ($) =>
       prec.right(choice(
-        seq(keyword("yield"), optional($.array_element_initializer)),
-        seq(keyword("yield from"), $.expression),
+        seq($._kw_yield, optional($.array_element_initializer)),
+        seq($._kw_yield_from, $.expression),
       )),
 
     reference_assignment_expression: ($) =>
@@ -1268,7 +1445,7 @@ export default grammar(html, {
 
     match_expression: ($) =>
       seq(
-        keyword("match"),
+        $._kw_match,
         field("condition", $.parenthesized_expression),
         field("body", $.match_block),
       ),
@@ -1299,26 +1476,27 @@ export default grammar(html, {
 
     match_default_expression: ($) =>
       seq(
-        keyword("default"),
+        $._kw_default,
         "=>",
         field("return_expression", $.expression),
       ),
 
     return_statement: ($) =>
       seq(
-        keyword("return"),
+        $._kw_return,
         optional($.expression),
         $._semicolon,
       ),
+
     while_statement: ($) =>
       seq(
-        keyword("while"),
+        $._kw_while,
         field("condition", $.parenthesized_expression),
         choice(
           field("body", $.statement),
           seq(
             field("body", $.colon_block),
-            keyword("endwhile"),
+            $._kw_endwhile,
             $._semicolon,
           ),
         ),
@@ -1326,16 +1504,16 @@ export default grammar(html, {
 
     do_statement: ($) =>
       seq(
-        keyword("do"),
+        $._kw_do,
         field("body", $.statement),
-        keyword("while"),
+        $._kw_while,
         field("condition", $.parenthesized_expression),
         $._semicolon,
       ),
 
     for_statement: ($) =>
       seq(
-        keyword("for"),
+        $._kw_for,
         "(",
         field("initialize", optional($._expressions)),
         ";",
@@ -1349,7 +1527,7 @@ export default grammar(html, {
           seq(
             ":",
             field("body", repeat($.statement)),
-            keyword("endfor"),
+            $._kw_endfor,
             $._semicolon,
           ),
         ),
@@ -1357,10 +1535,10 @@ export default grammar(html, {
 
     foreach_statement: ($) =>
       seq(
-        keyword("foreach"),
+        $._kw_foreach,
         "(",
         $.expression,
-        keyword("as"),
+        $._kw_as,
         choice(
           alias($.foreach_pair, $.pair),
           $._foreach_value,
@@ -1371,7 +1549,7 @@ export default grammar(html, {
           field("body", $.statement),
           seq(
             field("body", $.colon_block),
-            keyword("endforeach"),
+            $._kw_endforeach,
             $._semicolon,
           ),
         ),
@@ -1379,14 +1557,14 @@ export default grammar(html, {
 
     try_statement: ($) =>
       seq(
-        keyword("try"),
+        $._kw_try,
         field("body", $.compound_statement),
         repeat1(choice($.catch_clause, $.finally_clause)),
       ),
 
     catch_clause: ($) =>
       seq(
-        keyword("catch"),
+        $._kw_catch,
         "(",
         field("type", $.type_list),
         optional(field("name", $.variable_name)),
@@ -1398,27 +1576,27 @@ export default grammar(html, {
 
     finally_clause: ($) =>
       seq(
-        keyword("finally"),
+        $._kw_finally,
         field("body", $.compound_statement),
       ),
 
     goto_statement: ($) =>
       seq(
-        keyword("goto"),
+        $._kw_goto,
         $.name,
         $._semicolon,
       ),
 
     continue_statement: ($) =>
       seq(
-        keyword("continue"),
+        $._kw_continue,
         optional($.expression),
         $._semicolon,
       ),
 
     break_statement: ($) =>
       seq(
-        keyword("break"),
+        $._kw_break,
         optional($.expression),
         $._semicolon,
       ),
@@ -1479,10 +1657,19 @@ export default grammar(html, {
       ),
 
     assignment_expression: ($) =>
-      seq(
-        field("left", $._variable),
-        "=",
-        field("right", $.expression),
+      prec.right(
+        PREC.ASSIGNMENT,
+        seq(
+          field(
+            "left",
+            choice(
+              $._variable,
+              $.list_literal,
+            ),
+          ),
+          "=",
+          field("right", $.expression),
+        ),
       ),
 
     binary_expression: ($) =>
@@ -1491,7 +1678,7 @@ export default grammar(html, {
           PREC.INSTANCEOF,
           seq(
             field("left", $._unary_expression),
-            field("operator", keyword("instanceof")),
+            field("operator", $._kw_instanceof),
             field("right", $._class_name_reference),
           ),
         ),
@@ -1512,9 +1699,9 @@ export default grammar(html, {
           ),
         ),
         ...[
-          [keyword("and"), PREC.LOGICAL_AND_2],
-          [keyword("or"), PREC.LOGICAL_OR_2],
-          [keyword("xor"), PREC.LOGICAL_XOR],
+          [$._kw_and, PREC.LOGICAL_AND_2],
+          [$._kw_or, PREC.LOGICAL_OR_2],
+          [$._kw_xor, PREC.LOGICAL_XOR],
           ["||", PREC.LOGICAL_OR_1],
           ["&&", PREC.LOGICAL_AND_1],
           ["|", PREC.BITWISE_OR],
@@ -1602,7 +1789,7 @@ export default grammar(html, {
 
     named_type: ($) =>
       choice(
-        $.name,
+        reserved("classes", $.name),
         $.qualified_name,
         $.relative_name,
       ),
@@ -1616,7 +1803,7 @@ export default grammar(html, {
         ),
       ),
 
-    bottom_type: (_) => keyword("never", false),
+    bottom_type: ($) => $._kw_never,
 
     union_type: ($) => pipeSep1($._types),
 
@@ -1631,91 +1818,98 @@ export default grammar(html, {
         )),
       ),
 
-    primitive_type: (_) =>
-      token(prec(
-        PREC.KEYWORD,
-        choice(
-          "array",
-          "bool",
-          keyword("callable", false), // not legal in property types
-          keyword("false", false),
-          "float",
-          "int",
-          keyword("iterable", false),
-          keyword("mixed", false),
-          "null",
-          "object",
-          "string",
-          keyword("true", false),
-          keyword("void", false),
-        ),
-      )),
+    primitive_type: ($) => {
+      const ss = [
+        "array",
+        "bool",
+        "float",
+        "int",
+        "null",
+        "object",
+        "string",
+      ];
+      return choice(
+        ...ss.map((s) => token(prec(PREC.KEYWORD, s))),
+        $._kw_callable, // not legal in property types
+        $._kw_false,
+        $._kw_iterable,
+        $._kw_mixed,
+        $._kw_true,
+        $._kw_void,
+      );
+    },
 
-    cast_type: (_) =>
-      token(prec(
-        PREC.KEYWORD,
-        choice(
-          keyword("array", false),
-          keyword("binary", false),
-          keyword("bool", false),
-          keyword("boolean", false),
-          keyword("double", false),
-          keyword("float", false),
-          keyword("int", false),
-          keyword("integer", false),
-          keyword("object", false),
-          keyword("real", false),
-          keyword("string", false),
-          keyword("unset", false),
-        ),
-      )),
+    cast_type: ($) => {
+      const pats = [
+        /array/i,
+        /binary/i,
+        /boolean/i,
+        /double/i,
+        /integer/i,
+        /real/i,
+        /unset/i,
+      ].map((pat) => token(prec(PREC.KEYWORD, pat)));
+
+      return choice(
+        ...pats,
+        $._kw_bool,
+        $._kw_float,
+        $._kw_int,
+        $._kw_object,
+        $._kw_string,
+      );
+    },
 
     _return_type: ($) =>
       seq(":", field("return_type", choice($.type, $.bottom_type))),
     _const_element: ($) => seq($.name, "=", $.expression),
-    _class_const_element: ($) => $._const_element,
+    _class_const_element: ($) =>
+      seq(reserved("nothing", $.name), "=", $.expression),
 
     _unary_expression: ($) =>
-      choice($.primary_expression, $.unary_op_expression, $.cast_expression),
+      choice(
+        $.clone_expression,
+        $.primary_expression,
+        $.unary_op_expression,
+        $.cast_expression,
+      ),
+
+    clone_expression: ($) => seq($._kw_clone, $.primary_expression),
 
     primary_expression: ($) =>
       choice(
         $._variable,
         $.literal,
-        $.print_intrinsic,
-        $.array_creation_expression,
-        $.parenthesized_expression,
-        $.function_call_expression,
-        $.scoped_call_expression,
-        $.member_call_expression,
-        $.nullsafe_member_call_expression,
         $.class_constant_access_expression,
         $.qualified_name,
         $.relative_name,
         $.name,
-        $.update_expression,
+        $.array_creation_expression,
+        $.print_intrinsic,
         $.anonymous_function,
         $.arrow_function,
         $.object_creation_expression,
+        $.update_expression,
+        $.parenthesized_expression,
         $.throw_expression,
       ),
 
     print_intrinsic: ($) =>
       seq(
-        token(prec(PREC.KEYWORD, keyword("print"))),
+        $._kw_print,
         $.expression,
       ),
 
     throw_expression: ($) =>
       seq(
-        token(prec(PREC.KEYWORD, keyword("throw"))),
+        $._kw_throw,
         $.expression,
       ),
 
     function_definition: ($) =>
       seq(
         optional(field("attributes", $.attr_list)),
-        keyword("function"),
+        $._kw_function,
         optional($.reference_modifier),
         field("name", $.name),
         field("parameters", $.formal_parameters),
@@ -1734,7 +1928,7 @@ export default grammar(html, {
 
     anonymous_function_use_clause: ($) =>
       seq(
-        keyword("use"),
+        $._kw_use,
         "(",
         commaSep1(choice($.by_ref, $.variable_name)),
         optional(","),
@@ -1755,7 +1949,7 @@ export default grammar(html, {
       seq(
         optional(field("attributes", $.attr_list)),
         optional(field("static_modifier", $.static_modifier)),
-        keyword("function"),
+        $._kw_function,
         optional(field("reference_modifier", $.reference_modifier)),
         field("parameters", $.formal_parameters),
         optional($.anonymous_function_use_clause),
@@ -1766,7 +1960,7 @@ export default grammar(html, {
       seq(
         optional(field("attributes", $.attr_list)),
         optional(field("static_modifier", $.static_modifier)),
-        keyword("fn"),
+        $._kw_fn,
         optional(field("reference_modifier", $.reference_modifier)),
         field("parameters", $.formal_parameters),
         optional($._return_type),
@@ -1785,8 +1979,8 @@ export default grammar(html, {
       ),
 
     reference_modifier: (_) => "&",
-    static_modifier: (_) => keyword("static"),
-    var_modifier: (_) => keyword("var", false),
+    static_modifier: ($) => alias($._kw_static, $.static),
+    var_modifier: ($) => $._kw_var,
 
     arrow_function: ($) =>
       seq(
@@ -1825,13 +2019,29 @@ export default grammar(html, {
       ),
 
     _variable: ($) =>
-      choice(
-        $.variable_name,
-        $.member_access_expression,
-        $.subscript_expression,
+      prec.right(
+        choice(
+          alias($.cast_variable, $.cast_expression),
+          $._new_variable,
+          $._callable_variable,
+          $.scoped_property_access_expression,
+          $.member_access_expression,
+          $.nullsafe_member_access_expression,
+        ),
       ),
 
-    variable_name: ($) => seq("$", alias(/[a-zA-Z_][a-zA-Z0-9_]*/, $.name)),
+    cast_variable: ($) =>
+      prec(
+        PREC.CAST,
+        seq(
+          "(",
+          field("type", $.cast_type),
+          ")",
+          field("value", $._variable),
+        ),
+      ),
+
+    variable_name: ($) => seq("$", reserved("nothing", $.name)),
 
     by_ref: ($) => seq("&", $._variable),
 
@@ -1875,16 +2085,16 @@ export default grammar(html, {
         ),
       ),
 
-    final_modifier: (_) => keyword("final"),
-    abstract_modifier: (_) => keyword("abstract"),
-    readonly_modifier: (_) => keyword("readonly"),
+    final_modifier: ($) => $._kw_final,
+    abstract_modifier: ($) => $._kw_abstract,
+    readonly_modifier: ($) => $._kw_readonly,
 
     visibility_modifier: ($) =>
       seq(
         choice(
-          keyword("public"),
-          keyword("protected"),
-          keyword("private"),
+          $._kw_public,
+          $._kw_protected,
+          $._kw_private,
         ),
         optional(seq(
           token.immediate("("),
@@ -1935,7 +2145,7 @@ export default grammar(html, {
 
     _member_name: ($) =>
       choice(
-        field("name", choice($.name, $._simple_variable)),
+        field("name", choice(reserved("nothing", $.name), $._simple_variable)),
         seq("{", field("name", $.expression), "}"),
       ),
 
@@ -1967,7 +2177,7 @@ export default grammar(html, {
 
     _list_destructing: ($) =>
       seq(
-        keyword("list"),
+        /list/i,
         "(",
         commaSep1(optional(
           choice(
@@ -2047,18 +2257,21 @@ export default grammar(html, {
         $._dereferencable_expression,
       ),
 
-    relative_scope: (_) =>
+    relative_scope: ($) =>
       prec(
         PREC.SCOPE,
         choice(
-          keyword("self"),
-          keyword("parent"),
-          keyword("static"),
+          alias(/self/i, $.self),
+          alias(/parent/i, $.parent),
+          alias($._kw_static, $.static),
         ),
       ),
 
     arguments: ($) =>
-      seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
+      prec(
+        PREC.CALL,
+        seq("(", optional(seq(commaSep1($.argument), optional(","))), ")"),
+      ),
 
     argument: ($) =>
       seq(
@@ -2066,7 +2279,30 @@ export default grammar(html, {
         choice($.expression, $.variadic_unpacking),
       ),
 
-    _argument_name: ($) => seq(field("name", alias($.name, $.name)), ":"),
+    _argument_name: ($) =>
+      seq(
+        field(
+          "name",
+          alias(
+            choice(
+              reserved("nothing", $.name),
+              /array/i,
+              $._kw_fn,
+              $._kw_function,
+              $._kw_match,
+              $._kw_namespace,
+              $._kw_null,
+              $._kw_static,
+              $._kw_throw,
+              /parent/i,
+              /self/i,
+              /true|false/i,
+            ),
+            $.name,
+          ),
+        ),
+        ":",
+      ),
 
     member_call_expression: ($) =>
       prec(
@@ -2096,7 +2332,10 @@ export default grammar(html, {
       seq(
         field("scope", $._scope_resolution_qualifier),
         "::",
-        field("name", alias($.name, $.name)),
+        choice(
+          reserved("nothing", $.name),
+          seq("{", alias($.expression, $.name), "}"),
+        ),
       ),
 
     object_creation_expression: ($) =>
@@ -2109,7 +2348,7 @@ export default grammar(html, {
       prec.right(
         PREC.NEW,
         seq(
-          token(prec(PREC.NEW, keyword("new"))),
+          $._kw_new,
           $._class_name_reference,
         ),
       ),
@@ -2118,7 +2357,7 @@ export default grammar(html, {
       prec.right(
         PREC.NEW,
         seq(
-          token(prec(PREC.NEW, keyword("new"))),
+          $._kw_new,
           seq($._class_name_reference, $.arguments),
         ),
       ),
@@ -2128,20 +2367,20 @@ export default grammar(html, {
         field(
           "prefix",
           seq(
-            keyword("namespace"),
+            $._kw_namespace,
             optional(seq("\\", $.namespace_name)),
             "\\",
           ),
         ),
-        $.name,
+        reserved("classes", $.name),
       ),
 
     _name: ($) =>
       prec(
         PREC.IDENTIFIER,
         choice(
-          alias(keyword("static", false), $.name),
-          $.name,
+          alias($._kw_static, $.name),
+          reserved("classes", $.name),
           $.qualified_name,
         ),
       ),
@@ -2183,25 +2422,28 @@ export default grammar(html, {
       ),
 
     _callable_variable: ($) =>
-      choice(
-        $._simple_variable,
-        alias($._dereferencable_subscript_expression, $.subscript_expression),
-        $.member_call_expression,
-        $.nullsafe_member_call_expression,
-        $.function_call_expression,
-        $.scoped_call_expression,
+      prec(
+        PREC.CALL,
+        choice(
+          $._simple_variable,
+          alias($._dereferencable_subscript_expression, $.subscript_expression),
+          $.member_call_expression,
+          $.nullsafe_member_call_expression,
+          $.function_call_expression,
+          $.scoped_call_expression,
+        ),
       ),
 
     namespace_name: ($) =>
       seq(
-        $.name,
-        repeat(seq("\\", $.name)),
+        reserved("nothing", $.name),
+        repeat(seq("\\", reserved("nothing", $.name))),
       ),
 
     qualified_name: ($) =>
       seq(
         field("prefix", seq(optional("\\"), optional($.namespace_name), "\\")),
-        $.name,
+        reserved("classes", $.name),
       ),
 
     array_creation_expression: ($) =>
@@ -2310,43 +2552,43 @@ export default grammar(html, {
         ),
       ),
 
-    boolean: (_) => token(prec(PREC.KEYWORD, /true|false/i)),
+    boolean: ($) => choice($._kw_true, $._kw_false),
 
-    null: (_) => "null",
+    null: ($) => $._kw_null,
 
     name: (_) => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
 
     statement: ($) =>
       choice(
-        $.empty_statement, //
-        $.compound_statement, //
-        $.named_label_statement, //
-        $.expression_statement, //
-        $.if_statement, //
-        $.switch_statement, //
-        $.while_statement, //
-        $.do_statement, //
-        $.for_statement, //
-        $.foreach_statement, //
-        $.goto_statement, //
-        $.continue_statement, //
-        $.break_statement, //
-        $.return_statement, //
-        $.try_statement, //
-        $.declare_statement, //
-        $.echo_statement, //
-        $.exit_statement, //
-        $.unset_statement, //
-        $.const_declaration, //
-        $.function_definition, //
-        $.class_declaration, //
-        $.interface_declaration, //
-        $.trait_declaration, //
-        $.enum_declaration, //
-        $.namespace_definition, //
-        $.namespace_use_declaration, //
-        $.global_declaration, //
-        $.function_static_declaration, //
+        $.empty_statement,
+        $.compound_statement,
+        $.named_label_statement,
+        $.expression_statement,
+        $.if_statement,
+        $.switch_statement,
+        $.while_statement,
+        $.do_statement,
+        $.for_statement,
+        $.foreach_statement,
+        $.goto_statement,
+        $.continue_statement,
+        $.break_statement,
+        $.return_statement,
+        $.try_statement,
+        $.declare_statement,
+        $.echo_statement,
+        $.exit_statement,
+        $.unset_statement,
+        $.const_declaration,
+        $.function_definition,
+        $.class_declaration,
+        $.interface_declaration,
+        $.trait_declaration,
+        $.enum_declaration,
+        $.namespace_definition,
+        $.namespace_use_declaration,
+        $.global_declaration,
+        $.function_static_declaration,
       ),
 
     empty_statement: (_) => prec(-1, ";"),
@@ -2359,7 +2601,7 @@ export default grammar(html, {
 
     switch_statement: ($) =>
       seq(
-        keyword("switch"),
+        $._kw_switch,
         field("condition", $.parenthesized_expression),
         field("body", $.switch_block),
       ),
@@ -2374,14 +2616,14 @@ export default grammar(html, {
         seq(
           ":",
           repeat(choice($.case_statement, $.default_statement)),
-          keyword("endswitch"),
+          $._kw_endswitch,
           $._semicolon,
         ),
       ),
 
     case_statement: ($) =>
       seq(
-        keyword("case"),
+        $._kw_case,
         field("value", $.expression),
         choice(":", ";"),
         repeat($.statement),
@@ -2389,14 +2631,14 @@ export default grammar(html, {
 
     default_statement: ($) =>
       seq(
-        keyword("default"),
+        $._kw_default,
         choice(":", ";"),
         repeat($.statement),
       ),
 
     function_static_declaration: ($) =>
       seq(
-        keyword("static"),
+        $._kw_static,
         commaSep1($.static_variable_declaration),
         $._semicolon,
       ),
@@ -2412,14 +2654,14 @@ export default grammar(html, {
 
     global_declaration: ($) =>
       seq(
-        keyword("global"),
+        $._kw_global,
         commaSep1($._simple_variable),
         $._semicolon,
       ),
 
     namespace_definition: ($) =>
       seq(
-        keyword("namespace"),
+        $._kw_namespace,
         choice(
           seq(field("name", $.namespace_name), $._semicolon),
           seq(
@@ -2431,7 +2673,7 @@ export default grammar(html, {
 
     namespace_use_declaration: ($) =>
       seq(
-        keyword("use"),
+        $._kw_use,
         choice(
           commaSep1($.namespace_use_clause),
           $._namespace_use_group,
@@ -2443,7 +2685,7 @@ export default grammar(html, {
       seq(
         field("type", optional($._namespace_use_type)),
         choice($.name, $.qualified_name),
-        optional(seq(keyword("as"), field("alias", $.name))),
+        optional(seq($._kw_as, field("alias", $.name))),
       ),
 
     _namespace_use_group: ($) =>
@@ -2457,11 +2699,11 @@ export default grammar(html, {
     namespace_use_group: ($) =>
       seq("{", commaSep1($.namespace_use_clause), "}"),
 
-    echo_statement: ($) => seq(keyword("echo"), $._expressions, $._semicolon),
+    echo_statement: ($) => seq($._kw_echo, $._expressions, $._semicolon),
 
     exit_statement: ($) =>
       seq(
-        keyword("exit"),
+        alias(/exit/i, $.exit),
         optional(seq("(", optional($.expression), ")")),
         $._semicolon,
       ),
@@ -2478,7 +2720,7 @@ export default grammar(html, {
 
     declare_statement: ($) =>
       seq(
-        keyword("declare"),
+        $._kw_declare,
         "(",
         $.declare_directive,
         ")",
@@ -2488,7 +2730,7 @@ export default grammar(html, {
           seq(
             ":",
             repeat($.statement),
-            keyword("enddeclare"),
+            $._kw_enddeclare,
             $._semicolon,
           ),
         ),
@@ -2505,7 +2747,7 @@ export default grammar(html, {
       seq(
         optional(field("attributes", $.attr_list)),
         repeat($._modifier),
-        keyword("const"),
+        $._kw_const,
         optional(field("type", $.type)),
         commaSep1(alias($._const_element, $.const_element)),
         $._semicolon,
@@ -2516,37 +2758,35 @@ export default grammar(html, {
         optional(field("attributes", $.attr_list)),
         optional($.final_modifier),
         repeat($._modifier),
-        keyword("const"),
+        $._kw_const,
         optional(field("type", $.type)),
         commaSep1(alias($._class_const_element, $.const_element)),
         $._semicolon,
       ),
 
     if_statement: ($) =>
-      prec.right(
-        seq(
-          keyword("if"),
-          field("condition", $.parenthesized_expression),
-          choice(
-            seq(
-              field("body", $.statement),
-              repeat(field("alternative", $.else_if_clause)),
-              optional(field("alternative", $.else_clause)),
-            ),
-            seq(
-              field("body", $.colon_block),
-              repeat(
-                field(
-                  "alternative",
-                  alias($.else_if_clause_2, $.else_if_clause),
-                ),
+      seq(
+        $._kw_if,
+        field("condition", $.parenthesized_expression),
+        choice(
+          seq(
+            field("body", $.statement),
+            repeat(field("alternative", $.else_if_clause)),
+            optional(field("alternative", $.else_clause)),
+          ),
+          seq(
+            field("body", $.colon_block),
+            repeat(
+              field(
+                "alternative",
+                alias($.else_if_clause_2, $.else_if_clause),
               ),
-              optional(
-                field("alternative", alias($.else_clause_2, $.else_clause)),
-              ),
-              keyword("endif"),
-              $._semicolon,
             ),
+            optional(
+              field("alternative", alias($.else_clause_2, $.else_clause)),
+            ),
+            $._kw_endif,
+            $._semicolon,
           ),
         ),
       ),
@@ -2559,27 +2799,27 @@ export default grammar(html, {
 
     else_if_clause: ($) =>
       seq(
-        keyword("elseif"),
+        $._kw_elseif,
         field("condition", $.parenthesized_expression),
         field("body", $.statement),
       ),
 
     else_clause: ($) =>
       seq(
-        keyword("else"),
+        $._kw_else,
         field("body", $.statement),
       ),
 
     else_if_clause_2: ($) =>
       seq(
-        keyword("elseif"),
+        $._kw_elseif,
         field("condition", $.parenthesized_expression),
         field("body", $.colon_block),
       ),
 
     else_clause_2: ($) =>
       seq(
-        keyword("else"),
+        $._kw_else,
         field("body", $.colon_block),
       ),
 
@@ -2587,7 +2827,7 @@ export default grammar(html, {
       seq(
         optional(field("attributes", $.attr_list)),
         repeat($._modifier),
-        keyword("function"),
+        $._kw_function,
         optional($.reference_modifier),
         field("name", $.name),
         field("parameters", $.formal_parameters),
@@ -2644,7 +2884,7 @@ export default grammar(html, {
 
     class_interface_clause: ($) =>
       seq(
-        keyword("implements"),
+        $._kw_implements,
         commaSep1($._name),
       ),
 
@@ -2652,8 +2892,8 @@ export default grammar(html, {
       prec.right(seq(
         optional(field("attributes", $.attr_list)),
         repeat($._modifier),
-        keyword("class"),
-        field("name", $.name),
+        $._kw_class,
+        field("name", reserved("classes", $.name)),
         optional($.base_clause),
         optional($.class_interface_clause),
         field("body", $.declaration_list),
@@ -2664,31 +2904,31 @@ export default grammar(html, {
     trait_declaration: ($) =>
       seq(
         optional(field("attributes", $.attr_list)),
-        keyword("trait"),
-        field("name", $.name),
+        $._kw_trait,
+        field("name", reserved("classes", $.name)),
         field("body", $.declaration_list),
       ),
 
     interface_declaration: ($) =>
       seq(
         optional(field("attributes", $.attr_list)),
-        keyword("interface"),
-        field("name", $.name),
+        $._kw_interface,
+        field("name", reserved("classes", $.name)),
         optional($.base_clause),
         field("body", $.declaration_list),
       ),
 
     base_clause: ($) =>
       seq(
-        keyword("extends"),
+        $._kw_extends,
         commaSep1($._name),
       ),
 
     enum_declaration: ($) =>
       prec.right(seq(
         optional(field("attributes", $.attr_list)),
-        keyword("enum"),
-        field("name", $.name),
+        alias(/enum/i, $.enum),
+        field("name", reserved("classes", $.name)),
         optional(seq(":", alias(choice("string", "int"), $.primitive_type))),
         optional($.class_interface_clause),
         field("body", $.enum_declaration_list),
@@ -2708,15 +2948,15 @@ export default grammar(html, {
     enum_case: ($) =>
       seq(
         optional(field("attributes", $.attr_list)),
-        keyword("case"),
-        field("name", $.name),
+        $._kw_case,
+        field("name", reserved("nothing", $.name)),
         optional(seq("=", field("value", $.expression))),
         $._semicolon,
       ),
 
     use_declaration: ($) =>
       seq(
-        keyword("use"),
+        $._kw_use,
         commaSep1($._name),
         choice($.use_list, $._semicolon),
       ),
@@ -2737,14 +2977,14 @@ export default grammar(html, {
     use_instead_of_clause: ($) =>
       prec.left(seq(
         $.class_constant_access_expression,
-        keyword("insteadof"),
+        $._kw_insteadof,
         $.name,
       )),
 
     use_as_clause: ($) =>
       seq(
         choice($.class_constant_access_expression, $.name),
-        keyword("as"),
+        $._kw_as,
         choice(
           seq(
             optional($.visibility_modifier),
@@ -2757,7 +2997,7 @@ export default grammar(html, {
         ),
       ),
 
-    _namespace_use_type: (_) => choice(keyword("function"), keyword("const")),
+    _namespace_use_type: ($) => choice($._kw_function, $._kw_const),
     _semicolon: (_) => ";",
   },
 });
