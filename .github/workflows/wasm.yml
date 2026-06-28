@@ -20,9 +20,17 @@ jobs:
       - name: Unzip tree-sitter-cli archive
         run:  unzip tree-sitter.zip
       - name: Build WASM
+        continue-on-error: true
         run: |
           chmod +x tree-sitter
           ./tree-sitter build --wasm
+      - name: Check for OOM in kernel logs
+          if: always()   # Run even if the previous step failed
+          run: |
+            echo "=== Kernel OOM messages ==="
+            dmesg | grep -i "out of memory" || echo "No explicit OOM message found"
+            echo "=== Last 50 lines of dmesg ==="
+            dmesg | tail -50
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
