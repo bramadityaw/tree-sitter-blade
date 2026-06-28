@@ -20,7 +20,7 @@ jobs:
       - name: Unzip tree-sitter-cli archive
         run:  unzip tree-sitter.zip
       - name: Build WASM
-          ./tree-sitter build --wasm
+        run: ./tree-sitter build --wasm
       - name: Upload WASM artifact
         uses: actions/upload-artifact@v4
         with:
